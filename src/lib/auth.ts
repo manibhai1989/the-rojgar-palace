@@ -25,10 +25,10 @@ export const authOptions: NextAuthOptions = {
                     try {
                         // Sync with database to ensure user exists for profile features
                         const user = await prisma.user.upsert({
-                            where: { email: "admin@sarkariresult.com" },
+                            where: { email: process.env.ADMIN_EMAIL || "admin@therojgarpalace.in" },
                             update: {},
                             create: {
-                                email: "admin@sarkariresult.com",
+                                email: process.env.ADMIN_EMAIL || "admin@therojgarpalace.in",
                                 name: "Admin User",
                                 image: "",
                             },
@@ -46,7 +46,7 @@ export const authOptions: NextAuthOptions = {
                         return {
                             id: "1",
                             name: "Admin User",
-                            email: "admin@sarkariresult.com",
+                            email: process.env.ADMIN_EMAIL || "admin@therojgarpalace.in",
                         };
                     }
                 }
