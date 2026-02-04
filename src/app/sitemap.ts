@@ -24,89 +24,97 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: route === '' ? 1.0 : 0.8,
     }));
 
-    // 2. Fetch Latest Jobs for Dynamic URLs
-    const jobs = await prisma.job.findMany({
-        select: { slug: true, updatedAt: true },
-        orderBy: { updatedAt: 'desc' },
-        take: 1000,
-    });
+    // 2. Fetch Dynamic URLs with Fallbacks
+    let jobUrls: any[] = [];
+    let resultUrls: any[] = [];
+    let admitCardUrls: any[] = [];
+    let answerKeyUrls: any[] = [];
+    let syllabusUrls: any[] = [];
+    let admissionUrls: any[] = [];
 
-    const jobUrls = jobs.map((job) => ({
-        url: `${baseUrl}/jobs/${job.slug}`,
-        lastModified: job.updatedAt,
-        changeFrequency: 'weekly' as const,
-        priority: 0.9,
-    }));
+    try {
+        const jobs = await prisma.job.findMany({
+            select: { slug: true, updatedAt: true },
+            orderBy: { updatedAt: 'desc' },
+            take: 1000,
+        });
+        jobUrls = jobs.map((job) => ({
+            url: `${baseUrl}/jobs/${job.slug}`,
+            lastModified: job.updatedAt,
+            changeFrequency: 'weekly' as const,
+            priority: 0.9,
+        }));
+    } catch (e) { console.error("Sitemap: Jobs query failed", e); }
 
-    // 3. Fetch Latest Results
-    const results = await prisma.result.findMany({
-        select: { id: true, updatedAt: true },
-        orderBy: { updatedAt: 'desc' },
-        take: 500,
-    });
+    try {
+        const results = await prisma.result.findMany({
+            select: { id: true, updatedAt: true },
+            orderBy: { updatedAt: 'desc' },
+            take: 500,
+        });
+        resultUrls = results.map((result) => ({
+            url: `${baseUrl}/results/${result.id}`,
+            lastModified: result.updatedAt,
+            changeFrequency: 'weekly' as const,
+            priority: 0.8,
+        }));
+    } catch (e) { console.error("Sitemap: Results query failed", e); }
 
-    const resultUrls = results.map((result) => ({
-        url: `${baseUrl}/results/${result.id}`,
-        lastModified: result.updatedAt,
-        changeFrequency: 'weekly' as const,
-        priority: 0.8,
-    }));
+    try {
+        const admitCards = await prisma.admitCard.findMany({
+            select: { id: true, updatedAt: true },
+            orderBy: { updatedAt: 'desc' },
+            take: 500,
+        });
+        admitCardUrls = admitCards.map((card) => ({
+            url: `${baseUrl}/admit-cards/${card.id}`,
+            lastModified: card.updatedAt,
+            changeFrequency: 'weekly' as const,
+            priority: 0.8,
+        }));
+    } catch (e) { console.error("Sitemap: Admit cards query failed", e); }
 
-    // 4. Fetch Latest Admit Cards
-    const admitCards = await prisma.admitCard.findMany({
-        select: { id: true, updatedAt: true },
-        orderBy: { updatedAt: 'desc' },
-        take: 500,
-    });
+    try {
+        const answerKeys = await prisma.answerKey.findMany({
+            select: { id: true, updatedAt: true },
+            orderBy: { updatedAt: 'desc' },
+            take: 300,
+        });
+        answerKeyUrls = answerKeys.map((item) => ({
+            url: `${baseUrl}/answer-keys/${item.id}`,
+            lastModified: item.updatedAt,
+            changeFrequency: 'weekly' as const,
+            priority: 0.8,
+        }));
+    } catch (e) { console.error("Sitemap: Answer keys query failed", e); }
 
-    const admitCardUrls = admitCards.map((card) => ({
-        url: `${baseUrl}/admit-cards/${card.id}`,
-        lastModified: card.updatedAt,
-        changeFrequency: 'weekly' as const,
-        priority: 0.8,
-    }));
+    try {
+        const syllabus = await prisma.syllabus.findMany({
+            select: { id: true, updatedAt: true },
+            orderBy: { updatedAt: 'desc' },
+            take: 300,
+        });
+        syllabusUrls = syllabus.map((item) => ({
+            url: `${baseUrl}/syllabus/${item.id}`,
+            lastModified: item.updatedAt,
+            changeFrequency: 'monthly' as const,
+            priority: 0.7,
+        }));
+    } catch (e) { console.error("Sitemap: Syllabus query failed", e); }
 
-    // 5. Fetch Latest Answer Keys
-    const answerKeys = await prisma.answerKey.findMany({
-        select: { id: true, updatedAt: true },
-        orderBy: { updatedAt: 'desc' },
-        take: 300,
-    });
-
-    const answerKeyUrls = answerKeys.map((item) => ({
-        url: `${baseUrl}/answer-keys/${item.id}`,
-        lastModified: item.updatedAt,
-        changeFrequency: 'weekly' as const,
-        priority: 0.8,
-    }));
-
-    // 6. Fetch Latest Syllabus
-    const syllabus = await prisma.syllabus.findMany({
-        select: { id: true, updatedAt: true },
-        orderBy: { updatedAt: 'desc' },
-        take: 300,
-    });
-
-    const syllabusUrls = syllabus.map((item) => ({
-        url: `${baseUrl}/syllabus/${item.id}`,
-        lastModified: item.updatedAt,
-        changeFrequency: 'monthly' as const,
-        priority: 0.7,
-    }));
-
-    // 7. Fetch Latest Admissions
-    const admissions = await prisma.admission.findMany({
-        select: { id: true, updatedAt: true },
-        orderBy: { updatedAt: 'desc' },
-        take: 300,
-    });
-
-    const admissionUrls = admissions.map((item) => ({
-        url: `${baseUrl}/admissions/${item.id}`,
-        lastModified: item.updatedAt,
-        changeFrequency: 'weekly' as const,
-        priority: 0.8,
-    }));
+    try {
+        const admissions = await prisma.admission.findMany({
+            select: { id: true, updatedAt: true },
+            orderBy: { updatedAt: 'desc' },
+            take: 300,
+        });
+        admissionUrls = admissions.map((item) => ({
+            url: `${baseUrl}/admissions/${item.id}`,
+            lastModified: item.updatedAt,
+            changeFrequency: 'weekly' as const,
+            priority: 0.8,
+        }));
+    } catch (e) { console.error("Sitemap: Admissions query failed", e); }
 
     return [
         ...staticPages,
