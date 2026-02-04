@@ -1,0 +1,360 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e4]:
+      - generic [ref=e6]:
+        - link "RP The Rojgar Palace No.1 Govt Job Portal" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e8]: RP
+          - generic [ref=e9]:
+            - generic [ref=e10]: The Rojgar Palace
+            - generic [ref=e11]: No.1 Govt Job Portal
+        - navigation [ref=e12]:
+          - link "Home" [ref=e13] [cursor=pointer]:
+            - /url: /
+            - img [ref=e14]
+            - text: Home
+          - link "Jobs" [ref=e17] [cursor=pointer]:
+            - /url: /jobs
+            - img [ref=e18]
+            - text: Jobs
+          - link "Results" [ref=e21] [cursor=pointer]:
+            - /url: /results
+            - img [ref=e22]
+            - text: Results
+          - link "Admit Card" [ref=e28] [cursor=pointer]:
+            - /url: /admit-cards
+            - img [ref=e29]
+            - text: Admit Card
+          - link "Syllabus" [ref=e35] [cursor=pointer]:
+            - /url: /syllabus
+            - img [ref=e36]
+            - text: Syllabus
+          - link "Answer Key" [ref=e39] [cursor=pointer]:
+            - /url: /answer-keys
+            - img [ref=e40]
+            - text: Answer Key
+          - link "Admissions" [ref=e44] [cursor=pointer]:
+            - /url: /admissions
+            - img [ref=e45]
+            - text: Admissions
+        - generic [ref=e49]:
+          - button "Search website" [ref=e51]:
+            - img [ref=e52]
+            - generic [ref=e55]: Search job, admit card...
+            - generic:
+              - generic: ⌘
+              - text: K
+          - button "Admin Login" [ref=e56]
+          - button "Toggle theme" [ref=e58]:
+            - img [ref=e60]
+            - generic [ref=e63]: Toggle theme
+    - main [ref=e64]:
+      - navigation "Breadcrumb" [ref=e65]:
+        - link "Home" [ref=e66] [cursor=pointer]:
+          - /url: /
+          - img [ref=e67]
+        - img [ref=e70]
+        - link "Jobs" [ref=e72] [cursor=pointer]:
+          - /url: /jobs
+        - img [ref=e73]
+        - generic [ref=e75]: Uttar pradesh police 2025 0njvv
+      - main [ref=e76]:
+        - generic [ref=e77]:
+          - heading "Uttar Pradesh Police 2025" [level=1] [ref=e78]
+          - generic [ref=e79]:
+            - paragraph [ref=e80]: "Post Date: 4 February 2026"
+            - paragraph [ref=e81]: "|"
+            - paragraph [ref=e82]: "Update Date: 4 February 2026"
+          - paragraph [ref=e83]: "Uttar Pradesh : Uttar Pradesh Police recruitment for various cadres with total 32679 posts. Reservation benefits apply to UP Domicile holders only."
+        - generic [ref=e84]:
+          - generic [ref=e85]:
+            - generic [ref=e86]: Important Dates
+            - list [ref=e87]:
+              - listitem [ref=e88]:
+                - generic [ref=e89]: "Application Begin :"
+                - generic [ref=e90]: 31 December 2025
+              - listitem [ref=e91]:
+                - generic [ref=e92]: "Last Date for Apply Online :"
+                - generic [ref=e93]: 30 January 2026
+              - listitem [ref=e94]:
+                - generic [ref=e95]: "Pay Exam Fee Last Date :"
+                - generic [ref=e96]: 2 February 2026
+              - listitem [ref=e97]:
+                - generic [ref=e98]: "Application Dates :"
+                - generic [ref=e99]: December 31, 2025 to January 30, 2026
+              - listitem [ref=e100]:
+                - generic [ref=e101]: "Fee Correction/Adjustment :"
+                - generic [ref=e102]: Until February 2, 2026
+          - generic [ref=e103]:
+            - generic [ref=e104]: Application Fee
+            - list [ref=e105]:
+              - listitem [ref=e106]:
+                - generic [ref=e107]: "General / OBC / EWS :"
+                - generic [ref=e108]: ₹ ₹ 500/-
+              - listitem [ref=e109]:
+                - generic [ref=e110]: "SC / ST :"
+                - generic [ref=e111]: ₹ ₹ 400/-
+              - listitem [ref=e112]: Pay the Exam Fee Through Debit Card, Credit Card, Net Banking Only.
+        - generic [ref=e113]:
+          - generic [ref=e114]: Uttar Pradesh Age Limit as on July 1, 2025
+          - generic [ref=e115]:
+            - generic [ref=e116]:
+              - paragraph [ref=e117]:
+                - text: "Minimum Age :"
+                - generic [ref=e118]: 18 Years
+              - paragraph [ref=e119]:
+                - text: "Maximum Age :"
+                - generic [ref=e120]: 25 Years
+            - paragraph [ref=e121]: "Age Relaxation : SC / ST / OBC / UP State Employees: 5 Years relaxation, Ex-Servicemen: 3 Years relaxation."
+        - generic [ref=e122]:
+          - generic [ref=e123]:
+            - generic [ref=e124]: Educational Qualification
+            - paragraph [ref=e126]: "Passed Class 12th (Intermediate) from a recognized board. Preferential Qualifications: 'O' Level Computer Certificate from DOEACC/NIELIT, Minimum 2 years of service in the Territorial Army, NCC 'B' Certificate."
+          - generic [ref=e127]:
+            - generic [ref=e128]: Mode of Selection
+            - list [ref=e129]:
+              - listitem [ref=e130]: Written Examination
+              - listitem [ref=e131]: Document Verification (DV) & Physical Standards (PST)
+              - listitem [ref=e132]: Physical Efficiency Test (PET)
+        - generic [ref=e133]:
+          - generic [ref=e134]: "Vacancy Details Total : 32679 Post"
+          - table [ref=e136]:
+            - rowgroup [ref=e137]:
+              - row "Post Name Category Total Eligibility" [ref=e138]:
+                - columnheader "Post Name" [ref=e139]
+                - columnheader "Category" [ref=e140]
+                - columnheader "Total" [ref=e141]
+                - columnheader "Eligibility" [ref=e142]
+            - rowgroup [ref=e143]:
+              - row "Civil Police (Male/Female) UR 4191 Check Notification" [ref=e144]:
+                - cell "Civil Police (Male/Female)" [ref=e145]
+                - cell "UR" [ref=e146]
+                - cell "4191" [ref=e147]
+                - cell "Check Notification" [ref=e148]
+              - row "Civil Police (Male/Female) EWS 1046" [ref=e149]:
+                - cell "Civil Police (Male/Female)" [ref=e150]
+                - cell "EWS" [ref=e151]
+                - cell "1046" [ref=e152]
+              - row "Civil Police (Male/Female) OBC 2826" [ref=e153]:
+                - cell "Civil Police (Male/Female)" [ref=e154]
+                - cell "OBC" [ref=e155]
+                - cell "2826" [ref=e156]
+              - row "Civil Police (Male/Female) SC 2198" [ref=e157]:
+                - cell "Civil Police (Male/Female)" [ref=e158]
+                - cell "SC" [ref=e159]
+                - cell "2198" [ref=e160]
+              - row "Civil Police (Male/Female) ST 208" [ref=e161]:
+                - cell "Civil Police (Male/Female)" [ref=e162]
+                - cell "ST" [ref=e163]
+                - cell "208" [ref=e164]
+              - row "PAC / Armed Police (Male) UR 6060" [ref=e165]:
+                - cell "PAC / Armed Police (Male)" [ref=e166]
+                - cell "UR" [ref=e167]
+                - cell "6060" [ref=e168]
+              - row "PAC / Armed Police (Male) EWS 1512" [ref=e169]:
+                - cell "PAC / Armed Police (Male)" [ref=e170]
+                - cell "EWS" [ref=e171]
+                - cell "1512" [ref=e172]
+              - row "PAC / Armed Police (Male) OBC 4083" [ref=e173]:
+                - cell "PAC / Armed Police (Male)" [ref=e174]
+                - cell "OBC" [ref=e175]
+                - cell "4083" [ref=e176]
+              - row "PAC / Armed Police (Male) SC 3176" [ref=e177]:
+                - cell "PAC / Armed Police (Male)" [ref=e178]
+                - cell "SC" [ref=e179]
+                - cell "3176" [ref=e180]
+              - row "PAC / Armed Police (Male) ST 300" [ref=e181]:
+                - cell "PAC / Armed Police (Male)" [ref=e182]
+                - cell "ST" [ref=e183]
+                - cell "300" [ref=e184]
+              - row "Special Security Force (Male) Total 1341" [ref=e185]:
+                - cell "Special Security Force (Male)" [ref=e186]
+                - cell "Total" [ref=e187]
+                - cell "1341" [ref=e188]
+              - row "Female Battalions (Female) Total 2282" [ref=e189]:
+                - cell "Female Battalions (Female)" [ref=e190]
+                - cell "Total" [ref=e191]
+                - cell "2282" [ref=e192]
+              - row "Mounted Police (Male) Total 71" [ref=e193]:
+                - cell "Mounted Police (Male)" [ref=e194]
+                - cell "Total" [ref=e195]
+                - cell "71" [ref=e196]
+              - row "Jail Warder (Male) Total 3279" [ref=e197]:
+                - cell "Jail Warder (Male)" [ref=e198]
+                - cell "Total" [ref=e199]
+                - cell "3279" [ref=e200]
+              - row "Jail Warder (Female) Total 106" [ref=e201]:
+                - cell "Jail Warder (Female)" [ref=e202]
+                - cell "Total" [ref=e203]
+                - cell "106" [ref=e204]
+        - generic [ref=e205]:
+          - heading "How to Fill Uttar Pradesh Online Form 2026" [level=3] [ref=e206]
+          - list [ref=e207]:
+            - listitem [ref=e208]: Candidate Read the Notification Before Apply the Recruitment Application Form in Uttar Pradesh.
+            - listitem [ref=e209]: Kindly Check and Collect the All Document - Eligibility, ID Proof, Address Details, Basic Details.
+            - listitem [ref=e210]: Kindly Ready Scan Document Related to Recruitment Form - Photo, Sign, ID Proof, Etc.
+            - listitem [ref=e211]: Before Submit the Application Form Must Check the Preview and All Column Carefully.
+            - listitem [ref=e212]: If Candidate Required to Paying the Application Fee Must Submit. If You have Not the Required Application Fees Your Form is Not Completed.
+            - listitem [ref=e213]: Take A Print Out of Final Submitted Form.
+        - generic [ref=e214]:
+          - generic [ref=e215]:
+            - generic [ref=e216]: Physical Standards
+            - table [ref=e220]:
+              - rowgroup [ref=e221]:
+                - row "Category Male Height Male Chest Female Height Female Weight" [ref=e222]:
+                  - columnheader "Category" [ref=e223]
+                  - columnheader "Male Height" [ref=e224]
+                  - columnheader "Male Chest" [ref=e225]
+                  - columnheader "Female Height" [ref=e226]
+                  - columnheader "Female Weight" [ref=e227]
+              - rowgroup [ref=e228]:
+                - row "Gen / OBC / SC 168 cm 79-84 cm 152 cm Min 40 kg" [ref=e229]:
+                  - cell "Gen / OBC / SC" [ref=e230]
+                  - cell "168 cm" [ref=e231]
+                  - cell "79-84 cm" [ref=e232]
+                  - cell "152 cm" [ref=e233]
+                  - cell "Min 40 kg" [ref=e234]
+                - row "ST 160 cm 77-82 cm 147 cm Min 40 kg" [ref=e235]:
+                  - cell "ST" [ref=e236]
+                  - cell "160 cm" [ref=e237]
+                  - cell "77-82 cm" [ref=e238]
+                  - cell "147 cm" [ref=e239]
+                  - cell "Min 40 kg" [ref=e240]
+          - generic [ref=e241]:
+            - generic [ref=e242]: Physical Efficiency Test (PET)
+            - table [ref=e246]:
+              - rowgroup [ref=e247]:
+                - row "Test Male Female" [ref=e248]:
+                  - columnheader "Test" [ref=e249]
+                  - columnheader "Male" [ref=e250]
+                  - columnheader "Female" [ref=e251]
+              - rowgroup [ref=e252]:
+                - row "Run 4.8 km in 25 minutes 2.4 km in 14 minutes" [ref=e253]:
+                  - cell "Run" [ref=e254]
+                  - cell "4.8 km in 25 minutes" [ref=e255]
+                  - cell "2.4 km in 14 minutes" [ref=e256]
+        - generic [ref=e257]:
+          - generic [ref=e258]: Useful Important Links
+          - table [ref=e260]:
+            - rowgroup [ref=e261]:
+              - row "Apply Online Click Here" [ref=e262]:
+                - cell "Apply Online" [ref=e263]
+                - cell "Click Here" [ref=e264]:
+                  - link "Click Here" [ref=e265] [cursor=pointer]:
+                    - /url: ""
+              - row "Download Notification Click Here" [ref=e266]:
+                - cell "Download Notification" [ref=e267]
+                - cell "Click Here" [ref=e268]:
+                  - link "Click Here" [ref=e269] [cursor=pointer]:
+                    - /url: https://mcryxbvedntuhazozrif.supabase.co/storage/v1/object/public/pdfs/1770201975567_RAILWAY__NOTIFICATION.pdf
+              - row "Official Website Click Here" [ref=e270]:
+                - cell "Official Website" [ref=e271]
+                - cell "Click Here" [ref=e272]:
+                  - link "Click Here" [ref=e273] [cursor=pointer]:
+                    - /url: ""
+              - row "Join WhatsApp Channel Click Here" [ref=e274]:
+                - cell "Join WhatsApp Channel" [ref=e275]
+                - cell "Click Here" [ref=e276]:
+                  - link "Click Here" [ref=e277] [cursor=pointer]:
+                    - /url: "#"
+              - row "Official Website Click Here" [ref=e278]:
+                - cell "Official Website" [ref=e279]
+                - cell "Click Here" [ref=e280]:
+                  - link "Click Here" [ref=e281] [cursor=pointer]:
+                    - /url: "#"
+    - contentinfo [ref=e282]:
+      - generic [ref=e283]:
+        - generic [ref=e284]:
+          - generic [ref=e285]:
+            - generic [ref=e286]:
+              - generic [ref=e287]: RP
+              - generic [ref=e289]: The Rojgar Palace
+            - paragraph [ref=e290]: Your trusted source for the latest government jobs, admit cards, and exam results. Empowering millions of aspirants across India.
+          - generic [ref=e291]:
+            - heading "Quick Links" [level=3] [ref=e292]: Quick Links
+            - list [ref=e294]:
+              - listitem [ref=e295]:
+                - link "Latest Jobs" [ref=e296] [cursor=pointer]:
+                  - /url: /jobs
+              - listitem [ref=e297]:
+                - link "Admit Cards" [ref=e298] [cursor=pointer]:
+                  - /url: /admit-cards
+              - listitem [ref=e299]:
+                - link "Results" [ref=e300] [cursor=pointer]:
+                  - /url: /results
+              - listitem [ref=e301]:
+                - link "Syllabus" [ref=e302] [cursor=pointer]:
+                  - /url: /syllabus
+          - generic [ref=e303]:
+            - heading "Support" [level=3] [ref=e304]: Support
+            - list [ref=e306]:
+              - listitem [ref=e307]:
+                - link "About Us" [ref=e308] [cursor=pointer]:
+                  - /url: /about
+              - listitem [ref=e309]:
+                - link "Contact" [ref=e310] [cursor=pointer]:
+                  - /url: /contact
+              - listitem [ref=e311]:
+                - link "Privacy Policy" [ref=e312] [cursor=pointer]:
+                  - /url: /privacy
+              - listitem [ref=e313]:
+                - link "Terms of Service" [ref=e314] [cursor=pointer]:
+                  - /url: /terms
+          - generic [ref=e315]:
+            - heading "Connect" [level=3] [ref=e316]: Connect
+            - generic [ref=e318]:
+              - link [ref=e319] [cursor=pointer]:
+                - /url: "#"
+                - img [ref=e320]
+              - link [ref=e322] [cursor=pointer]:
+                - /url: "#"
+                - img [ref=e323]
+              - link [ref=e325] [cursor=pointer]:
+                - /url: "#"
+                - img [ref=e326]
+              - link [ref=e330] [cursor=pointer]:
+                - /url: https://www.linkedin.com/in/manish-singh-13923610
+                - img [ref=e331]
+            - link "manish.icst@gmail.com" [ref=e335] [cursor=pointer]:
+              - /url: mailto:manish.icst@gmail.com
+              - img [ref=e337]
+              - generic [ref=e340]: manish.icst@gmail.com
+        - generic [ref=e341]:
+          - paragraph [ref=e342]:
+            - text: © 2026 The Rojgar Palace. Made with
+            - img [ref=e343]
+            - text: in India
+          - generic [ref=e346]:
+            - link "Privacy" [ref=e347] [cursor=pointer]:
+              - /url: /privacy
+            - link "Terms" [ref=e348] [cursor=pointer]:
+              - /url: /terms
+            - link "Sitemap" [ref=e349] [cursor=pointer]:
+              - /url: /site-map
+    - region "Notifications alt+T"
+    - button "Accessibility Controls" [ref=e350]:
+      - img [ref=e351]
+    - link "Chat with us on WhatsApp" [ref=e354] [cursor=pointer]:
+      - /url: https://wa.me/1234567890?text=Hello!%20I%20found%20your%20website%20and%20would%20like%20to%20get%20in%20touch.
+      - img [ref=e357]
+      - generic [ref=e359]: Chat with us on WhatsApp
+    - generic [ref=e362]:
+      - generic [ref=e363]:
+        - heading "We value your privacy" [level=3] [ref=e364]
+        - paragraph [ref=e365]:
+          - text: We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. By clicking "Accept All", you consent to our use of cookies. Read our
+          - link "Privacy Policy" [ref=e366] [cursor=pointer]:
+            - /url: /privacy
+          - text: .
+      - generic [ref=e367]:
+        - button "Decline" [ref=e368]:
+          - img [ref=e369]
+          - text: Decline
+        - button "Accept All" [ref=e372]
+  - button "Open Next.js Dev Tools" [ref=e378] [cursor=pointer]:
+    - img [ref=e379]
+  - alert [ref=e383]: Uttar Pradesh Police 2025 - Uttar Pradesh | Sarkari Result Hub | The Rojgar Palace
+```

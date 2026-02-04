@@ -1,0 +1,26 @@
+{
+    "nav": {
+        "jobs": "Latest Jobs",
+        "admitCard": "Admit Card",
+        "results": "Results",
+        "syllabus": "Syllabus",
+        "search": "Search jobs...",
+        "dashboard": "Dashboard"
+    },
+    "hero": {
+        "title": "Your Gateway to",
+        "subtitle": "Government Jobs",
+        "desc": "The most trusted platform for Sarkari Naukri notifications, admit cards, and results.",
+        "searchPlaceholder": "Search by job title, department, or qualification...",
+        "trending": "Trending Now"
+    },
+    "a11y": {
+        "controls": "Accessibility Controls",
+        "textSize": "Text Size",
+        "contrast": "High Contrast",
+        "reset": "Reset Settings",
+        "voiceSearch": "Voice Search",
+        "voiceSearchListening": "Listening...",
+        "close": "Close"
+    }
+}
