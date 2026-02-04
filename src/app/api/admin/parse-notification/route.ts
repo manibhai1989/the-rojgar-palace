@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+/* eslint-disable @typescript-eslint/no-var-requires */
+// @ts-ignore
 const pdf = require("pdf-parse");
 
 // Force Node.js runtime for proper file handling
