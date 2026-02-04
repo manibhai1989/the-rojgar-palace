@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 // @ts-ignore
-import PDFParser from "pdf2json";
+import pdf from "pdf-parse";
 
 // Force Node.js runtime for proper file handling
 export const runtime = 'nodejs';
@@ -23,28 +23,15 @@ const GROQ_MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || "");
 const geminiModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-// Helper to parse PDF using pdf2json (Pure JS, more robust than pdf-parse in some envs)
+// Helper to parse PDF using pdf-parse (More reliable for Vercel Serverless)
 async function extractTextFromPDF(buffer: Buffer): Promise<string> {
-    return new Promise((resolve, reject) => {
-        const pdfParser = new PDFParser(null);
-
-        pdfParser.on("pdfParser_dataError", (errData: any) => {
-            reject(new Error(errData.parserError));
-        });
-
-        pdfParser.on("pdfParser_dataReady", (pdfData: any) => {
-            try {
-                // Determine text extraction method based on format
-                // specific to pdf2json structure
-                const rawText = pdfParser.getRawTextContent();
-                resolve(rawText);
-            } catch (e) {
-                reject(e);
-            }
-        });
-
-        pdfParser.parseBuffer(buffer);
-    });
+    try {
+        const data = await pdf(buffer);
+        return data.text;
+    } catch (error: any) {
+        console.error("pdf-parse Error:", error);
+        throw new Error("Failed to parse PDF content: " + error.message);
+    }
 }
 
 export async function POST(req: NextRequest) {
