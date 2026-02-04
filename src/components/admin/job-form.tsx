@@ -96,9 +96,12 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
         }
     }, [initialData]);
 
+    const [lastError, setLastError] = useState<string | null>(null);
+
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             setFile(e.target.files[0]);
+            setLastError(null);
         }
     };
 
@@ -106,6 +109,7 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
         if (!file) return;
 
         setIsAnalyzing(true);
+        setLastError(null); // Clear previous errors
         const loadingToast = toast.loading("Processing...");
         setApiRequestCount(prev => prev + 1);
 
@@ -136,6 +140,7 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
                 console.error(`API Error (${response.status}):`, result);
                 // Prioritize user-friendly message from backend
                 const errorMessage = result.userMessage || result.message || result.error || `Analysis failed with status ${response.status}`;
+                setLastError(errorMessage); // Show in Red Box
                 throw new Error(errorMessage);
             }
 
@@ -176,7 +181,9 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
             toast.success("Uploaded & Analyzed Successfully!", { id: loadingToast });
         } catch (error: any) {
             console.error(error);
-            toast.error(error.message, { id: loadingToast, duration: 5000 });
+            const msg = error.message || "Failed to analyze notification";
+            setLastError(msg);
+            toast.error(msg, { id: loadingToast, duration: 5000 });
         } finally {
             setIsAnalyzing(false);
         }
@@ -349,6 +356,15 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
                                 <UploadCloud className="w-8 h-8 text-slate-500 group-hover:text-blue-400 mx-auto mb-2 transition-colors" />
                                 <p className="text-sm font-medium text-slate-300">{file ? file.name : "Drag & Drop PDF"}</p>
                             </div>
+
+                            {/* DEBUG ERROR BOX */}
+                            {lastError && (
+                                <div className="mb-4 p-3 bg-red-900/50 border border-red-500/50 text-red-200 rounded-lg text-sm">
+                                    <p className="font-bold flex items-center gap-2">⚠️ Analysis Error:</p>
+                                    <p className="mt-1 font-mono text-xs">{lastError}</p>
+                                </div>
+                            )}
+
                             <Button onClick={handleAnalyze} disabled={!file || isAnalyzing} className="w-full bg-blue-600">
                                 {isAnalyzing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Sparkles className="w-4 h-4 mr-2" />}
                                 Auto-Extract Data
