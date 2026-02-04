@@ -134,7 +134,9 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
 
             if (!response.ok) {
                 console.error(`API Error (${response.status}):`, result);
-                throw new Error(result.error || result.message || `Analysis failed with status ${response.status}`);
+                // Prioritize user-friendly message from backend
+                const errorMessage = result.userMessage || result.message || result.error || `Analysis failed with status ${response.status}`;
+                throw new Error(errorMessage);
             }
 
             // 2. Merge AI Result
