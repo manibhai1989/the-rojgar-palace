@@ -19,7 +19,7 @@ export const authOptions: NextAuthOptions = {
             async authorize(credentials) {
                 // Hardcoded admin checking
                 if (
-                    credentials?.email === (process.env.ADMIN_EMAIL || "admin@sarkariresult.com") &&
+                    credentials?.email === (process.env.ADMIN_EMAIL || "admin@therojgarpalace.in") &&
                     (credentials?.password === process.env.ADMIN_PASSWORD || credentials?.password === "admin123")
                 ) {
                     try {
