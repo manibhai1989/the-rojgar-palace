@@ -23,19 +23,26 @@ const GROQ_MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || "");
 const geminiModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-// Helper to parse PDF using pdf-parse (More reliable for Vercel Serverless)
-// Switched to pdf-parse to resolve Vercel buffer issues
+// @ts-ignore
+import PDFParser from "pdf2json";
+
+// Helper to parse PDF using pdf2json (Native Node.js, no DOM dependencies)
 async function extractTextFromPDF(buffer: Buffer): Promise<string> {
-    try {
-        /* eslint-disable @typescript-eslint/no-var-requires */
-        // @ts-ignore
-        const pdf = require("pdf-parse");
-        const data = await pdf(buffer);
-        return data.text;
-    } catch (error: any) {
-        console.error("pdf-parse Error:", error);
-        throw new Error("Failed to parse PDF content: " + error.message);
-    }
+    return new Promise((resolve, reject) => {
+        const parser = new PDFParser(null, true); // true = text only
+
+        parser.on("pdfParser_dataError", (errData: any) => {
+            reject(new Error(errData.parserError));
+        });
+
+        parser.on("pdfParser_dataReady", () => {
+            // getRawTextContent() returns the text content from the parsed PDF
+            const text = parser.getRawTextContent();
+            resolve(text);
+        });
+
+        parser.parseBuffer(buffer);
+    });
 }
 
 export async function POST(req: NextRequest) {
