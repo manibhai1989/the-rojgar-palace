@@ -24,6 +24,7 @@ const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || "");
 const geminiModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 // Helper to parse PDF using pdf-parse (More reliable for Vercel Serverless)
+// Switched to pdf-parse to resolve Vercel buffer issues
 async function extractTextFromPDF(buffer: Buffer): Promise<string> {
     try {
         const data = await pdf(buffer);
