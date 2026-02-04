@@ -88,7 +88,8 @@ export async function POST(req: NextRequest) {
                 {
                     error: "PDF Parsing Failed",
                     message: "Could not read text from this PDF. It may be corrupt or encrypted.",
-                    details: pdfError.message
+                    // CRITICAL: Send the actual error to the user so we know WHAT failed
+                    userMessage: `❌ Internal Parser Error: ${pdfError.message}`
                 },
                 { status: 400 }
             );
