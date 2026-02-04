@@ -70,7 +70,16 @@ export async function POST(req: NextRequest) {
             rawText = await extractTextFromPDF(buffer);
 
             if (!rawText || rawText.trim().length === 0) {
-                throw new Error("PDF text content is empty");
+                // Return a structured error that the frontend can display clearly
+                console.warn("PDF Text Extraction result was empty. Likely a scanned text.");
+                return NextResponse.json(
+                    {
+                        error: "Scanned PDF Detected",
+                        message: "This PDF appears to be a scanned image. Please upload a version with selectable text.",
+                        userMessage: "⚠️ This PDF has no selectable text (Scanned Image). Please use a text-based PDF or convert it using an OCR tool."
+                    },
+                    { status: 400 }
+                );
             }
             console.log("PDF Parsed successfully. Length:", rawText.length);
         } catch (pdfError: any) {
@@ -78,7 +87,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json(
                 {
                     error: "PDF Parsing Failed",
-                    message: "Could not read text from this PDF. It may be image-only.",
+                    message: "Could not read text from this PDF. It may be corrupt or encrypted.",
                     details: pdfError.message
                 },
                 { status: 400 }
