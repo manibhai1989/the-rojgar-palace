@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-// @ts-ignore
-import pdf from "pdf-parse";
+const pdf = require("pdf-parse");
 
 // Force Node.js runtime for proper file handling
 export const runtime = 'nodejs';
