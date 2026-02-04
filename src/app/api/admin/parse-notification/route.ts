@@ -3,6 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const pdf = require("pdf-parse");
 
 // Force Node.js runtime for proper file handling
+// Vercel Build Fix: Using require for pdf-parse to avoid ESM/Turbopack issues
 export const runtime = 'nodejs';
 
 // --- CONFIGURATION ---
