@@ -106,9 +106,7 @@ export function ResumeEditor() {
                                 )}
                             >
                                 <section.icon className="w-4 h-4" />
-                                <section.label>
-                                    {section.label}
-                                </section.label>
+                                <span>{section.label}</span>
                             </button>
                         ))}
                     </div>
