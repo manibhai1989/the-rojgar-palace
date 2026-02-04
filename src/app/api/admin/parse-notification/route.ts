@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-/* eslint-disable @typescript-eslint/no-var-requires */
-// @ts-ignore
-const pdf = require("pdf-parse");
-
+// Top-level imports
+// Removed pdf-parse from here to avoid "DOMMatrix is not defined" build error.
 // Force Node.js runtime for proper file handling
 // Vercel Build Fix: Using require for pdf-parse to avoid ESM/Turbopack issues
 export const runtime = 'nodejs';
@@ -29,6 +27,9 @@ const geminiModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 // Switched to pdf-parse to resolve Vercel buffer issues
 async function extractTextFromPDF(buffer: Buffer): Promise<string> {
     try {
+        /* eslint-disable @typescript-eslint/no-var-requires */
+        // @ts-ignore
+        const pdf = require("pdf-parse");
         const data = await pdf(buffer);
         return data.text;
     } catch (error: any) {
