@@ -26,7 +26,7 @@ const geminiModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 // Helper to parse PDF using pdf2json (Pure JS, more robust than pdf-parse in some envs)
 async function extractTextFromPDF(buffer: Buffer): Promise<string> {
     return new Promise((resolve, reject) => {
-        const pdfParser = new PDFParser(null, 1); // 1 = Text content only
+        const pdfParser = new PDFParser(null);
 
         pdfParser.on("pdfParser_dataError", (errData: any) => {
             reject(new Error(errData.parserError));
