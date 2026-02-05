@@ -99,9 +99,33 @@ const recentActivities = [
 
 import ClientOnly from "@/components/shared/ClientOnly";
 
+import { getDashboardStats, DashboardStats } from "@/actions/admin/get-stats";
+import { useEffect } from "react";
+
 export default function AdminDashboardPage() {
     const router = useRouter();
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [stats, setStats] = useState<DashboardStats>({
+        totalSeekers: 0,
+        activeJobs: 0,
+        applications: 0,
+        revenue: 0
+    });
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchStats() {
+            try {
+                const data = await getDashboardStats();
+                setStats(data);
+            } catch (error) {
+                console.error("Failed to fetch stats", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchStats();
+    }, []);
 
     const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
@@ -111,6 +135,49 @@ export default function AdminDashboardPage() {
             }
         }
     };
+
+    const realAdminStats = [
+        {
+            title: "Total Seekers",
+            value: loading ? "..." : stats.totalSeekers.toLocaleString(),
+            change: "+12%", // Placeholder trend
+            isPositive: true,
+            icon: Users,
+            color: "from-blue-500/20 to-blue-600/20",
+            textColor: "text-blue-500",
+            borderColor: "border-blue-500/30"
+        },
+        {
+            title: "Active Jobs",
+            value: loading ? "..." : stats.activeJobs.toLocaleString(),
+            change: "Real Time",
+            isPositive: true,
+            icon: Briefcase,
+            color: "from-orange-500/20 to-orange-600/20",
+            textColor: "text-orange-500",
+            borderColor: "border-orange-500/30"
+        },
+        {
+            title: "Applications",
+            value: loading ? "..." : stats.applications.toLocaleString(),
+            change: "Total",
+            isPositive: true,
+            icon: FileText,
+            color: "from-purple-500/20 to-purple-600/20",
+            textColor: "text-purple-500",
+            borderColor: "border-purple-500/30"
+        },
+        {
+            title: "Revenue",
+            value: "$0.00",
+            change: "N/A",
+            isPositive: true,
+            icon: Activity,
+            color: "from-emerald-500/20 to-emerald-600/20",
+            textColor: "text-emerald-500",
+            borderColor: "border-emerald-500/30"
+        },
+    ];
 
     return (
         <ClientOnly>
@@ -200,7 +267,7 @@ export default function AdminDashboardPage() {
 
                         {/* Stats Grid */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            {adminStats.map((stat, i) => (
+                            {realAdminStats.map((stat, i) => (
                                 <motion.div
                                     key={stat.title}
                                     initial={{ opacity: 0, y: 20 }}
