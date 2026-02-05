@@ -119,10 +119,12 @@ export async function POST(req: NextRequest) {
             Rules:
             1. Return ONLY valid JSON. No Markdown block.
             2. If a value is missing, use empty string "" or empty array [].
-            3. "vacancyObj": Array of { postName: string, gen: number, sc: number, st: number, obc: number, ews: number, total: number }. 
-               - If categories are not explicitly cited for a post, put the total in "total" and 0 in others.
-               - Consolidate "UR"/"Unreserved" to "gen".
-            4. "feesObj": { category: string, amount: string }[] (e.g. [{ category: "SC/ST", amount: "0" }, { category: "Gen", amount: "100" }]).
+            3. "vacancyObj": Array of objects representing the vacancy table. 
+               - CRITICAL: Extract the table EXACTLY as it appears. Do not force specific keys.
+               - Use the column headers found in the PDF as keys (e.g. { "Post Name": "...", "Zone": "...", "Grade Pay": "...", "Total": "..." }).
+               - If it's a simple list, use "postName" and "total".
+            4. "feesObj": Array of objects representing the fee table.
+               - Extract as-is (e.g. { "Category": "Gen/OBC", "Fee": "500", "Refund": "400" }).
             5. "customDates": { label: string, value: string }[] (e.g. { label: "Exam Date", value: "Notify Soon" }, { label: "Correction Date", value: "05 to 14 March 2026" }).
                - Capture ALL date-related info here if it doesn't fit standard fields.
             6. "educationalQualification": Summarize the core requirements clearly with bullet points.

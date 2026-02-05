@@ -47,8 +47,9 @@ export default async function JobDetailsPage({ params }: PageProps) {
     }
 
     // Parse JSON fields safely
-    const fees = (job.fees as any) as { category: string, amount: string }[] | undefined;
-    const vacancies = (job.vacanciesDetail as any) as { postName: string, category: string, count: any }[] | undefined;
+    // Parse JSON fields safely - DYNAMIC TYPES
+    const fees = (job.fees as any) as Record<string, string>[] | undefined;
+    const vacancies = (job.vacanciesDetail as any) as Record<string, string>[] | undefined;
     const links = (job.applicationProcess as any)?.links as { title: string, url: string }[] | undefined;
     const extraDetails = (job.applicationProcess as any)?.extraDetails as { title: string, content: string }[] | undefined;
     const customDates = (job.applicationProcess as any)?.customDates as { label: string, value: string }[] | undefined;
@@ -163,20 +164,32 @@ export default async function JobDetailsPage({ params }: PageProps) {
                     <div className="bg-[#AC1E23] dark:bg-red-900 text-white text-center font-bold py-2 text-xl">
                         Application Fee
                     </div>
-                    <ul className="p-6 space-y-3 font-medium">
-                        {fees?.map((fee, i) => (
-                            <li key={i} className="flex justify-between">
-                                <span>{fee.category} :</span>
-                                <span className="font-bold">₹ {fee.amount}/-</span>
-                            </li>
-                        ))}
-                        {!fees && (
-                            <li className="text-center italic text-slate-500">Check Notification for Details</li>
+                    <div className="p-6 font-medium">
+                        {fees && fees.length > 0 ? (
+                            <ul className="space-y-3">
+                                {fees.map((fee, i) => {
+                                    // Dynamic Key-Value Rendering
+                                    const keys = Object.keys(fee);
+                                    // Assume first key is label, second is value (common pattern)
+                                    // OR just render them all formatted
+                                    return (
+                                        <li key={i} className="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-2 last:border-0">
+                                            {keys.map((k, idx) => (
+                                                <span key={idx} className={idx === keys.length - 1 ? "font-bold" : ""}>
+                                                    {fee[k]}
+                                                </span>
+                                            ))}
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        ) : (
+                            <p className="text-center italic text-slate-500">Check Notification for Details</p>
                         )}
-                        <li className="mt-4 pt-2 border-t border-slate-300 dark:border-slate-700 text-xs leading-tight">
+                        <p className="mt-4 pt-2 border-t border-slate-300 dark:border-slate-700 text-xs leading-tight">
                             Pay the Exam Fee Through Debit Card, Credit Card, Net Banking Only.
-                        </li>
-                    </ul>
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -237,34 +250,41 @@ export default async function JobDetailsPage({ params }: PageProps) {
                     <table className="w-full text-center border-collapse">
                         <thead>
                             <tr className="bg-slate-100 dark:bg-slate-900 border-b border-slate-300 dark:border-slate-700">
-                                <th className="p-3 border-r border-slate-300 dark:border-slate-700 text-[#AC1E23] dark:text-red-400">Post Name</th>
-                                <th className="p-3 border-r border-slate-300 dark:border-slate-700 text-[#AC1E23] dark:text-red-400">Category</th>
-                                <th className="p-3 border-r border-slate-300 dark:border-slate-700 text-[#AC1E23] dark:text-red-400">Total</th>
-                                <th className="p-3 text-[#AC1E23] dark:text-red-400">Eligibility</th>
+                                {vacancies && vacancies.length > 0 ? (
+                                    Object.keys(vacancies[0]).map((header, i) => (
+                                        <th key={i} className="p-3 border-r border-slate-300 dark:border-slate-700 text-[#AC1E23] dark:text-red-400 uppercase text-sm">
+                                            {header}
+                                        </th>
+                                    ))
+                                ) : (
+                                    <th className="p-3">Details</th>
+                                )}
                             </tr>
                         </thead>
                         <tbody>
                             {vacancies?.map((vac, i) => (
-                                <tr key={i} className="border-b border-slate-300 dark:border-slate-700 font-medium">
-                                    <td className="p-3 border-r border-slate-300 dark:border-slate-700">{vac.postName}</td>
-                                    <td className="p-3 border-r border-slate-300 dark:border-slate-700">{vac.category}</td>
-                                    <td className="p-3 border-r border-slate-300 dark:border-slate-700">{vac.count}</td>
-                                    {/* Merged Eligibility Cell for cleaner look if all same, OR per row */}
-                                    {i === 0 && (
-                                        <td rowSpan={vacancies.length} className="p-3 align-middle text-sm text-justify max-w-xs">
-                                            {educationShort}
+                                <tr key={i} className="border-b border-slate-300 dark:border-slate-700 font-medium hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                                    {Object.values(vac).map((val, idx) => (
+                                        <td key={idx} className="p-3 border-r border-slate-300 dark:border-slate-700">
+                                            {String(val)}
                                         </td>
-                                    )}
+                                    ))}
                                 </tr>
                             ))}
                             {!vacancies && (
                                 <tr>
-                                    <td colSpan={4} className="p-4 text-slate-500 italic">No detailed vacancy info available.</td>
+                                    <td className="p-4 text-slate-500 italic">No detailed vacancy info available.</td>
                                 </tr>
                             )}
                         </tbody>
                     </table>
                 </div>
+                {educationShort && (
+                    <div className="p-3 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-300 dark:border-slate-700 text-center text-sm">
+                        <span className="font-bold text-slate-700 dark:text-slate-300">Default Eligibility: </span>
+                        {educationShort}
+                    </div>
+                )}
             </div>
 
             {/* 6. Application Process / How to Fill */}

@@ -12,6 +12,7 @@ import {
     Plus,
     Trash2
 } from "lucide-react";
+import { DynamicTable } from "@/components/admin/dynamic-table"; // Newly created component
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -257,7 +258,7 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
         }
     };
 
-    const handleChange = (field: keyof JobFormData, value: string) => {
+    const handleChange = (field: keyof JobFormData, value: any) => {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
@@ -458,44 +459,34 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
                 {/* CENTER & RIGHT: Tables */}
                 <div className="lg:col-span-2 space-y-8">
 
-                    {/* FEES & AGE */}
-                    <div className="grid md:grid-cols-2 gap-6">
-                        <div className="p-5 bg-slate-900/40 rounded-xl border border-white/5">
-                            <div className="flex justify-between items-center mb-4">
-                                <h3 className="font-semibold text-pink-400">Application Fees</h3>
-                                <Button size="sm" variant="ghost" onClick={addFeeRow} className="h-6 w-6 p-0"><Plus className="w-4 h-4" /></Button>
-                            </div>
-                            <div className="space-y-2">
-                                {formData.feesObj.map((fee, i) => (
-                                    <div key={i} className="flex gap-2">
-                                        <Input placeholder="Category" value={fee.category} onChange={(e) => updateFeeInfo(i, "category", e.target.value)} className="bg-black/20 border-white/10 flex-1" />
-                                        <Input placeholder="₹" value={fee.amount} onChange={(e) => updateFeeInfo(i, "amount", e.target.value)} className="bg-black/20 border-white/10 w-24" />
-                                        <Button size="icon" variant="ghost" onClick={() => removeFeeRow(i)} className="text-red-400 hover:text-red-300"><Trash2 className="w-4 h-4" /></Button>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+                    {/* DYNAMIC: Application Fees */}
+                    <DynamicTable
+                        title="Application Fees"
+                        description="Auto-detected columns (e.g. Category, Amount, Refund Amount)"
+                        data={formData.feesObj}
+                        onChange={(newData) => handleChange("feesObj", newData)}
+                    />
 
-                        <div className="p-5 bg-slate-900/40 rounded-xl border border-white/5">
-                            <h3 className="font-semibold text-blue-400 mb-4">Age Limit</h3>
-                            <div className="grid grid-cols-2 gap-4">
+                    {/* Age Limit (Static for now, but could be dynamic if needed) */}
+                    <div className="p-5 bg-slate-900/40 rounded-xl border border-white/5">
+                        <h3 className="font-semibold text-blue-400 mb-4">Age Limit</h3>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <Label>Min Age</Label>
+                                <Input value={formData.minAge} onChange={(e) => handleChange("minAge", e.target.value)} className="bg-black/20 border-white/10" />
+                            </div>
+                            <div className="space-y-1">
+                                <Label>Max Age</Label>
+                                <Input value={formData.maxAge} onChange={(e) => handleChange("maxAge", e.target.value)} className="bg-black/20 border-white/10" />
+                            </div>
+                            <div className="col-span-2 pt-2 text-xs text-slate-400 space-y-2">
                                 <div className="space-y-1">
-                                    <Label>Min Age</Label>
-                                    <Input value={formData.minAge} onChange={(e) => handleChange("minAge", e.target.value)} className="bg-black/20 border-white/10" />
+                                    <Label>Age as on</Label>
+                                    <Input value={formData.ageLimitDetails?.calculateDate} onChange={(e) => handleNestedChange("ageLimitDetails", "calculateDate", e.target.value)} className="bg-black/20 border-white/10" placeholder="01/01/2026" />
                                 </div>
                                 <div className="space-y-1">
-                                    <Label>Max Age</Label>
-                                    <Input value={formData.maxAge} onChange={(e) => handleChange("maxAge", e.target.value)} className="bg-black/20 border-white/10" />
-                                </div>
-                                <div className="col-span-2 pt-2 text-xs text-slate-400 space-y-2">
-                                    <div className="space-y-1">
-                                        <Label>Age as on</Label>
-                                        <Input value={formData.ageLimitDetails?.calculateDate} onChange={(e) => handleNestedChange("ageLimitDetails", "calculateDate", e.target.value)} className="bg-black/20 border-white/10" placeholder="01/01/2026" />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <Label>Relaxation Rules</Label>
-                                        <Input value={formData.ageLimitDetails?.relaxation} onChange={(e) => handleNestedChange("ageLimitDetails", "relaxation", e.target.value)} className="bg-black/20 border-white/10" placeholder="As per rules" />
-                                    </div>
+                                    <Label>Relaxation Rules</Label>
+                                    <Input value={formData.ageLimitDetails?.relaxation} onChange={(e) => handleNestedChange("ageLimitDetails", "relaxation", e.target.value)} className="bg-black/20 border-white/10" placeholder="As per rules" />
                                 </div>
                             </div>
                         </div>
@@ -531,41 +522,13 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
                         </div>
                     </div>
 
-                    {/* VACANCY DETAILS */}
-                    <div className="p-6 bg-slate-900/40 rounded-xl border border-white/5">
-                        <div className="flex justify-between items-center mb-4">
-                            <h3 className="font-semibold text-emerald-400 text-lg">Vacancy Details</h3>
-                            <Button size="sm" variant="outline" onClick={addVacancyRow} className="border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10">
-                                <Plus className="w-4 h-4 mr-2" /> Add Post
-                            </Button>
-                        </div>
-                        <div className="bg-black/20 rounded-lg border border-white/5 overflow-hidden">
-                            <div className="grid grid-cols-12 gap-2 p-3 bg-white/5 text-xs uppercase tracking-wider font-semibold text-slate-400">
-                                <div className="col-span-5">Post Name</div>
-                                <div className="col-span-4">Category</div>
-                                <div className="col-span-2">Total</div>
-                                <div className="col-span-1"></div>
-                            </div>
-                            <div className="divide-y divide-white/5">
-                                {formData.vacancyObj.map((vac, i) => (
-                                    <div key={i} className="grid grid-cols-12 gap-2 p-2 items-center">
-                                        <div className="col-span-5">
-                                            <Input value={vac.postName} onChange={(e) => updateVacancy(i, "postName", e.target.value)} className="bg-transparent border-transparent focus:bg-black/40" placeholder="Post Name" />
-                                        </div>
-                                        <div className="col-span-4">
-                                            <Input value={vac.category} onChange={(e) => updateVacancy(i, "category", e.target.value)} className="bg-transparent border-transparent focus:bg-black/40" placeholder="UR/OBC/etc" />
-                                        </div>
-                                        <div className="col-span-2">
-                                            <Input value={vac.count} onChange={(e) => updateVacancy(i, "count", e.target.value)} className="bg-transparent border-transparent focus:bg-black/40" placeholder="0" />
-                                        </div>
-                                        <div className="col-span-1 text-center">
-                                            <Button size="icon" variant="ghost" onClick={() => removeVacancyRow(i)} className="h-6 w-6 text-slate-600 hover:text-red-400"><Trash2 className="w-3 h-3" /></Button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
+                    {/* DYNAMIC: Vacancy Details */}
+                    <DynamicTable
+                        title="Vacancy Details"
+                        description="Auto-detected columns (Post Name, Category, Total, Pay Scale, Zone, etc.)"
+                        data={formData.vacancyObj}
+                        onChange={(newData) => handleChange("vacancyObj", newData)}
+                    />
 
                     {/* EXTRA DETAILS */}
                     <div className="p-6 bg-slate-900/40 rounded-xl border border-white/5">
