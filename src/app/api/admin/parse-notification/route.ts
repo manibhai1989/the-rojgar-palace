@@ -109,65 +109,48 @@ export async function POST(req: NextRequest) {
         // Gemini 1.5 Flash: 1M tokens (Huge)
         // Llama 3.3 (Groq): 128k context window, but we want response speed.
         // We'll curb it to 25k chars (~6k tokens) to be safe and fast.
-        const charLimit = AI_PROVIDER === "gemini" ? 50000 : 25000;
+        const charLimit = AI_PROVIDER === "gemini" ? 500000 : 25000;
         const truncatedText = rawText.slice(0, charLimit);
 
         // 2. Construct Prompt (Shared)
-        const sysPrompt = `You are a Data Extractor Pro. Extract fields from Job Notification into JSON.`;
+        const sysPrompt = `You are an expert Data Extraction AI. Extract structured data from Job Notification PDFs.`;
         const userPrompt = `
-            Extract the following fields into a clean JSON format compatible with my frontend structure.
+            Extract the following fields into a clean JSON format.
             Rules:
-            - Return ONLY valid JSON. No Markdown block (\`\`\`json).
-            - If a value is missing, use empty string "" or empty array [].
-            - Dates should be in DD/MM/YYYY format.
-            - "feesObj" should be an array of objects: { category: string, amount: string }.
-            - "vacancyObj" should be an array of objects representing the breakdown.
-                - STRATEGY: PDF text often scrambles tables. Data might appear as a list of Headers first, then a list of Values.
-                - LOOK FOR PATTERNS:
-                    - "UR 200 SC 50 ST 20" (Horizontal)
-                    - "UR\nSC\nST\n\n200\n50\n20" (Vertical grouping)
-                - KEYWORDS to map: "UR"/"Unreserved" -> UR, "SC"/"Scheduled Caste" -> SC, "ST" -> ST, "OBC" -> OBC, "EWS" -> EWS.
-                - EXTRACTION RULES:
-                    1. Identify the 'Category' keywords in the vacancy section.
-                    2. Look for the nearest numbers associated with them.
-                    3. If you see a sequence of numbers matching the sequence of categories, map them.
-                    4. Output specifically: [{ "postName": "...", "category": "UR", "count": ... }, ...].
-                - FALLBACK: Only use "Total" if you are completely unable to map specific categories.
-            - "customDates" should capture specific events like "Re-Open", "Phase 2", "Admit Card", etc. Format: { label: string, value: string }.
-            - "ageLimitDetails" should capture the reference date (as on...) and relaxation rules. Format: { calculateDate: string, relaxation: string }.
-            - "selectionStages" is an array of strings (e.g. ["Pre Exam", "Mains", "Interview"]).
-            - "importantLinks" should capture URLs. Format: { title: string, url: string }.
-                - STANDARDIZE TITLES (Critical):
-                    - If text says "Official Application Portal", "Registration Link", or "Apply Here" -> set title to "Apply Online".
-                    - If text says "Detailed Notification", "Advertisement", or "PDF" -> set title to "Download Notification".
-                    - If text says "Official Website", "Home Page", or "Main Site" -> set title to "Official Website".
-                - Extract numeric links if found.
-            - "extraDetails" should capture any other SIGNIFICANT tables or lists not covered above (e.g. "Physical Standards", "Exam Centers", "Pay Scale").
-                - Format: [{ title: string, content: string }].
-                - IMPORTANT: If the data represents a table (like Physical Efficiency Test or Exam Pattern), "content" field MUST be formatted as a valid MARKDOWN TABLE (using | pipes).
-                - Example: "| Category | Height | Chest |\n| --- | --- | --- |\n| Gen | 170cm | 80cm |"
-                - If not a table, use clear bullet points.
-            
-            Fields to extract:
-            - postName (e.g. "RRB Group D")
-            - shortInfo (A nice brief summary of 2-3 lines)
-            - applicationBegin (Date)
-            - lastDateApply (Date)
-            - lastDateFee (Date)
-            - examDate (Date or text like "Notify Soon")
-            - minAge (Number or String)
-            - maxAge (Number or String)
-            - totalVacancy (Number or String)
-            - feesObj (Array)
-            - vacancyObj (Array)
-            - customDates (Array)
-            - ageLimitDetails (Object)
-            - selectionStages (Array)
-            - educationalQualification (Detailed text summary of eligibility)
-            - importantLinks (Array)
-            - extraDetails (Array)
+            1. Return ONLY valid JSON. No Markdown block.
+            2. If a value is missing, use empty string "" or empty array [].
+            3. "vacancyObj" MUST be an array of specific breakdowns: { postName: string, gen: number, sc: number, st: number, obc: number, ews: number, total: number }. 
+               - If categories are not explicitly cited for a post, put the total in "total" and 0 in others.
+               - Consolidate "UR"/"Unreserved" to "gen".
+            4. "feesObj": { category: string, amount: string }[] (e.g. [{ category: "SC/ST", amount: "0" }, { category: "Gen", amount: "100" }]).
+            5. "customDates": { label: string, value: string }[] (e.g. { label: "Exam Date", value: "2024-10-10" }).
+            6. "educationalQualification": Summarize the core requirements clearly.
+            7. "selectionStages": ["Stage 1", "Stage 2"] simple strings.
+            8. "importantLinks": Extract URLs. Standardize titles: "Apply Online", "Download Notification", "Official Website".
+            9. "extraDetails": THIS IS CRITICAL. Capture ANY and ALL tables found in the document (like Physical Standards, Zone-wise vacancies, Exam Patterns, State-wise breakdown) as Markdown Tables inside 'content'. Do not skip any table.
+            10. "educationalQualification": Be detailed. proper bullet points.
+            11. "ageLimitDetails": { calculateDate: string, relaxation: string, details: string }. Extract the specific cut-off date.
 
-            Input Text:
+             Fields to extract:
+            - postName
+            - shortInfo
+            - applicationBegin
+            - lastDateApply
+            - lastDateFee
+            - examDate
+            - minAge
+            - maxAge
+            - totalVacancy
+            - feesObj
+            - vacancyObj
+            - customDates
+            - ageLimitDetails
+            - selectionStages
+            - educationalQualification
+            - importantLinks
+            - extraDetails
+
+             Input Text:
             ${truncatedText}
         `;
 

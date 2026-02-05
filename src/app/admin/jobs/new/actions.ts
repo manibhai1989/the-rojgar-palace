@@ -37,7 +37,7 @@ interface JobFormData {
     maxAge?: string | number;
     eligibilityObj?: any; // To be deprecated/merged
     feesObj?: { category: string, amount: string }[];
-    vacancyObj?: { postName: string, category: string, count: number }[];
+    vacancyObj?: { postName: string, category: string, count: string | number }[];
     importantLinks?: { title: string, url: string }[];
 
     // New Extended Fields
@@ -133,7 +133,7 @@ function sanitizeJobData(data: JobFormData): JobFormData {
         vacancyObj: data.vacancyObj?.map(vac => ({
             postName: sanitizeString(vac.postName || '', 200),
             category: sanitizeString(vac.category || '', 100),
-            count: vac.count // Number
+            count: vac.count // String or Number allowed
         })) || [],
 
         importantLinks: data.importantLinks?.map(link => ({
@@ -205,8 +205,27 @@ export async function createJob(data: any): Promise<SecureResponse<any>> {
 
         // Parse and validate numeric values
         const vacanciesCount = validateInteger(sanitizedData.totalVacancy, 0, 1000000) || 0;
-        const minAge = sanitizedData.minAge ? validateInteger(sanitizedData.minAge, 0, 100) : null;
-        const maxAge = sanitizedData.maxAge ? validateInteger(sanitizedData.maxAge, 0, 100) : null;
+
+        // Custom Robust Age Parser
+        // Custom Robust Age Parser (Dynamic: Returns Number if clean, else String)
+        const parseAge = (val: any) => {
+            if (!val) return null;
+            // 1. Try strict number
+            const num = parseInt(String(val), 10);
+            if (!isNaN(num) && String(num) === String(val)) return num;
+
+            // 2. Try extracting first number if it looks like "18 Years"
+            const match = String(val).match(/^\d+$/); // Only strict digits
+            if (match) return parseInt(match[0], 10);
+
+            // 3. Fallback: Return original string (Dynamic Storage)
+            return sanitizeString(String(val), 50);
+        };
+
+        const minAge = parseAge(sanitizedData.minAge);
+        const maxAge = parseAge(sanitizedData.maxAge);
+
+
 
         // Create job in database
         const job = await prisma.job.create({
@@ -306,8 +325,24 @@ export async function updateJob(id: string, data: any): Promise<SecureResponse<a
         };
 
         const vacanciesCount = validateInteger(sanitizedData.totalVacancy, 0, 1000000) || 0;
-        // const minAge = sanitizedData.minAge ? validateInteger(sanitizedData.minAge, 0, 100) : null;
-        // const maxAge = sanitizedData.maxAge ? validateInteger(sanitizedData.maxAge, 0, 100) : null;
+
+        // Custom Robust Age Parser
+        // Custom Robust Age Parser (Dynamic)
+        const parseAge = (val: any) => {
+            if (!val) return null;
+            const num = parseInt(String(val), 10);
+            if (!isNaN(num) && String(num) === String(val)) return num;
+
+            const match = String(val).match(/^\d+$/);
+            if (match) return parseInt(match[0], 10);
+
+            return sanitizeString(String(val), 50);
+        };
+
+        const minAge = parseAge(sanitizedData.minAge);
+        const maxAge = parseAge(sanitizedData.maxAge);
+
+
 
         // 4. Update Database
         await prisma.job.update({
@@ -327,9 +362,9 @@ export async function updateJob(id: string, data: any): Promise<SecureResponse<a
                 fees: sanitizedData.feesObj,
 
                 // We reconstruct eligibility and applicationProcess fully to ensure no data loss/merging issues
-                eligibility: (sanitizedData.educationalQualification || sanitizedData.ageLimitDetails) ? {
-                    // minAge: minAge, // If we want to update top-level age columns too, we should map them back
-                    // maxAge: maxAge,
+                eligibility: (sanitizedData.educationalQualification || sanitizedData.ageLimitDetails || minAge || maxAge) ? {
+                    minAge: minAge,
+                    maxAge: maxAge,
                     educationDetails: sanitizedData.educationalQualification,
                     ageCalculateDate: sanitizedData.ageLimitDetails?.calculateDate,
                     ageRelaxation: sanitizedData.ageLimitDetails?.relaxation,
