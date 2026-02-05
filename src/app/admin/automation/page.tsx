@@ -28,7 +28,7 @@ export default function AutomationPage() {
     // Source State
     const [sources, setSources] = useState<any[]>([]);
     const [isAddOpen, setIsAddOpen] = useState(false);
-    const [newSource, setNewSource] = useState({ name: "", url: "", selector: "a" });
+    const [newSource, setNewSource] = useState({ name: "", url: "", selector: "" });
 
     useEffect(() => {
         loadSources();
@@ -42,12 +42,18 @@ export default function AutomationPage() {
     const handleAddSource = async () => {
         if (!newSource.name || !newSource.url) return toast.error("Name and URL are required");
 
-        const res = await addSource(newSource);
+        // Default to 'a' (all links) if selector is empty
+        const sourceData = {
+            ...newSource,
+            selector: newSource.selector.trim() === "" ? "a" : newSource.selector
+        };
+
+        const res = await addSource(sourceData);
         if (res.success) {
             toast.success("Source Added!");
             setSources([res.data, ...sources]); // Optimistic update
             setIsAddOpen(false);
-            setNewSource({ name: "", url: "", selector: "a" });
+            setNewSource({ name: "", url: "", selector: "" }); // Reset to empty
         } else {
             toast.error(res.error);
         }
@@ -135,15 +141,16 @@ export default function AutomationPage() {
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <Label>Link Selector (CSS)</Label>
+                                            <Label>Link Selector (Optional)</Label>
                                             <Input
-                                                placeholder="e.g. .news-list a"
+                                                placeholder="Leave blank to scan entire page"
                                                 className="bg-black/20 border-white/10"
                                                 value={newSource.selector}
                                                 onChange={e => setNewSource({ ...newSource, selector: e.target.value })}
                                             />
                                             <p className="text-xs text-slate-500">
-                                                Right click the link on the site {">"} Inspect {">"} Copy Selector
+                                                By default, we scan the whole page for "Notification" keywords and PDFs.
+                                                <br />Only use this if you need to restrict the scan to a specific area.
                                             </p>
                                         </div>
                                     </div>
