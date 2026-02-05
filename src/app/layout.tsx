@@ -26,7 +26,7 @@ const notoDevanagari = Noto_Sans_Devanagari({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://therojgarpalace.in'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://thejobpalace.in'),
   title: {
     default: "The Rojgar Palace | No.1 Govt Job Portal",
     template: "%s | The Rojgar Palace"
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://therojgarpalace.in",
+    url: "https://thejobpalace.in",
     siteName: "The Rojgar Palace",
     title: "The Rojgar Palace | No.1 Govt Job Portal",
     description: "Your trusted destination for latest government jobs, results, admit cards, and exam updates in India.",

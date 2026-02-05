@@ -19,16 +19,16 @@ export const authOptions: NextAuthOptions = {
             async authorize(credentials) {
                 // Hardcoded admin checking
                 if (
-                    credentials?.email === (process.env.ADMIN_EMAIL || "admin@therojgarpalace.in") &&
+                    credentials?.email === (process.env.ADMIN_EMAIL || "admin@thejobpalace.in") &&
                     (credentials?.password === process.env.ADMIN_PASSWORD || credentials?.password === "admin123")
                 ) {
                     try {
                         // Sync with database to ensure user exists for profile features
                         const user = await prisma.user.upsert({
-                            where: { email: process.env.ADMIN_EMAIL || "admin@therojgarpalace.in" },
+                            where: { email: process.env.ADMIN_EMAIL || "admin@thejobpalace.in" },
                             update: {},
                             create: {
-                                email: process.env.ADMIN_EMAIL || "admin@therojgarpalace.in",
+                                email: process.env.ADMIN_EMAIL || "admin@thejobpalace.in",
                                 name: "Admin User",
                                 image: "",
                             },
@@ -46,7 +46,7 @@ export const authOptions: NextAuthOptions = {
                         return {
                             id: "1",
                             name: "Admin User",
-                            email: process.env.ADMIN_EMAIL || "admin@therojgarpalace.in",
+                            email: process.env.ADMIN_EMAIL || "admin@thejobpalace.in",
                         };
                     }
                 }
