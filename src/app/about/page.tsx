@@ -215,7 +215,7 @@ export default function AboutPage() {
                                 <div>
                                     <p className="text-sm text-slate-500 font-bold uppercase">Website</p>
                                     <Link href="/" className="text-slate-900 dark:text-white font-medium hover:text-purple-600">
-                                        www.therojgarpalace.com
+                                        www.thejobpalace.in
                                     </Link>
                                 </div>
                             </div>
