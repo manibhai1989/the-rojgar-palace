@@ -119,7 +119,7 @@ export function ResumePreview() {
 
             {/* Watermark */}
             <div className="absolute bottom-2 right-4 text-[10px] text-slate-400 font-sans opacity-50 select-none print:opacity-100">
-                Created with Rojgar Express
+                Created with The Job Palace
             </div>
 
         </div>

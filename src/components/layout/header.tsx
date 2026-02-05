@@ -39,7 +39,7 @@ export function Header() {
                         <div className="flex flex-col gap-0.5">
                             <span className="font-black text-xl tracking-tight leading-tight whitespace-nowrap">
                                 <span className="text-slate-800 dark:text-white">The</span>{" "}
-                                <span className="text-amber-600 dark:text-amber-400">Rojgar</span>{" "}
+                                <span className="text-amber-600 dark:text-amber-400">Job</span>{" "}
                                 <span className="text-orange-600 dark:text-orange-400 italic">Palace</span>
                             </span>
                             <span className="text-[9px] uppercase tracking-[0.15em] text-slate-500 dark:text-slate-300 font-bold whitespace-nowrap mt-0.5">

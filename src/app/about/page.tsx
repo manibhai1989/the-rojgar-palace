@@ -19,8 +19,8 @@ import {
 import Link from "next/link";
 
 export const metadata: Metadata = {
-    title: 'About Us | The Rojgar Palace',
-    description: 'Welcome to The Rojgar Palace — your trusted gateway to meaningful career opportunities in the education and technology sectors.',
+    title: 'About Us | The Job Palace',
+    description: 'Welcome to The Job Palace — your trusted gateway to meaningful career opportunities in the education and technology sectors.',
 };
 
 export default function AboutPage() {
@@ -29,14 +29,14 @@ export default function AboutPage() {
             {/* Hero Section */}
             <div className="text-center space-y-6 mb-16">
                 <Badge variant="outline" className="px-4 py-1 text-sm border-amber-500 text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 rounded-full">
-                    About The Rojgar Palace
+                    About The Job Palace
                 </Badge>
                 <h1 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
                     Your Trusted Gateway to <br />
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-600">Meaningful Career Opportunities</span>
                 </h1>
                 <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-4xl mx-auto leading-relaxed">
-                    Welcome to The Rojgar Palace. Founded with a vision to bridge the gap between talented professionals and reputable institutions, we are more than just a job portal. We are a platform built by educators, for educators, and tech enthusiasts who are passionate about shaping the future through knowledge, skill, and innovation.
+                    Welcome to The Job Palace. Founded with a vision to bridge the gap between talented professionals and reputable institutions, we are more than just a job portal. We are a platform built by educators, for educators, and tech enthusiasts who are passionate about shaping the future through knowledge, skill, and innovation.
                 </p>
             </div>
 
@@ -122,7 +122,7 @@ export default function AboutPage() {
 
             {/* Why Choose Us */}
             <div className="bg-slate-900 rounded-3xl p-8 md:p-12 text-white relative overflow-hidden mb-20">
-                <h2 className="text-3xl font-bold mb-8 text-center">Why Choose The Rojgar Palace?</h2>
+                <h2 className="text-3xl font-bold mb-8 text-center">Why Choose The Job Palace?</h2>
                 <div className="grid md:grid-cols-3 gap-8">
                     <div className="space-y-4 text-center md:text-left">
                         <div className="h-12 w-12 bg-white/10 rounded-full flex items-center justify-center mx-auto md:mx-0">
@@ -159,7 +159,7 @@ export default function AboutPage() {
             <div className="text-center mb-16 space-y-4">
                 <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Join Our Community</h2>
                 <p className="text-lg text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
-                    Whether you are a teacher, a computer instructor, a cyber security aspirant, or an institution looking for the right talent—The Rojgar Palace is here to help you build, grow, and succeed.
+                    Whether you are a teacher, a computer instructor, a cyber security aspirant, or an institution looking for the right talent—The Job Palace is here to help you build, grow, and succeed.
                 </p>
             </div>
 

@@ -29,32 +29,32 @@ const notoDevanagari = Noto_Sans_Devanagari({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://thejobpalace.in'),
   title: {
-    default: "The Rojgar Palace | No.1 Govt Job Portal",
-    template: "%s | The Rojgar Palace"
+    default: "The Job Palace | No.1 Govt Job Portal",
+    template: "%s | The Job Palace"
   },
-  description: "The Rojgar Palace - Your trusted destination for latest government jobs, results, admit cards, and exam updates in India. Get instant notifications for UPSC, SSC, Banking, Railways, and more.",
+  description: "The Job Palace - Your trusted destination for latest government jobs, results, admit cards, and exam updates in India. Get instant notifications for UPSC, SSC, Banking, Railways, and more.",
   keywords: ["Govt Jobs", "Sarkari Result", "Admit Card", "Latest Jobs", "UPSC", "SSC", "Banking Jobs", "Railway Jobs", "Sarkari Naukri"],
-  authors: [{ name: "The Rojgar Palace" }],
-  creator: "The Rojgar Palace",
+  authors: [{ name: "The Job Palace" }],
+  creator: "The Job Palace",
   openGraph: {
     type: "website",
     locale: "en_IN",
     url: "https://thejobpalace.in",
-    siteName: "The Rojgar Palace",
-    title: "The Rojgar Palace | No.1 Govt Job Portal",
+    siteName: "The Job Palace",
+    title: "The Job Palace | No.1 Govt Job Portal",
     description: "Your trusted destination for latest government jobs, results, admit cards, and exam updates in India.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "The Rojgar Palace",
+        alt: "The Job Palace",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "The Rojgar Palace | No.1 Govt Job Portal",
+    title: "The Job Palace | No.1 Govt Job Portal",
     description: "Latest Government Jobs, Results, and Admit Cards.",
     images: ["/og-image.png"],
     creator: "@the_rojgarpalace",

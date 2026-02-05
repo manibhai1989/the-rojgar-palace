@@ -3,8 +3,8 @@ import Link from "next/link";
 import { ArrowRight, FileText, Home, Briefcase, Key, GraduationCap, BookOpen, IdCard, Shield, HelpCircle } from "lucide-react";
 
 export const metadata: Metadata = {
-    title: "Sitemap | The Rojgar Palace",
-    description: "Navigate through all sections of The Rojgar Palace - Jobs, Results, Admit Cards, and more.",
+    title: "Sitemap | The Job Palace",
+    description: "Navigate through all sections of The Job Palace - Jobs, Results, Admit Cards, and more.",
 };
 
 const sitemapSections = [

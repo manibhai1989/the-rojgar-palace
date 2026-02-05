@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Privacy Policy | The Rojgar Palace',
-    description: 'Privacy Policy for The Rojgar Palace - Detailed information on data collection and usage.',
+    title: 'Privacy Policy | The Job Palace',
+    description: 'Privacy Policy for The Job Palace - Detailed information on data collection and usage.',
 };
 
 export default function PrivacyPolicyPage() {
@@ -14,7 +14,7 @@ export default function PrivacyPolicyPage() {
 
             <section className="space-y-6 mb-12">
                 <p className="text-lg leading-relaxed">
-                    At <span className="font-bold">The Rojgar Palace</span>, accessible from our website, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by The Rojgar Palace and how we use it.
+                    At <span className="font-bold">The Job Palace</span>, accessible from our website, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by The Job Palace and how we use it.
                 </p>
 
                 <div className="bg-slate-50 dark:bg-slate-900 border-l-4 border-[#008000] p-6 rounded-r-lg shadow-sm">
@@ -47,12 +47,12 @@ export default function PrivacyPolicyPage() {
 
                 <h2 className="text-2xl font-bold mt-8 mb-4 text-slate-900 dark:text-white">Log Files</h2>
                 <p className="leading-relaxed">
-                    The Rojgar Palace follows a standard procedure of using log files. These files log visitors when they visit websites. All hosting companies do this and a part of hosting services' analytics. The information collected by log files includes internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks.
+                    The Job Palace follows a standard procedure of using log files. These files log visitors when they visit websites. All hosting companies do this and a part of hosting services' analytics. The information collected by log files includes internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks.
                 </p>
 
                 <h2 className="text-2xl font-bold mt-8 mb-4 text-slate-900 dark:text-white">Third Party Privacy Policies</h2>
                 <p className="leading-relaxed">
-                    The Rojgar Palace's Privacy Policy does not apply to other advertisers or websites. Thus, we are advising you to consult the respective Privacy Policies of these third-party ad servers for more detailed information. It may include their practices and instructions about how to opt-out of certain options.
+                    The Job Palace's Privacy Policy does not apply to other advertisers or websites. Thus, we are advising you to consult the respective Privacy Policies of these third-party ad servers for more detailed information. It may include their practices and instructions about how to opt-out of certain options.
                 </p>
 
                 <div className="bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-800 rounded-lg p-6 mt-8">

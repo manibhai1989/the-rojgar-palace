@@ -24,7 +24,7 @@ export function Footer() {
                             <div className="flex flex-col">
                                 <span className="font-black text-xl tracking-tight">
                                     <span className="text-slate-900 dark:text-white">The</span>{" "}
-                                    <span className="text-amber-600 dark:text-amber-400">Rojgar</span>{" "}
+                                    <span className="text-amber-600 dark:text-amber-400">Job</span>{" "}
                                     <span className="text-orange-600 dark:text-orange-400 italic">Palace</span>
                                 </span>
                             </div>
@@ -117,7 +117,7 @@ export function Footer() {
                 {/* Bottom Bar */}
                 <div className="border-t border-slate-200 dark:border-white/10 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="text-slate-500 text-sm flex items-center gap-2">
-                        © {new Date().getFullYear()} The Rojgar Palace. Made with <Heart className="h-4 w-4 text-red-500 fill-red-500 animate-pulse" /> in India
+                        © {new Date().getFullYear()} The Job Palace. Made with <Heart className="h-4 w-4 text-red-500 fill-red-500 animate-pulse" /> in India
                     </p>
                     <div className="flex space-x-6">
                         <div className="flex space-x-6">

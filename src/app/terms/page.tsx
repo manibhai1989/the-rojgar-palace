@@ -2,8 +2,8 @@ import { Metadata } from 'next';
 import { AlertTriangle } from 'lucide-react';
 
 export const metadata: Metadata = {
-    title: 'Terms & Conditions | The Rojgar Palace',
-    description: 'Terms of Service for The Rojgar Palace. Please read our disclaimer regarding job data accuracy.',
+    title: 'Terms & Conditions | The Job Palace',
+    description: 'Terms of Service for The Job Palace. Please read our disclaimer regarding job data accuracy.',
 };
 
 export default function TermsPage() {
@@ -27,7 +27,7 @@ export default function TermsPage() {
                         </p>
 
                         <p className="text-base text-slate-700 dark:text-slate-300 italic mb-4">
-                            (We have acquired data from public sources with great care, but The Rojgar Palace assumes no liability for inaccuracies. Please verify details against the official notification.)
+                            (We have acquired data from public sources with great care, but The Job Palace assumes no liability for inaccuracies. Please verify details against the official notification.)
                         </p>
 
                         <div className="h-px w-full bg-red-200 dark:bg-red-800 my-4" />
@@ -47,22 +47,22 @@ export default function TermsPage() {
 
                 <h2 className="text-2xl font-bold mt-8 mb-4 text-slate-900 dark:text-white">2. Accuracy of Information</h2>
                 <p className="leading-relaxed">
-                    The materials appearing on The Rojgar Palace's website could include technical, typographical, or photographic errors. The Rojgar Palace does not warrant that any of the materials on its website are accurate, complete, or current. We may make changes to the materials contained on its website at any time without notice.
+                    The materials appearing on The Job Palace's website could include technical, typographical, or photographic errors. The Job Palace does not warrant that any of the materials on its website are accurate, complete, or current. We may make changes to the materials contained on its website at any time without notice.
                 </p>
 
                 <h2 className="text-2xl font-bold mt-8 mb-4 text-slate-900 dark:text-white">3. Third-Party Links</h2>
                 <p className="leading-relaxed">
-                    The Rojgar Palace has not reviewed all of the sites linked to its Internet web site (such as official government websites) and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement by The Rojgar Palace of the site. Use of any such linked web site is at the user's own risk.
+                    The Job Palace has not reviewed all of the sites linked to its Internet web site (such as official government websites) and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement by The Job Palace of the site. Use of any such linked web site is at the user's own risk.
                 </p>
 
                 <h2 className="text-2xl font-bold mt-8 mb-4 text-slate-900 dark:text-white">4. No Liability</h2>
                 <p className="leading-relaxed">
-                    In no event shall The Rojgar Palace or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on The Rojgar Palace's Internet site.
+                    In no event shall The Job Palace or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on The Job Palace's Internet site.
                 </p>
 
                 <h2 className="text-2xl font-bold mt-8 mb-4 text-slate-900 dark:text-white">5. Changes to Terms</h2>
                 <p className="leading-relaxed">
-                    The Rojgar Palace may revise these terms of use for its web site at any time without notice. By using this web site you are agreeing to be bound by the then current version of these Terms and Conditions of Use.
+                    The Job Palace may revise these terms of use for its web site at any time without notice. By using this web site you are agreeing to be bound by the then current version of these Terms and Conditions of Use.
                 </p>
             </section>
         </main>
