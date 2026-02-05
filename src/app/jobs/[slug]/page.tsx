@@ -14,7 +14,7 @@ import { formatText } from "@/lib/utils";
 import { MarkdownText } from "@/components/ui/markdown-text";
 
 interface PageProps {
-    params: { slug: string };
+    params: Promise<{ slug: string }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

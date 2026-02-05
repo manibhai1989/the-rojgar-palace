@@ -7,7 +7,7 @@ import { Search, Briefcase, FileText, IdCard, Key, BookOpen, GraduationCap } fro
 import { redirect } from "next/navigation";
 
 interface SearchPageProps {
-    searchParams: { q?: string };
+    searchParams: Promise<{ q?: string }>;
 }
 
 // Security: Input validation and sanitization
