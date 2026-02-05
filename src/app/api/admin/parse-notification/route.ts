@@ -21,7 +21,7 @@ const GROQ_MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
 
 // Initialize Gemini (Only if needed)
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || "");
-const geminiModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const geminiModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash-002" });
 
 // @ts-ignore
 import PDFParser from "pdf2json";
@@ -92,6 +92,7 @@ export async function POST(req: NextRequest) {
                 );
             }
             console.log("PDF Parsed successfully. Length:", rawText.length);
+            console.log("PDF RAW TEXT SNAPSHOT:", rawText.substring(0, 500));
         } catch (pdfError: any) {
             console.error("PDF Parsing Failed:", pdfError);
             return NextResponse.json(
@@ -115,51 +116,57 @@ export async function POST(req: NextRequest) {
         // 2. Construct Prompt (Shared)
         const sysPrompt = `You are an expert Data Extraction AI. Extract structured data from Job Notification PDFs.`;
         const userPrompt = `
-            Extract the following fields into a clean JSON format.
-            Rules:
-            1. Return ONLY valid JSON. No Markdown block.
-            2. If a value is missing, use empty string "" or empty array [].
-            3. "vacancyObj": Array of objects representing the vacancy table. 
-               - CRITICAL: Extract the table EXACTLY as it appears. Do not force specific keys.
-               - Use the column headers found in the PDF as keys (e.g. { "Post Name": "...", "Zone": "...", "Grade Pay": "...", "Total": "..." }).
-               - If it's a simple list, use "postName" and "total".
-            4. "feesObj": Array of objects representing the fee table.
-               - Extract as-is (e.g. { "Category": "Gen/OBC", "Fee": "500", "Refund": "400" }).
-            5. "customDates": { label: string, value: string }[] (e.g. { label: "Exam Date", value: "Notify Soon" }, { label: "Correction Date", value: "05 to 14 March 2026" }).
-               - Capture ALL date-related info here if it doesn't fit standard fields.
-            6. "educationalQualification": Summarize the core requirements clearly with bullet points.
-            7. "selectionStages": ["Stage 1 - CBT", "Stage 2 - PET"] simple strings.
-            8. "importantLinks": { title: string, url: string }[]. 
-               - Extract URLs. Standardize titles: "Apply Online", "Download Notification", "Official Website".
-               - If multiple links exist (e.g. English/Hindi notification), create separate entries.
-            9. "extraDetails": Array of { title: string, content: string }.
-               - CRITICAL: Extract "Physical Eligibility" / "PET Standards" as a Markdown Table in 'content'. Title: "Physical Eligibility".
-               - CRITICAL: Extract "Fee Refund Policy" if present. Title: "Fee Refund Details".
-               - Extract "Zone-wise Vacancy" summaries or "Exam Pattern" tables here.
-               - ANY tabular data useful to the user should go here as Markdown.
-            10. "ageLimitDetails": { calculateDate: string, relaxation: string, details: string }. 
-                - parsing "Age Limit As On <Date>" is priority.
+            You must extract job details from the input text below and return them in the following JSON format.
+            
+            STRICT JSON ONLY. NO MARKDOWN. NO EXPLANATIONS.
+            If a value is not found, use "" for strings and [] for arrays.
 
-             Fields to extract:
-            - postName (Main Post Name)
-            - shortInfo (Summary of the recruitment)
-            - applicationBegin
-            - lastDateApply
-            - lastDateFee
-            - examDate
-            - minAge
-            - maxAge
-            - totalVacancy (Number or String if "Various")
-            - feesObj
-            - vacancyObj
-            - customDates
-            - ageLimitDetails
-            - selectionStages
-            - educationalQualification
-            - importantLinks
-            - extraDetails
+            Required JSON Structure:
+            {
+                "postName": "Name of the post/job role",
+                "shortInfo": "Brief summary of the recruitment",
+                "applicationBegin": "YYYY-MM-DD",
+                "lastDateApply": "YYYY-MM-DD",
+                "lastDateFee": "YYYY-MM-DD",
+                "examDate": "Date or 'Notify Soon'",
+                "minAge": "Minimum Age (e.g. 18)",
+                "maxAge": "Maximum Age (e.g. 30)",
+                "totalVacancy": "Total count (e.g. 500)",
+                "feesObj": [
+                    { "category": "General/OBC", "amount": "500" },
+                    { "category": "SC/ST", "amount": "0" }
+                ],
+                "vacancyObj": [
+                    { "postName": "Sub-Post Name", "total": "10", "eligibility": "B.Tech" }
+                ],
+                "customDates": [
+                    { "label": "Correction Date", "value": "10-12 May 2026" }
+                ],
+                "ageLimitDetails": {
+                    "calculateDate": "01/01/2026",
+                    "relaxation": "SC/ST: 5 Years, OBC: 3 Years",
+                    "details": "Age between 18-30 years"
+                },
 
-             Input Text:
+            IMPORTANT - FIELD MAPPING RULES:
+            - "applicationBegin": Map from "Application Start Date", "Opening Date", "Online Form Starts".
+            - "lastDateApply": Map from "Closing Date", "Last Date", "Submission Deadline".
+            - "lastDateFee": Map from "Payment Deadline", "Fee Last Date".
+            - "examDate": Map from "Date of Exam", "Tentative Date". If unknown, use "Notify Soon".
+            - "minAge": Map from "Minimum Age", "Age from".
+            - "maxAge": Map from "Maximum Age", "Age up to".
+                "selectionStages": [ "Written Exam", "Interview" ],
+                "educationalQualification": "Markdown bullet points of requirements",
+                "importantLinks": [
+                    { "title": "Apply Online", "url": "https://..." },
+                    { "title": "Notification", "url": "https://..." }
+                ],
+                "extraDetails": [
+                   { "title": "Physical Eligibility", "content": "Markdown Table" }
+                ]
+            }
+
+            Input Text:
             ${truncatedText}
         `;
 
@@ -248,32 +255,74 @@ export async function POST(req: NextRequest) {
                 }, { status: 503 });
             }
         }
-        // --- GEMINI (Default) ---
+        // --- GEMINI (Default with Robust Fallback) ---
         else {
-            console.log("Using Gemini Provider...");
-            try {
-                const result = await geminiModel.generateContent(sysPrompt + "\n" + userPrompt);
-                responseText = result.response.text();
-            } catch (aiError: any) {
-                console.error("Gemini Error:", aiError);
-                if (aiError.message?.includes('429') || aiError.message?.includes('quota')) {
+            console.log("Using Gemini Provider with Fallback Strategy...");
+
+            // List of models to try in order of preference (Newest/Fastest -> Stable -> Powerful)
+            const modelsToTry = [
+                "gemini-2.0-flash",       // Newest, fast, high limits
+                "gemini-1.5-flash",       // Standard stable
+                "gemini-1.5-flash-latest", // Latest alias
+                "gemini-1.5-pro"          // Fallback powerhouse
+            ];
+
+            let lastError: any = null;
+            let success = false;
+
+            for (const modelName of modelsToTry) {
+                if (success) break;
+                try {
+                    console.log(`Attempting Gemini Model: ${modelName}...`);
+                    const currentModel = genAI.getGenerativeModel({ model: modelName });
+
+                    const result = await currentModel.generateContent(sysPrompt + "\n" + userPrompt);
+                    responseText = result.response.text();
+
+                    if (responseText) {
+                        console.log(`Success with ${modelName}`);
+                        success = true;
+                    }
+                } catch (err: any) {
+                    console.warn(`Failed with ${modelName}:`, err.message);
+                    lastError = err;
+
+                    // Specific check: If it's a quota issue (429), we MIGHT want to fail fast if we know all share quota?
+                    // Actually, sometimes different models have different quotas/tiers. We continue trying.
+                    if (err.message?.includes('429')) {
+                        console.warn("Quota exceeded for this model, trying next...");
+                    }
+                }
+            }
+
+            if (!success) {
+                console.error("All Gemini Models failed.");
+                if (lastError?.message?.includes('429') || lastError?.message?.includes('quota')) {
                     return NextResponse.json(
                         {
                             error: "API Quota Exceeded",
-                            message: "Gemini Free Tier limit reached.",
-                            userMessage: "⏰ Daily limit reached. Switch to Groq or Ollama."
+                            message: "All AI models are currently busy or at limit.",
+                            userMessage: "⏰ Daily AI limit reached. Please try using a local AI (Ollama) or wait for quota reset."
                         },
                         { status: 429 }
                     );
                 }
-                throw aiError;
+                throw lastError || new Error("All AI models failed to respond.");
             }
         }
 
         console.log("Raw AI Response:", responseText.substring(0, 100) + "...");
 
-        // 4. Parse JSON
-        const cleanJsonString = responseText.replace(/```json|```/g, "").trim();
+        // 4. Parse JSON (Robust)
+        let cleanJsonString = responseText.replace(/```json|```/g, "").trim();
+
+        // Find first '{' and last '}' to handle conversational prefixes/suffixes
+        const firstOpen = cleanJsonString.indexOf('{');
+        const lastClose = cleanJsonString.lastIndexOf('}');
+        if (firstOpen !== -1 && lastClose !== -1) {
+            cleanJsonString = cleanJsonString.substring(firstOpen, lastClose + 1);
+        }
+
         let extractedData = JSON.parse(cleanJsonString);
 
         // Helper to recursively decode strings
@@ -302,6 +351,54 @@ export async function POST(req: NextRequest) {
         };
 
         extractedData = decodeEntities(extractedData);
+
+        // 5. Debugging Logs (Added)
+        console.log("Extracted Raw Dates (Pre-Norm):", {
+            begin: extractedData.applicationBegin || "N/A",
+            end: extractedData.lastDateApply || "N/A",
+            fee: extractedData.lastDateFee || "N/A"
+        });
+
+        // Helper to normalize dates to YYYY-MM-DD for HTML input
+        const normalizeDate = (dateStr: string): string => {
+            if (!dateStr || typeof dateStr !== 'string' || dateStr.toLowerCase().includes("notify")) return dateStr;
+
+            // Cleanup: remove "st", "nd", "rd", "th" from text like "21st Jan"
+            let cleanStr = dateStr.replace(/(\d+)(st|nd|rd|th)/g, "$1").trim();
+
+            // Try parsing "DD Month YYYY" or "DD/MM/YYYY" or "DD-MM-YYYY"
+            try {
+                const date = new Date(cleanStr);
+                if (!isNaN(date.getTime())) {
+                    // Fix: Use local time instead of UTC to avoid "off-by-one" day shifts
+                    // (toISOString() converts to UTC, which shifts 00:00 local time to previous day for GMT+ timezones)
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    return `${year}-${month}-${day}`;
+                }
+
+                // Fallback for DD/MM/YYYY
+                const parts = cleanStr.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/);
+                if (parts) {
+                    return `${parts[3]}-${parts[2].padStart(2, '0')}-${parts[1].padStart(2, '0')}`;
+                }
+            } catch (e) {
+                console.error("Date Parse Error:", e);
+                return dateStr;
+            }
+            return dateStr;
+        };
+
+        if (extractedData.applicationBegin) extractedData.applicationBegin = normalizeDate(extractedData.applicationBegin);
+        if (extractedData.lastDateApply) extractedData.lastDateApply = normalizeDate(extractedData.lastDateApply);
+        if (extractedData.lastDateFee) extractedData.lastDateFee = normalizeDate(extractedData.lastDateFee);
+
+        console.log("Final Normalized Dates:", {
+            begin: extractedData.applicationBegin,
+            end: extractedData.lastDateApply
+        });
+
         console.log("JSON Parsed Successfully.");
 
         return NextResponse.json({ success: true, data: extractedData });
@@ -312,7 +409,7 @@ export async function POST(req: NextRequest) {
             {
                 error: "Processing Failed",
                 message: error.message || "Failed to process the document.",
-                userMessage: "❌ Something went wrong. Check console for details.",
+                userMessage: `❌ Error: ${error.message || "Unknown internal error"}`,
                 details: error.message
             },
             { status: 500 }
