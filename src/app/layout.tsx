@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Outfit, Noto_Sans_Devanagari } from "next/font/google"; // Changed Inter to Outfit
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/next";
 
 import "./globals.css";
 import { Header } from "@/components/layout/header";
