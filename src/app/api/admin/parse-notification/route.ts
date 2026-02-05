@@ -119,28 +119,35 @@ export async function POST(req: NextRequest) {
             Rules:
             1. Return ONLY valid JSON. No Markdown block.
             2. If a value is missing, use empty string "" or empty array [].
-            3. "vacancyObj" MUST be an array of specific breakdowns: { postName: string, gen: number, sc: number, st: number, obc: number, ews: number, total: number }. 
+            3. "vacancyObj": Array of { postName: string, gen: number, sc: number, st: number, obc: number, ews: number, total: number }. 
                - If categories are not explicitly cited for a post, put the total in "total" and 0 in others.
                - Consolidate "UR"/"Unreserved" to "gen".
             4. "feesObj": { category: string, amount: string }[] (e.g. [{ category: "SC/ST", amount: "0" }, { category: "Gen", amount: "100" }]).
-            5. "customDates": { label: string, value: string }[] (e.g. { label: "Exam Date", value: "2024-10-10" }).
-            6. "educationalQualification": Summarize the core requirements clearly.
-            7. "selectionStages": ["Stage 1", "Stage 2"] simple strings.
-            8. "importantLinks": Extract URLs. Standardize titles: "Apply Online", "Download Notification", "Official Website".
-            9. "extraDetails": THIS IS CRITICAL. Capture ANY and ALL tables found in the document (like Physical Standards, Zone-wise vacancies, Exam Patterns, State-wise breakdown) as Markdown Tables inside 'content'. Do not skip any table.
-            10. "educationalQualification": Be detailed. proper bullet points.
-            11. "ageLimitDetails": { calculateDate: string, relaxation: string, details: string }. Extract the specific cut-off date.
+            5. "customDates": { label: string, value: string }[] (e.g. { label: "Exam Date", value: "Notify Soon" }, { label: "Correction Date", value: "05 to 14 March 2026" }).
+               - Capture ALL date-related info here if it doesn't fit standard fields.
+            6. "educationalQualification": Summarize the core requirements clearly with bullet points.
+            7. "selectionStages": ["Stage 1 - CBT", "Stage 2 - PET"] simple strings.
+            8. "importantLinks": { title: string, url: string }[]. 
+               - Extract URLs. Standardize titles: "Apply Online", "Download Notification", "Official Website".
+               - If multiple links exist (e.g. English/Hindi notification), create separate entries.
+            9. "extraDetails": Array of { title: string, content: string }.
+               - CRITICAL: Extract "Physical Eligibility" / "PET Standards" as a Markdown Table in 'content'. Title: "Physical Eligibility".
+               - CRITICAL: Extract "Fee Refund Policy" if present. Title: "Fee Refund Details".
+               - Extract "Zone-wise Vacancy" summaries or "Exam Pattern" tables here.
+               - ANY tabular data useful to the user should go here as Markdown.
+            10. "ageLimitDetails": { calculateDate: string, relaxation: string, details: string }. 
+                - parsing "Age Limit As On <Date>" is priority.
 
              Fields to extract:
-            - postName
-            - shortInfo
+            - postName (Main Post Name)
+            - shortInfo (Summary of the recruitment)
             - applicationBegin
             - lastDateApply
             - lastDateFee
             - examDate
             - minAge
             - maxAge
-            - totalVacancy
+            - totalVacancy (Number or String if "Various")
             - feesObj
             - vacancyObj
             - customDates
