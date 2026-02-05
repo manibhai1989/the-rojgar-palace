@@ -512,7 +512,7 @@ export default function AutomationArchitectPage() {
                                 <YAxis tickFormatter={(val) => `${val / 60}h`} />
                                 <Tooltip
                                     cursor={{ fill: 'transparent' }}
-                                    formatter={(value: number) => [`${(value / 60).toFixed(1)} hours`, 'Time Spent']}
+                                    formatter={(value: any) => [`${(Number(value || 0) / 60).toFixed(1)} hours`, 'Time Spent'] as [string, string]}
                                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}
                                 />
                                 <Legend />
