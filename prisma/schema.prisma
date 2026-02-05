@@ -200,3 +200,15 @@ model Admission {
 
 
 
+
+model Source {
+  id        String   @id @default(cuid())
+  name      String
+  url       String   @unique
+  selector  String
+  keywords  String[] // Stored as array in Postgres
+  logo      String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

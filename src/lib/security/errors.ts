@@ -35,6 +35,7 @@ export enum ErrorCode {
     // Generic
     INTERNAL_ERROR = 'INTERNAL_ERROR',
     OPERATION_FAILED = 'OPERATION_FAILED',
+    CONFLICT = 'CONFLICT',
 }
 
 // ============================================================================
@@ -69,6 +70,7 @@ const USER_ERROR_MESSAGES: Record<ErrorCode, string> = {
     // Generic
     [ErrorCode.INTERNAL_ERROR]: 'An unexpected error occurred. Please try again later.',
     [ErrorCode.OPERATION_FAILED]: 'The operation failed. Please try again.',
+    [ErrorCode.CONFLICT]: 'The requested resource already exists.',
 };
 
 // ============================================================================

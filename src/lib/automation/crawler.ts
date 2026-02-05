@@ -1,6 +1,15 @@
 
 import * as cheerio from 'cheerio';
-import { SOURCES, SourceConfig } from './registry';
+import prisma from '@/lib/prisma'; // Import Database Access
+
+// Simplified interface relative to DB model
+interface SourceConfig {
+    id: string;
+    url: string;
+    selector: string;
+    keywords: string[];
+    name: string;
+}
 
 export interface ScrapedJob {
     sourceId: string;
@@ -16,13 +25,45 @@ export interface ScrapedJob {
  */
 export class CrawlerEngine {
 
-    // Fetch a single source
+    // Scan ALL sources from Database
+    static async scanAll(): Promise<ScrapedJob[]> {
+        const allJobs: ScrapedJob[] = [];
+
+        try {
+            // Fetch active sources from DB
+            const sources = await prisma.source.findMany({
+                where: { isActive: true }
+            });
+
+            console.log(`[Crawler] Found ${sources.length} active sources in DB.`);
+
+            // Sequential scanning
+            for (const source of sources) {
+                // Map DB model to SourceConfig
+                const config: SourceConfig = {
+                    id: source.id,
+                    name: source.name,
+                    url: source.url,
+                    selector: source.selector,
+                    keywords: source.keywords as string[]
+                };
+
+                const jobs = await this.scanSource(config);
+                allJobs.push(...jobs);
+            }
+        } catch (error) {
+            console.error("[Crawler] Failed to load sources from DB:", error);
+        }
+
+        return allJobs;
+    }
+
+    // Single source scan (Shared Logic)
     static async scanSource(source: SourceConfig): Promise<ScrapedJob[]> {
         console.log(`[Crawler] Scanning ${source.name} (${source.url})...`);
         const foundJobs: ScrapedJob[] = [];
 
         try {
-            // 1. Fetch HTML
             const response = await fetch(source.url, {
                 headers: {
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
@@ -52,8 +93,12 @@ export class CrawlerEngine {
                 // Normalize URL
                 let absoluteUrl = href;
                 if (!href.startsWith('http')) {
-                    const baseUrl = new URL(source.url).origin;
-                    absoluteUrl = href.startsWith('/') ? `${baseUrl}${href}` : `${baseUrl}/${href}`;
+                    try {
+                        const baseUrl = new URL(source.url).origin;
+                        absoluteUrl = href.startsWith('/') ? `${baseUrl}${href}` : `${baseUrl}/${href}`;
+                    } catch (e) {
+                        // invalid base url
+                    }
                 }
 
                 // Filter by Keywords & Extension (loose check for now)
@@ -78,16 +123,5 @@ export class CrawlerEngine {
             console.error(`[Crawler] Error scanning ${source.name}:`, error);
             return [];
         }
-    }
-
-    // Scan ALL sources
-    static async scanAll(): Promise<ScrapedJob[]> {
-        const allJobs: ScrapedJob[] = [];
-        // Sequential scanning to be polite to servers
-        for (const source of SOURCES) {
-            const jobs = await this.scanSource(source);
-            allJobs.push(...jobs);
-        }
-        return allJobs;
     }
 }
