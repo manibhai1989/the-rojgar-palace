@@ -90,12 +90,7 @@ const adminStats = [
     },
 ];
 
-const recentActivities = [
-    { id: 1, action: "New Job Posted", target: "UPSC CSE 2024", width: "100%", status: "success", time: "2m ago" },
-    { id: 2, action: "Server Alert", target: "High CPU Usage", width: "80%", status: "warning", time: "15m ago" },
-    { id: 3, action: "User Report", target: "Login Issue", width: "40%", status: "error", time: "1h ago" },
-    { id: 4, action: "Database Backup", target: "Daily Snapshot", width: "100%", status: "success", time: "3h ago" },
-];
+
 
 import ClientOnly from "@/components/shared/ClientOnly";
 
@@ -109,7 +104,9 @@ export default function AdminDashboardPage() {
         totalSeekers: 0,
         activeJobs: 0,
         applications: 0,
-        revenue: 0
+        revenue: 0,
+        recentActivities: [],
+        systemHealth: false
     });
     const [loading, setLoading] = useState(true);
 
@@ -357,32 +354,41 @@ export default function AdminDashboardPage() {
                                         </Button>
                                     </CardHeader>
                                     <CardContent className="space-y-6">
-                                        {recentActivities.map((item) => (
-                                            <div key={item.id} className="group">
-                                                <div className="flex justify-between text-sm mb-1">
-                                                    <span className="font-medium text-slate-200">{item.action}</span>
-                                                    <span className="text-xs text-slate-500">{item.time}</span>
+                                        {loading ? (
+                                            <div className="text-center py-8 text-slate-500">Loading activities...</div>
+                                        ) : stats.recentActivities.length === 0 ? (
+                                            <div className="text-center py-8 text-slate-500">No recent activity</div>
+                                        ) : (
+                                            stats.recentActivities.map((item) => (
+                                                <div key={item.id} className="group">
+                                                    <div className="flex justify-between text-sm mb-1">
+                                                        <span className="font-medium text-slate-200">{item.action}</span>
+                                                        <span className="text-xs text-slate-500">{new Date(item.time).toLocaleTimeString()}</span>
+                                                    </div>
+                                                    <div className="flex justify-between text-xs text-slate-400 mb-2">
+                                                        <span>{item.target}</span>
+                                                    </div>
+                                                    <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                                                        <div
+                                                            className="h-full rounded-full bg-emerald-500"
+                                                            style={{ width: "100%" }}
+                                                        />
+                                                    </div>
                                                 </div>
-                                                <div className="flex justify-between text-xs text-slate-400 mb-2">
-                                                    <span>{item.target}</span>
-                                                </div>
-                                                <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
-                                                    <div
-                                                        className={cn(
-                                                            "h-full rounded-full",
-                                                            item.status === "success" ? "bg-emerald-500" :
-                                                                item.status === "warning" ? "bg-amber-500" : "bg-red-500"
-                                                        )}
-                                                        style={{ width: item.width }}
-                                                    />
-                                                </div>
-                                            </div>
-                                        ))}
+                                            ))
+                                        )}
 
                                         <div className="pt-4 mt-6 border-t border-white/5">
-                                            <div className="p-4 rounded-xl bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-blue-500/20">
+                                            <div className={cn(
+                                                "p-4 rounded-xl border",
+                                                stats.systemHealth || loading
+                                                    ? "bg-gradient-to-r from-blue-900/20 to-purple-900/20 border-blue-500/20"
+                                                    : "bg-gradient-to-r from-red-900/20 to-orange-900/20 border-red-500/20"
+                                            )}>
                                                 <h4 className="text-sm font-bold text-white mb-1">System Health</h4>
-                                                <p className="text-xs text-slate-400 mb-3">All systems operational. No major incidents reported.</p>
+                                                <p className="text-xs text-slate-400 mb-3">
+                                                    {loading ? "Checking system status..." : stats.systemHealth ? "All systems operational. Database connected." : "System Warning: Database issue detected."}
+                                                </p>
                                                 <Button size="sm" variant="outline" className="w-full border-blue-500/30 text-blue-400 hover:bg-blue-500/10 hover:text-blue-300">
                                                     View System Logs
                                                 </Button>
