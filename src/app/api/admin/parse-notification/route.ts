@@ -226,16 +226,53 @@ export async function POST(req: NextRequest) {
         // --- OLLAMA (Local) ---
         else if (AI_PROVIDER === "ollama") {
             console.log("Using Ollama Provider...");
+
+            // Llama 3 Specific Optimization:
+            // 1. Strict "JSON ONLY" directive repeated at start and end.
+            // 2. Simplified prompt structure to reduce confusion.
+            // 3. Explicit Temperature 0 for determinism.
+            const ollamaUserPrompt = `
+                TASK: Extract job details from the provided text into the specified JSON format.
+                
+                DATA SOURCE:
+                ${truncatedText}
+                
+                OUTPUT FORMAT (STRICT JSON):
+                {
+                    "postName": "string",
+                    "shortInfo": "string",
+                    "applicationBegin": "YYYY-MM-DD",
+                    "lastDateApply": "YYYY-MM-DD",
+                    "lastDateFee": "YYYY-MM-DD",
+                    "examDate": "string",
+                    "minAge": "number or string",
+                    "maxAge": "number or string",
+                    "totalVacancy": "string",
+                    "feesObj": [{ "category": "string", "amount": "string" }],
+                    "vacancyObj": [{ "postName": "string", "category": "string", "count": "string" }],
+                    "importantLinks": [{ "title": "string", "url": "string" }]
+                }
+
+                RULES:
+                1. Return ONLY the JSON object. No markdown, no intro, no outro.
+                2. If a value is unknown, use null or empty string.
+                3. Normalize dates to YYYY-MM-DD where possible.
+            `;
+
             try {
                 const ollamaResponse = await fetch(`${OLLAMA_BASE_URL}/api/generate`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         model: OLLAMA_MODEL,
-                        prompt: userPrompt, // Ollama generic endpoint uses simple prompt usually
-                        system: sysPrompt,
+                        prompt: ollamaUserPrompt,
+                        system: sysPrompt + " You are a strictly a JSON-outputting engine. Do not speak.",
                         stream: false,
-                        format: "json"
+                        format: "json",
+                        options: {
+                            temperature: 0, // Critical for extraction
+                            num_ctx: 8192   // Increase context window (default is 2048)
+                        }
                     })
                 });
 

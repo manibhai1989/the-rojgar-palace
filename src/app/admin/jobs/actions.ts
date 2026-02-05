@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_noStore as noStore } from "next/cache";
 import { validateCuid } from "@/lib/security/validation";
 import {
     createErrorResponse,
@@ -17,6 +17,7 @@ import { logSecurityEvent } from "@/lib/security/auth";
  * Security: Should add authentication check in production
  */
 export async function getJobs(): Promise<SecureResponse<any[]>> {
+    noStore(); // Opt out of static caching for this data fetch
     try {
         // TODO: Add authentication check
         // await requireAdmin();
