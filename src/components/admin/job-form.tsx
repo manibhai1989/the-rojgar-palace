@@ -352,24 +352,24 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
         <div className={`space-y-6 ${viewMode === "split" ? "h-[calc(100vh-100px)] overflow-hidden flex flex-col" : ""}`}>
 
             {/* HEADER: Mode Switcher & Actions */}
-            <div className="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-slate-200 shrink-0">
+            <div className="flex justify-between items-center bg-slate-900/40 p-4 rounded-xl shadow-sm border border-white/5 shrink-0">
                 <div className="flex items-center gap-4">
-                    <h2 className="text-xl font-bold text-slate-800">
+                    <h2 className="text-xl font-bold text-emerald-400">
                         {isEditMode ? "Edit Job" : "Create New Job"}
                     </h2>
 
                     {/* View Mode Toggle */}
-                    <div className="flex bg-slate-100 rounded-lg p-1">
+                    <div className="flex bg-black/20 rounded-lg p-1 border border-white/5">
                         <button
                             onClick={() => setViewMode("standard")}
-                            className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === "standard" ? "bg-white shadow text-blue-600" : "text-slate-500 hover:text-slate-700"}`}
+                            className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === "standard" ? "bg-emerald-500/20 text-emerald-400 shadow-sm border border-emerald-500/30" : "text-slate-400 hover:text-slate-200"}`}
                         >
                             Standard View
                         </button>
                         <button
                             onClick={() => setViewMode("split")}
                             disabled={!file}
-                            className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === "split" ? "bg-white shadow text-blue-600" : "text-slate-500 hover:text-slate-700"} ${!file ? "opacity-50 cursor-not-allowed" : ""}`}
+                            className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === "split" ? "bg-emerald-500/20 text-emerald-400 shadow-sm border border-emerald-500/30" : "text-slate-400 hover:text-slate-200"} ${!file ? "opacity-50 cursor-not-allowed" : ""}`}
                         >
                             Workbench (Split)
                         </button>
@@ -433,13 +433,13 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
                     <div className="space-y-6">
 
                         {/* AI ANALYSIS SECTION */}
-                        <div className={`p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-xl transition-all ${isAnalyzing ? "opacity-70 pointer-events-none" : ""}`}>
+                        <div className={`p-6 bg-slate-900/40 border border-white/5 rounded-xl transition-all ${isAnalyzing ? "opacity-70 pointer-events-none" : ""}`}>
                             <div className="flex flex-col md:flex-row gap-4 items-center">
                                 <div className="flex-1 w-full">
-                                    <Label htmlFor="notification-file" className="text-blue-900 font-semibold mb-2 block">
+                                    <Label htmlFor="notification-file" className="text-blue-400 font-semibold mb-2 block">
                                         Upload Official Notification (PDF)
                                     </Label>
-                                    <p className="text-xs text-slate-500 mb-2">
+                                    <p className="text-xs text-slate-400 mb-2">
                                         Analysis works best with original PDFs. Scanned copies may have lower accuracy.
                                     </p>
                                 </div>
