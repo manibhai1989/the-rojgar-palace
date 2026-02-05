@@ -32,9 +32,9 @@ export function ApplicationIframe({ officialUrl }: ApplicationIframeProps) {
                     </Button>
                 </div>
             </CardHeader>
-            <CardContent className="p-0 flex flex-col md:flex-row h-[700px]">
+            <CardContent className="p-0 flex flex-col md:flex-row h-auto md:h-[400px]">
                 {/* Helper Sidebar */}
-                <div className="w-full md:w-64 bg-muted/20 border-r p-4 space-y-6 overflow-y-auto">
+                <div className="w-full md:w-64 bg-muted/20 border-r p-4 space-y-6 overflow-y-auto hidden md:block">
                     <div className="space-y-2">
                         <h4 className="text-xs font-bold uppercase text-muted-foreground flex items-center">
                             <Info className="mr-1 h-3 w-3" /> Quick Help
@@ -51,35 +51,32 @@ export function ApplicationIframe({ officialUrl }: ApplicationIframeProps) {
                             </li>
                         </ul>
                     </div>
-                    <div className="bg-blue-50 p-3 rounded-lg border border-blue-100 text-[10px] text-blue-800">
-                        <p className="font-bold">Pro Tip:</p>
-                        Keep your Graduation Marksheets and Category certificate ready before starting.
-                    </div>
                 </div>
 
-                {/* Iframe Viewport */}
-                <div className="flex-1 relative bg-white">
-                    {iframeBlock ? (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center bg-muted/5">
-                            <Sidebar className="h-12 w-12 text-muted-foreground mb-4" />
-                            <h3 className="text-lg font-bold">Portal blocked by provider</h3>
-                            <p className="text-muted-foreground text-sm max-w-sm mt-2">
-                                For security reasons, the official portal does not allow being viewed inside another website. Please use the button below to apply in a professional window.
-                            </p>
-                            <Button className="mt-6 bg-govt-saffron hover:bg-orange-600" asChild>
-                                <a href={officialUrl} target="_blank" rel="noopener noreferrer">
-                                    Apply on Official Website
-                                </a>
-                            </Button>
-                        </div>
-                    ) : (
-                        <iframe
-                            src={officialUrl}
-                            className="w-full h-full border-none"
-                            title="Official Portal"
-                            onError={() => setIframeBlock(true)}
-                        />
-                    )}
+                {/* Secure Redirect Viewport */}
+                <div className="flex-1 relative bg-white flex flex-col items-center justify-center p-8 text-center space-y-6">
+                    <div className="h-20 w-20 bg-blue-50 rounded-full flex items-center justify-center animate-pulse">
+                        <Lock className="h-10 w-10 text-blue-600" />
+                    </div>
+
+                    <div className="max-w-md space-y-2">
+                        <h3 className="text-2xl font-bold text-slate-900">Proceed to Official Portal</h3>
+                        <p className="text-slate-500">
+                            You are about to utilize the external secure application portal. Please ensure you have your documents ready.
+                        </p>
+                    </div>
+
+                    <div className="flex flex-col gap-3 w-full max-w-sm">
+                        <Button className="w-full h-12 text-base bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-600/20" asChild>
+                            <a href={officialUrl} target="_blank" rel="noopener noreferrer">
+                                <ExternalLink className="mr-2 h-5 w-5" />
+                                Launch Application Portal
+                            </a>
+                        </Button>
+                        <p className="text-[10px] text-muted-foreground text-center">
+                            Opens in a new secure window
+                        </p>
+                    </div>
                 </div>
             </CardContent>
         </Card>
