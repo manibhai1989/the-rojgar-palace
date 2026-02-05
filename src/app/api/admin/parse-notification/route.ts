@@ -189,8 +189,8 @@ export async function POST(req: NextRequest) {
 
                 if (!groqResp.ok) {
                     const errText = await groqResp.text();
-                    console.error("GROQ API ERROR TEXT:", errText); // Log actual error
-                    throw new Error(`Groq API Error: ${groqResp.status} - ${errText}`);
+                    console.error("GROQ API ERROR:", errText);
+                    throw new Error(`Groq Error ${groqResp.status}: ${errText}`);
                 }
 
                 const groqJson = await groqResp.json();
@@ -198,12 +198,22 @@ export async function POST(req: NextRequest) {
                 console.log("Groq response received.");
 
             } catch (err: any) {
-                console.error("Groq Failed:", err);
-                return NextResponse.json({
-                    error: "Groq Processing Failed",
-                    message: "Failed to process with Groq API.",
-                    details: err.message
-                }, { status: 500 });
+                console.error("Groq Failed, attempting Fallback to Gemini...", err);
+
+                // FALLBACK TO GEMINI
+                if (process.env.GOOGLE_API_KEY) {
+                    try {
+                        console.log("Fallback: Using Gemini Provider...");
+                        const result = await geminiModel.generateContent(sysPrompt + "\n" + userPrompt);
+                        responseText = result.response.text();
+                        console.log("Fallback: Gemini success.");
+                    } catch (geminiErr: any) {
+                        console.error("Fallback Gemini Failed:", geminiErr);
+                        throw new Error(`Both Groq and Gemini failed. Groq: ${err.message}. Gemini: ${geminiErr.message}`);
+                    }
+                } else {
+                    throw err; // No fallback available
+                }
             }
         }
         // --- OLLAMA (Local) ---
