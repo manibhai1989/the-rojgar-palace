@@ -36,10 +36,10 @@ export function CookieConsent() {
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Button variant="outline" className="border-white/20 text-black hover:bg-white/10 dark:text-slate-950" onClick={() => setIsVisible(false)}>
+                    <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 hover:text-white" onClick={() => setIsVisible(false)}>
                         <X className="mr-2 h-4 w-4" /> Decline
                     </Button>
-                    <Button className="bg-[#008000] hover:bg-green-700 text-white font-bold" onClick={acceptCookies}>
+                    <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-500/20" onClick={acceptCookies}>
                         Accept All
                     </Button>
                 </div>
