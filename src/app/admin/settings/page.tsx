@@ -16,18 +16,18 @@ export default function AdminSettingsPage() {
 
     return (
         <ClientOnly>
-            <div className="min-h-screen bg-slate-950 text-slate-100 p-8">
+            <div className="min-h-screen bg-background text-foreground p-8">
                 <header className="mb-8">
                     <h1 className="text-3xl font-bold flex items-center gap-3">
                         <Settings className="w-8 h-8 text-blue-500" />
                         Settings
                     </h1>
-                    <p className="text-slate-400">Manage your application settings and preferences.</p>
+                    <p className="text-muted-foreground">Manage your application settings and preferences.</p>
                 </header>
 
                 <div className="space-y-6 max-w-4xl">
                     {/* General Settings */}
-                    <Card className="bg-slate-900/50 border-white/10 backdrop-blur-md">
+                    <Card className="bg-card/40 border-border backdrop-blur-md">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <Globe className="w-5 h-5 text-blue-500" />
@@ -41,7 +41,7 @@ export default function AdminSettingsPage() {
                                 <Input
                                     id="siteName"
                                     defaultValue="Sarkari Result Hub"
-                                    className="bg-slate-800/50 border-white/10"
+                                    className="bg-background/50 border-border"
                                 />
                             </div>
                             <div className="space-y-2">
@@ -49,14 +49,14 @@ export default function AdminSettingsPage() {
                                 <Input
                                     id="siteDescription"
                                     defaultValue="Your trusted source for government job notifications"
-                                    className="bg-slate-800/50 border-white/10"
+                                    className="bg-background/50 border-border"
                                 />
                             </div>
                         </CardContent>
                     </Card>
 
                     {/* Notification Settings */}
-                    <Card className="bg-slate-900/50 border-white/10 backdrop-blur-md">
+                    <Card className="bg-card/40 border-border backdrop-blur-md">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <Bell className="w-5 h-5 text-orange-500" />
@@ -68,14 +68,14 @@ export default function AdminSettingsPage() {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <Label htmlFor="emailNotif">Email Notifications</Label>
-                                    <p className="text-sm text-slate-400">Receive email updates for new applications</p>
+                                    <p className="text-sm text-muted-foreground">Receive email updates for new applications</p>
                                 </div>
                                 <Switch id="emailNotif" defaultChecked />
                             </div>
                             <div className="flex items-center justify-between">
                                 <div>
                                     <Label htmlFor="pushNotif">Push Notifications</Label>
-                                    <p className="text-sm text-slate-400">Get browser push notifications</p>
+                                    <p className="text-sm text-muted-foreground">Get browser push notifications</p>
                                 </div>
                                 <Switch id="pushNotif" />
                             </div>
@@ -83,7 +83,7 @@ export default function AdminSettingsPage() {
                     </Card>
 
                     {/* Email Settings */}
-                    <Card className="bg-slate-900/50 border-white/10 backdrop-blur-md">
+                    <Card className="bg-card/40 border-border backdrop-blur-md">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <Mail className="w-5 h-5 text-purple-500" />
@@ -97,7 +97,7 @@ export default function AdminSettingsPage() {
                                 <Input
                                     id="smtpHost"
                                     placeholder="smtp.example.com"
-                                    className="bg-slate-800/50 border-white/10"
+                                    className="bg-background/50 border-border"
                                 />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
@@ -106,7 +106,7 @@ export default function AdminSettingsPage() {
                                     <Input
                                         id="smtpPort"
                                         placeholder="587"
-                                        className="bg-slate-800/50 border-white/10"
+                                        className="bg-background/50 border-border"
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -114,7 +114,7 @@ export default function AdminSettingsPage() {
                                     <Input
                                         id="smtpUser"
                                         placeholder="user@example.com"
-                                        className="bg-slate-800/50 border-white/10"
+                                        className="bg-background/50 border-border"
                                     />
                                 </div>
                             </div>
@@ -122,7 +122,7 @@ export default function AdminSettingsPage() {
                     </Card>
 
                     {/* Security Settings */}
-                    <Card className="bg-slate-900/50 border-white/10 backdrop-blur-md">
+                    <Card className="bg-card/40 border-border backdrop-blur-md">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <Shield className="w-5 h-5 text-emerald-500" />
@@ -134,14 +134,14 @@ export default function AdminSettingsPage() {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <Label htmlFor="twoFactor">Two-Factor Authentication</Label>
-                                    <p className="text-sm text-slate-400">Require 2FA for admin access</p>
+                                    <p className="text-sm text-muted-foreground">Require 2FA for admin access</p>
                                 </div>
                                 <Switch id="twoFactor" defaultChecked />
                             </div>
                             <div className="flex items-center justify-between">
                                 <div>
                                     <Label htmlFor="sessionTimeout">Auto Logout</Label>
-                                    <p className="text-sm text-slate-400">Automatically logout after 30 minutes of inactivity</p>
+                                    <p className="text-sm text-muted-foreground">Automatically logout after 30 minutes of inactivity</p>
                                 </div>
                                 <Switch id="sessionTimeout" defaultChecked />
                             </div>
@@ -149,7 +149,7 @@ export default function AdminSettingsPage() {
                     </Card>
 
                     {/* Database Settings */}
-                    <Card className="bg-slate-900/50 border-white/10 backdrop-blur-md">
+                    <Card className="bg-card/40 border-border backdrop-blur-md">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <Database className="w-5 h-5 text-cyan-500" />
@@ -161,11 +161,11 @@ export default function AdminSettingsPage() {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <Label>Automatic Backups</Label>
-                                    <p className="text-sm text-slate-400">Daily database backups at 2:00 AM</p>
+                                    <p className="text-sm text-muted-foreground">Daily database backups at 2:00 AM</p>
                                 </div>
                                 <Switch defaultChecked />
                             </div>
-                            <Button variant="outline" className="w-full border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10">
+                            <Button variant="outline" className="w-full border-cyan-500/30 text-cyan-500 hover:bg-cyan-500/10">
                                 <Database className="w-4 h-4 mr-2" />
                                 Backup Now
                             </Button>
@@ -174,10 +174,10 @@ export default function AdminSettingsPage() {
 
                     {/* Save Button */}
                     <div className="flex justify-end gap-4 pt-4">
-                        <Button variant="outline" className="border-white/10">
+                        <Button variant="outline" className="border-border">
                             Cancel
                         </Button>
-                        <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 gap-2">
+                        <Button onClick={handleSave} className="bg-primary hover:bg-primary/90 gap-2 text-primary-foreground">
                             <Save className="w-4 h-4" />
                             Save Changes
                         </Button>
