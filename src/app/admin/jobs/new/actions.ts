@@ -36,8 +36,8 @@ interface JobFormData {
     minAge?: string | number;
     maxAge?: string | number;
     eligibilityObj?: any; // To be deprecated/merged
-    feesObj?: { category: string, amount: string }[];
-    vacancyObj?: { postName: string, category: string, count: string | number }[];
+    feesObj?: Record<string, any>[]; // Dynamic Objects
+    vacancyObj?: Record<string, any>[]; // Dynamic Objects
     importantLinks?: { title: string, url: string }[];
 
     // New Extended Fields
@@ -131,17 +131,24 @@ function sanitizeJobData(data: JobFormData): JobFormData {
         minAge: data.minAge,
         maxAge: data.maxAge,
 
-        // Sanitize Nested Arrays and FILTER empty ones to avoid saving junk
-        feesObj: data.feesObj?.map(fee => ({
-            category: sanitizeString(fee.category || '', 100),
-            amount: sanitizeString(fee.amount || '', 20)
-        })).filter(f => f.category || f.amount) || [], // Filter empty fees
+        // Sanitize Nested Arrays (DYNAMIC KEYS SUPPORT)
+        feesObj: data.feesObj?.map(fee => {
+            const newFee: Record<string, any> = {};
+            Object.keys(fee).forEach(key => {
+                newFee[key] = sanitizeString(String(fee[key] || ''), 100);
+            });
+            return newFee;
+        }).filter(f => Object.values(f).some(v => v)) || [], // Filter rows where all values are empty
 
-        vacancyObj: data.vacancyObj?.map(vac => ({
-            postName: sanitizeString(vac.postName || '', 200),
-            category: sanitizeString(vac.category || '', 100),
-            count: vac.count
-        })).filter(v => v.postName || v.category) || [], // Filter empty vacancies
+        vacancyObj: data.vacancyObj?.map(vac => {
+            const newVac: Record<string, any> = {};
+            Object.keys(vac).forEach(key => {
+                // Allow numbers for 'count' or 'total' fields, verify if string
+                const val = vac[key];
+                newVac[key] = (typeof val === 'number') ? val : sanitizeString(String(val || ''), 200);
+            });
+            return newVac;
+        }).filter(v => Object.values(v).some(val => val)) || [], // Filter rows where all values are empty
 
         importantLinks: data.importantLinks?.map(link => ({
             title: sanitizeString(link.title || '', 150),
