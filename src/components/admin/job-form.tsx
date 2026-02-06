@@ -215,9 +215,9 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
     };
 
 
-    // Separate Handler for Public Notification Upload
-    const handleUploadNotification = async (uploadFile: File) => {
-        const loadingToast = toast.loading("Uploading Notification...");
+    // Generic Handler for PDF Uploads (Notification, Syllabus, etc.)
+    const handleUploadPDF = async (uploadFile: File, linkTitle: string) => {
+        const loadingToast = toast.loading(`Uploading ${linkTitle}...`);
 
         try {
             const fileName = `${Date.now()}_${uploadFile.name.replace(/\s+/g, '_')}`;
@@ -237,18 +237,20 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
             // Add/Update Link
             setFormData(prev => {
                 const newLinks = [...prev.importantLinks];
-                const existingIndex = newLinks.findIndex(l => l.title.toLowerCase().includes("notification"));
+                // Check if a link with this specific title already exists (case-insensitive partial match for safety, or exact?)
+                // Let's go with exact start match or strict inclusion to differentiate "Download Notification" vs "Download Syllabus"
+                const existingIndex = newLinks.findIndex(l => l.title.toLowerCase() === linkTitle.toLowerCase());
 
                 if (existingIndex >= 0) {
                     newLinks[existingIndex].url = publicUrl;
                 } else {
-                    newLinks.push({ title: "Download Notification", url: publicUrl });
+                    newLinks.push({ title: linkTitle, url: publicUrl });
                 }
 
                 return { ...prev, importantLinks: newLinks };
             });
 
-            toast.success("Notification Uploaded & Linked!", { id: loadingToast });
+            toast.success(`${linkTitle} Linked!`, { id: loadingToast });
         } catch (error: any) {
             console.error(error);
             toast.error(error.message, { id: loadingToast });
@@ -641,11 +643,26 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
                                                     accept=".pdf"
                                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                                     onChange={(e) => {
-                                                        if (e.target.files?.[0]) handleUploadNotification(e.target.files[0]);
+                                                        if (e.target.files?.[0]) handleUploadPDF(e.target.files[0], "Download Notification");
                                                     }}
                                                 />
                                                 <Button size="sm" variant="outline" className="border-blue-500/30 text-blue-400 hover:bg-blue-500/10">
-                                                    <UploadCloud className="w-4 h-4 mr-2" /> Upload Notification
+                                                    <UploadCloud className="w-4 h-4 mr-2" /> Notification
+                                                </Button>
+                                            </div>
+
+                                            {/* Manual Upload Button for Syllabus */}
+                                            <div className="relative">
+                                                <input
+                                                    type="file"
+                                                    accept=".pdf"
+                                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                                    onChange={(e) => {
+                                                        if (e.target.files?.[0]) handleUploadPDF(e.target.files[0], "Download Syllabus");
+                                                    }}
+                                                />
+                                                <Button size="sm" variant="outline" className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10">
+                                                    <UploadCloud className="w-4 h-4 mr-2" /> Syllabus
                                                 </Button>
                                             </div>
 
