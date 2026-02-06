@@ -67,7 +67,7 @@ export function DynamicTable({ data, onChange, title, description }: DynamicTabl
     };
 
     const renameColumn = (oldHeader: string, newHeader: string) => {
-        if (!newHeader.trim()) return;
+        // ALLOW empty string so user can clear the input
         const index = headers.indexOf(oldHeader);
         if (index === -1) return;
 
