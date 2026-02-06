@@ -116,21 +116,19 @@ export default function HomeClient({
             <section className="relative overflow-hidden pt-20 pb-16 md:pt-32 md:pb-24 transition-colors duration-300">
                 <AnimatedBackground className="absolute inset-0" />
                 <div className="container mx-auto px-4 text-center relative z-10">
-                    <motion.div
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
+                    <div
                         className="inline-flex items-center rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-1.5 text-sm font-medium mb-12 shadow-sm"
                     >
                         <TrendingUp className="mr-2 h-4 w-4 text-orange-500 dark:text-orange-400" />
                         <span className="text-slate-700 dark:text-slate-200">Latest: {latestJobs[0]?.title || "New Job Notifications Out!"}</span>
                         <ArrowRight className="ml-2 h-4 w-4 text-slate-400 dark:text-slate-400" />
-                    </motion.div>
+                    </div>
 
                     <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-8 flex flex-col items-center text-slate-900 dark:text-white">
                         <span className="mb-2 md:mb-4">
                             Welcome to <span className="text-amber-600 dark:text-amber-400">The Job Palace</span>
                         </span>
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-300 h-[1.2em] block" suppressHydrationWarning>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-300 h-[1.5em] block flex items-center justify-center min-h-[60px]" suppressHydrationWarning>
                             <Typewriter
                                 options={{
                                     strings: ['Government Success', 'Dream Job', 'Secure Future'],

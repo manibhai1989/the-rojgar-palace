@@ -19,11 +19,12 @@ import { WhatsAppFloat } from "@/components/ui/whatsapp-float";
 import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { CookieConsent } from "@/components/legal/CookieConsent";
 
-const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
+const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit", display: "swap" });
 const notoDevanagari = Noto_Sans_Devanagari({
   subsets: ["devanagari"],
   variable: "--font-noto-sans-devanagari",
   weight: ["400", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
