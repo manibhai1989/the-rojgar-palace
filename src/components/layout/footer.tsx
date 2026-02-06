@@ -93,7 +93,7 @@ export function Footer() {
                                 { Icon: Twitter, color: "hover:bg-sky-500 hover:border-sky-400", href: "#" },
                                 { Icon: Instagram, color: "hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-500 hover:border-pink-400", href: "#" },
                                 { Icon: Linkedin, color: "hover:bg-blue-700 hover:border-blue-600", href: "https://www.linkedin.com/in/manish-singh-13923610" },
-                                { Icon: Youtube, color: "hover:bg-red-600 hover:border-red-500", href: "https://www.youtube.com/@manishicst/featured" }
+                                { Icon: Youtube, color: "hover:bg-red-600 hover:border-red-500", href: "https://www.youtube.com/@manishicst" }
                             ].map(({ Icon, color, href }, idx) => (
                                 <motion.a
                                     key={idx}
