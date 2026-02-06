@@ -19,7 +19,7 @@ export function Footer() {
                     <div className="flex flex-col">
                         <div className="flex items-center space-x-3 mb-6 group">
                             <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white font-extrabold text-xl shadow-xl shadow-orange-500/20 dark:shadow-orange-500/30 group-hover:shadow-orange-500/40 dark:group-hover:shadow-orange-500/50 transition-all group-hover:scale-105 ring-1 ring-black/5 dark:ring-2 dark:ring-white/10">
-                                RP
+                                JP
                             </div>
                             <div className="flex flex-col">
                                 <span className="font-black text-xl tracking-tight">

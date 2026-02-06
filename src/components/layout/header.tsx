@@ -35,7 +35,7 @@ export function Header() {
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-3 shrink-0">
                         <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-white font-black text-lg shadow-xl shadow-orange-500/20 ring-2 ring-white/10 dark:ring-white/10">
-                            RP
+                            JP
                         </div>
                         <div className="flex flex-col gap-0.5">
                             <span className="font-black text-xl tracking-tight leading-tight whitespace-nowrap">
