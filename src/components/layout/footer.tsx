@@ -115,16 +115,32 @@ export function Footer() {
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="border-t border-slate-200 dark:border-white/10 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p className="text-slate-500 text-sm flex items-center gap-2">
-                        © {new Date().getFullYear()} The Job Palace. Made with <Heart className="h-4 w-4 text-red-500 fill-red-500 animate-pulse" /> in India
-                    </p>
-                    <div className="flex space-x-6">
-                        <div className="flex space-x-6">
-                            <Link href="/privacy" className="text-slate-500 hover:text-amber-600 dark:hover:text-cyan-400 transition-colors text-sm uppercase tracking-wider font-medium">Privacy</Link>
-                            <Link href="/terms" className="text-slate-500 hover:text-amber-600 dark:hover:text-cyan-400 transition-colors text-sm uppercase tracking-wider font-medium">Terms</Link>
-                            <Link href="/site-map" className="text-slate-500 hover:text-amber-600 dark:hover:text-cyan-400 transition-colors text-sm uppercase tracking-wider font-medium">Sitemap</Link>
+                {/* Bottom Bar - Centered & Premium */}
+                <div className="border-t border-slate-200 dark:border-white/10 mt-16 pt-8 flex flex-col items-center gap-6">
+                    <div className="flex flex-col md:flex-row items-center gap-2 text-sm font-medium text-center">
+                        <span className="text-slate-500 dark:text-slate-400">© {new Date().getFullYear()}</span>
+
+                        <span className="hidden md:inline text-slate-300 dark:text-slate-600">|</span>
+
+                        {/* Brand Name with Gradient */}
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500 dark:from-blue-400 dark:to-cyan-400 font-bold text-base">
+                            The Job Palace
+                        </span>
+
+                        <span className="hidden md:inline text-slate-300 dark:text-slate-600">|</span>
+
+                        {/* "Made with Love" Badge */}
+                        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 shadow-sm">
+                            <span>Made with</span>
+                            <Heart className="h-3.5 w-3.5 text-red-500 fill-red-500 animate-pulse" />
+                            <span>in India</span>
                         </div>
+                    </div>
+
+                    <div className="flex flex-wrap justify-center gap-x-8 gap-y-2">
+                        <Link href="/privacy" className="text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-xs uppercase tracking-widest font-semibold hover:underline decoration-blue-500/30 underline-offset-4">Privacy</Link>
+                        <Link href="/terms" className="text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-xs uppercase tracking-widest font-semibold hover:underline decoration-blue-500/30 underline-offset-4">Terms</Link>
+                        <Link href="/site-map" className="text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-xs uppercase tracking-widest font-semibold hover:underline decoration-blue-500/30 underline-offset-4">Sitemap</Link>
                     </div>
                 </div>
             </div>
