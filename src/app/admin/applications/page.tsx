@@ -115,27 +115,27 @@ export default function AdminApplicationsPage() {
 
     return (
         <ClientOnly>
-            <div className="min-h-screen bg-slate-950 text-slate-100 p-8">
+            <div className="min-h-screen bg-background text-foreground p-8">
                 <header className="mb-8">
                     <h1 className="text-3xl font-bold">Job Applications</h1>
-                    <p className="text-slate-400">Track and manage user job applications.</p>
+                    <p className="text-muted-foreground">Track and manage user job applications.</p>
                 </header>
 
                 <div className="mb-6 flex flex-col md:flex-row gap-4">
                     <div className="relative flex-1 max-w-md">
-                        <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-500" />
+                        <Search className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
                         <Input
                             placeholder="Search by user, email, or job..."
-                            className="pl-10 bg-slate-900/50 border-white/10"
+                            className="pl-10 bg-background/50 border-border text-foreground placeholder:text-muted-foreground focus:bg-background"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
                     </div>
                     <Select value={statusFilter} onValueChange={setStatusFilter}>
-                        <SelectTrigger className="w-full md:w-[200px] bg-slate-900/50 border-white/10">
+                        <SelectTrigger className="w-full md:w-[200px] bg-background/50 border-border text-foreground">
                             <SelectValue placeholder="Filter by status" />
                         </SelectTrigger>
-                        <SelectContent className="bg-slate-900 border-white/10">
+                        <SelectContent className="bg-popover border-border text-popover-foreground">
                             <SelectItem value="ALL">All Statuses</SelectItem>
                             {Object.entries(statusConfig).map(([key, config]) => (
                                 <SelectItem key={key} value={key}>
@@ -148,7 +148,7 @@ export default function AdminApplicationsPage() {
 
                 {isLoading ? (
                     <div className="flex flex-col items-center justify-center py-20 grayscale opacity-50">
-                        <Loader2 className="w-10 h-10 animate-spin text-purple-500 mb-4" />
+                        <Loader2 className="w-10 h-10 animate-spin text-primary mb-4" />
                         <p>Loading applications...</p>
                     </div>
                 ) : filteredApplications.length > 0 ? (
@@ -156,25 +156,25 @@ export default function AdminApplicationsPage() {
                         {filteredApplications.map((app) => {
                             const StatusIcon = statusConfig[app.status as keyof typeof statusConfig]?.icon || Clock;
                             return (
-                                <Card key={app.id} className="bg-slate-900/50 border-white/10 backdrop-blur-md hover:border-purple-500/30 transition-all">
+                                <Card key={app.id} className="bg-card/40 border-border backdrop-blur-md hover:border-primary/30 transition-all">
                                     <CardHeader className="pb-3">
                                         <div className="flex justify-between items-start">
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-2 mb-2">
-                                                    <User className="w-4 h-4 text-slate-400" />
+                                                    <User className="w-4 h-4 text-muted-foreground" />
                                                     <span className="font-medium">{app.user.name || "Anonymous"}</span>
                                                 </div>
-                                                <p className="text-sm text-slate-500">{app.user.email}</p>
+                                                <p className="text-sm text-muted-foreground">{app.user.email}</p>
                                             </div>
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-slate-200">
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
                                                         <MoreVertical className="h-4 w-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end" className="bg-slate-900 border-white/10 text-slate-200">
+                                                <DropdownMenuContent align="end" className="bg-popover border-border text-popover-foreground">
                                                     <DropdownMenuItem
-                                                        className="gap-2 text-red-400 focus:text-red-400"
+                                                        className="gap-2 text-destructive focus:text-destructive focus:bg-destructive/10"
                                                         onClick={() => handleDelete(app.id)}
                                                     >
                                                         <Trash2 className="w-4 h-4" /> Delete
@@ -186,25 +186,25 @@ export default function AdminApplicationsPage() {
                                     <CardContent className="space-y-4">
                                         <div className="space-y-2">
                                             <div className="flex items-start gap-2 text-sm">
-                                                <Briefcase className="w-4 h-4 text-slate-400 mt-0.5" />
+                                                <Briefcase className="w-4 h-4 text-muted-foreground mt-0.5" />
                                                 <div>
-                                                    <p className="font-medium text-slate-200">{app.job.title}</p>
-                                                    <p className="text-slate-500">{app.job.organization}</p>
+                                                    <p className="font-medium text-foreground">{app.job.title}</p>
+                                                    <p className="text-muted-foreground">{app.job.organization}</p>
                                                 </div>
                                             </div>
-                                            <div className="flex items-center gap-2 text-sm text-slate-400">
+                                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                                 <Calendar className="w-4 h-4" />
                                                 <span>Applied: {format(new Date(app.createdAt), "dd MMM yyyy")}</span>
                                             </div>
                                         </div>
 
-                                        <div className="pt-2 border-t border-white/5">
-                                            <label className="text-xs text-slate-500 mb-2 block">Application Status</label>
+                                        <div className="pt-2 border-t border-border">
+                                            <label className="text-xs text-muted-foreground mb-2 block">Application Status</label>
                                             <Select value={app.status} onValueChange={(value) => handleStatusChange(app.id, value)}>
-                                                <SelectTrigger className="w-full bg-slate-800/50 border-white/10">
+                                                <SelectTrigger className="w-full bg-background/50 border-border text-foreground">
                                                     <SelectValue />
                                                 </SelectTrigger>
-                                                <SelectContent className="bg-slate-900 border-white/10">
+                                                <SelectContent className="bg-popover border-border text-popover-foreground">
                                                     {Object.entries(statusConfig).map(([key, config]) => (
                                                         <SelectItem key={key} value={key}>
                                                             <div className="flex items-center gap-2">
@@ -217,7 +217,7 @@ export default function AdminApplicationsPage() {
                                             </Select>
                                         </div>
 
-                                        <Badge className={statusConfig[app.status as keyof typeof statusConfig]?.color || "bg-slate-500/10 text-slate-400"}>
+                                        <Badge className={statusConfig[app.status as keyof typeof statusConfig]?.color || "bg-muted/10 text-muted-foreground"}>
                                             <StatusIcon className="w-3 h-3 mr-1" />
                                             {statusConfig[app.status as keyof typeof statusConfig]?.label || app.status}
                                         </Badge>
@@ -227,12 +227,12 @@ export default function AdminApplicationsPage() {
                         })}
                     </div>
                 ) : (
-                    <div className="text-center py-20 bg-slate-900/20 rounded-3xl border border-dashed border-white/5">
-                        <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <AlertCircle className="w-8 h-8 text-slate-600" />
+                    <div className="text-center py-20 bg-muted/20 rounded-3xl border border-dashed border-border">
+                        <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                            <AlertCircle className="w-8 h-8 text-muted-foreground" />
                         </div>
                         <h3 className="text-xl font-medium">No applications found</h3>
-                        <p className="text-slate-500 mt-2">
+                        <p className="text-muted-foreground mt-2">
                             {searchQuery || statusFilter !== "ALL"
                                 ? "Try adjusting your filters."
                                 : "No users have applied for jobs yet."}

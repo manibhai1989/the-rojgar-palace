@@ -76,24 +76,24 @@ export default function AdminJobsPage() {
 
     return (
         <ClientOnly>
-            <div className="min-h-screen bg-slate-950 text-slate-100 p-8">
+            <div className="min-h-screen bg-background text-foreground p-8">
                 <header className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
                         <h1 className="text-3xl font-bold">Manage Job Postings</h1>
-                        <p className="text-slate-400">View and manage all active job notifications.</p>
+                        <p className="text-muted-foreground">View and manage all active job notifications.</p>
                     </div>
                     <Link href="/admin/jobs/new">
-                        <Button className="bg-purple-600 hover:bg-purple-700 text-white gap-2">
+                        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
                             <Plus className="w-4 h-4" /> Post New Job
                         </Button>
                     </Link>
                 </header>
 
                 <div className="mb-6 relative max-w-md">
-                    <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-500" />
+                    <Search className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
                     <Input
                         placeholder="Search jobs by title or organization..."
-                        className="pl-10 bg-slate-900/50 border-white/10"
+                        className="pl-10 bg-background/50 border-border text-foreground placeholder:text-muted-foreground focus:bg-background"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
@@ -101,13 +101,13 @@ export default function AdminJobsPage() {
 
                 {isLoading ? (
                     <div className="flex flex-col items-center justify-center py-20 grayscale opacity-50">
-                        <Loader2 className="w-10 h-10 animate-spin text-purple-500 mb-4" />
+                        <Loader2 className="w-10 h-10 animate-spin text-primary mb-4" />
                         <p>Loading your jobs...</p>
                     </div>
                 ) : filteredJobs.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filteredJobs.map((job) => (
-                            <Card key={job.id} className="bg-slate-900/50 border-white/10 backdrop-blur-md hover:border-purple-500/30 transition-all group">
+                            <Card key={job.id} className="bg-card/40 border-border backdrop-blur-md hover:border-primary/30 transition-all group">
                                 <CardHeader className="pb-3">
                                     <div className="flex justify-between items-start">
                                         <Badge variant="outline" className="border-emerald-500/30 text-emerald-400 bg-emerald-500/5 mb-2">
@@ -115,23 +115,23 @@ export default function AdminJobsPage() {
                                         </Badge>
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-slate-200">
+                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
                                                     <MoreVertical className="h-4 w-4" />
                                                 </Button>
                                             </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end" className="bg-slate-900 border-white/10 text-slate-200">
+                                            <DropdownMenuContent align="end" className="bg-card border-border text-foreground">
                                                 <Link href={`/jobs/${job.slug}`} target="_blank">
-                                                    <DropdownMenuItem className="gap-2 cursor-pointer">
+                                                    <DropdownMenuItem className="gap-2 cursor-pointer focus:bg-accent focus:text-accent-foreground">
                                                         <ExternalLink className="w-4 h-4" /> View Live
                                                     </DropdownMenuItem>
                                                 </Link>
                                                 <Link href={`/admin/jobs/${job.id}/edit`}>
-                                                    <DropdownMenuItem className="gap-2 cursor-pointer">
+                                                    <DropdownMenuItem className="gap-2 cursor-pointer focus:bg-accent focus:text-accent-foreground">
                                                         <Edit className="w-4 h-4" /> Edit Job
                                                     </DropdownMenuItem>
                                                 </Link>
                                                 <DropdownMenuItem
-                                                    className="gap-2 text-red-400 focus:text-red-400"
+                                                    className="gap-2 text-destructive focus:text-destructive focus:bg-destructive/10"
                                                     onClick={() => handleDelete(job.id)}
                                                 >
                                                     <Trash2 className="w-4 h-4" /> Delete
@@ -139,12 +139,12 @@ export default function AdminJobsPage() {
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </div>
-                                    <CardTitle className="text-lg line-clamp-2 leading-tight group-hover:text-purple-400 transition-colors">
+                                    <CardTitle className="text-lg line-clamp-2 leading-tight group-hover:text-primary transition-colors">
                                         {job.title}
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
-                                    <div className="space-y-2 text-sm text-slate-400">
+                                    <div className="space-y-2 text-sm text-muted-foreground">
                                         <div className="flex items-center gap-2">
                                             <Building2 className="w-4 h-4" />
                                             <span>{job.organization}</span>
@@ -156,12 +156,12 @@ export default function AdminJobsPage() {
                                     </div>
 
                                     <div className="pt-2 flex justify-between items-center text-xs">
-                                        <span className="text-slate-500">
+                                        <span className="text-muted-foreground">
                                             Posted on {format(new Date(job.createdAt), "dd MMM")}
                                         </span>
                                         <div className="flex gap-1">
-                                            {job.isUrgent && <Badge className="bg-red-500/10 text-red-400 border-red-500/20 text-[10px] uppercase">Urgent</Badge>}
-                                            {job.isNew && <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20 text-[10px] uppercase">New</Badge>}
+                                            {job.isUrgent && <Badge className="bg-destructive/10 text-destructive border-destructive/20 text-[10px] uppercase">Urgent</Badge>}
+                                            {job.isNew && <Badge className="bg-blue-500/10 text-blue-500 border-blue-500/20 text-[10px] uppercase">New</Badge>}
                                         </div>
                                     </div>
                                 </CardContent>
@@ -169,14 +169,14 @@ export default function AdminJobsPage() {
                         ))}
                     </div>
                 ) : (
-                    <div className="text-center py-20 bg-slate-900/20 rounded-3xl border border-dashed border-white/5">
-                        <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <AlertCircle className="w-8 h-8 text-slate-600" />
+                    <div className="text-center py-20 bg-muted/20 rounded-3xl border border-dashed border-border">
+                        <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                            <AlertCircle className="w-8 h-8 text-muted-foreground" />
                         </div>
                         <h3 className="text-xl font-medium">No jobs found</h3>
-                        <p className="text-slate-500 mt-2">Try adjusting your search or create a new job posting.</p>
+                        <p className="text-muted-foreground mt-2">Try adjusting your search or create a new job posting.</p>
                         <Link href="/admin/jobs/new">
-                            <Button variant="link" className="text-purple-400 mt-2">Post your first job</Button>
+                            <Button variant="link" className="text-primary mt-2">Post your first job</Button>
                         </Link>
                     </div>
                 )}
