@@ -25,7 +25,6 @@ import { Button } from "@/components/ui/button";
 const menuItems = [
     { title: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { title: "Manage Jobs", href: "/admin/jobs", icon: Briefcase },
-    { title: "Automation", href: "/admin/automation", icon: Users }, // Using Users icon as placeholder or find a better one like Bot/Sparkles
     { title: "Admissions", href: "/admin/admissions", icon: GraduationCap },
     { title: "Applications", href: "/admin/applications", icon: FileText },
 ];
