@@ -85,7 +85,7 @@ export default function RootLayout({
       <body
         suppressHydrationWarning
         className={cn(
-          "min-h-screen font-sans antialiased text-base md:text-lg",
+          "min-h-screen bg-background font-sans antialiased text-base md:text-lg",
           outfit.variable,
           notoDevanagari.variable
         )}

@@ -11,6 +11,7 @@ import { ThemeToggle } from "@/components/theme/theme-toggle";
 
 import { CommandMenu } from "@/components/ui/command-menu";
 import { UserNav } from "@/components/layout/user-nav";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 const navItems = [
     { title: "Home", href: "/", icon: Home },
@@ -49,7 +50,6 @@ export function Header() {
                     </Link>
 
                     {/* Desktop Navigation */}
-                    {/* Desktop Navigation */}
                     <nav className="hidden xl:flex items-center gap-6 mx-6">
                         {navItems.map((item) => (
                             <Link
@@ -74,50 +74,52 @@ export function Header() {
                             <ThemeToggle />
                         </div>
 
-                        {/* Mobile Toggle */}
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="lg:hidden text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700/50"
-                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                        >
-                            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-                        </Button>
+                        {/* Mobile Toggle with Sheet */}
+                        <div className="lg:hidden">
+                            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                                <SheetTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700/50"
+                                    >
+                                        <Menu className="h-5 w-5" />
+                                        <span className="sr-only">Toggle menu</span>
+                                    </Button>
+                                </SheetTrigger>
+                                <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+                                    <SheetHeader>
+                                        <SheetTitle className="text-left font-bold text-xl">
+                                            <span className="text-slate-800 dark:text-white">The</span>{" "}
+                                            <span className="text-amber-600 dark:text-amber-400">Job</span>{" "}
+                                            <span className="text-orange-600 dark:text-orange-400 italic">Palace</span>
+                                        </SheetTitle>
+                                    </SheetHeader>
+                                    <nav className="flex flex-col gap-2 mt-8">
+                                        {navItems.map((item) => (
+                                            <Link
+                                                key={item.title}
+                                                href={item.href}
+                                                className="flex items-center gap-3 px-4 py-3 text-base font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-lg transition-colors"
+                                                onClick={() => setMobileMenuOpen(false)}
+                                            >
+                                                <div className="h-8 w-8 rounded-lg bg-blue-50 dark:bg-cyan-500/10 flex items-center justify-center border border-blue-100 dark:border-cyan-500/20">
+                                                    <item.icon className="h-4 w-4 text-blue-600 dark:text-cyan-400" />
+                                                </div>
+                                                {item.title}
+                                            </Link>
+                                        ))}
+                                        <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700/50 flex items-center justify-between px-4">
+                                            <span className="text-sm text-slate-500 dark:text-slate-400">Theme</span>
+                                            <ThemeToggle />
+                                        </div>
+                                    </nav>
+                                </SheetContent>
+                            </Sheet>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            {/* Mobile Menu */}
-            <AnimatePresence>
-                {mobileMenuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="lg:hidden border-t border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-900 shadow-lg"
-                    >
-                        <nav className="container mx-auto px-4 py-4 flex flex-col gap-2">
-                            {navItems.map((item) => (
-                                <Link
-                                    key={item.title}
-                                    href={item.href}
-                                    className="flex items-center gap-3 px-4 py-3 text-base font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-lg transition-colors"
-                                    onClick={() => setMobileMenuOpen(false)}
-                                >
-                                    <div className="h-8 w-8 rounded-lg bg-blue-50 dark:bg-cyan-500/10 flex items-center justify-center border border-blue-100 dark:border-cyan-500/20">
-                                        <item.icon className="h-4 w-4 text-blue-600 dark:text-cyan-400" />
-                                    </div>
-                                    {item.title}
-                                </Link>
-                            ))}
-                            <div className="mt-2 pt-4 border-t border-slate-200 dark:border-slate-700/50 flex items-center justify-between px-4">
-                                <span className="text-sm text-slate-500 dark:text-slate-400">Theme</span>
-                                <ThemeToggle />
-                            </div>
-                        </nav>
-                    </motion.div>
-                )}
-            </AnimatePresence>
         </header>
     );
 }
