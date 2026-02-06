@@ -264,9 +264,10 @@ export default async function JobDetailsPage({ params }: PageProps) {
                         <tbody>
                             {vacancies?.map((vac, i) => (
                                 <tr key={i} className="border-b border-slate-300 dark:border-slate-700 font-medium hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
-                                    {Object.values(vac).map((val, idx) => (
+                                    {/* Fix: Map values based on the Header Keys (first row) to ensure alignment */}
+                                    {vacancies.length > 0 && Object.keys(vacancies[0]).map((headerKey, idx) => (
                                         <td key={idx} className="p-3 border-r border-slate-300 dark:border-slate-700">
-                                            {String(val)}
+                                            {String(vac[headerKey] || "-")}
                                         </td>
                                     ))}
                                 </tr>
