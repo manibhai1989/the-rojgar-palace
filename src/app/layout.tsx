@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     title: "The Job Palace | No.1 Govt Job Portal",
     description: "Latest Government Jobs, Results, and Admit Cards.",
     images: ["/og-image.png"],
-    creator: "@the_rojgarpalace",
+    creator: "@the_jobpalace",
   },
   robots: {
     index: true,
