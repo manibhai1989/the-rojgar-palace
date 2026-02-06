@@ -5,28 +5,36 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
     LayoutDashboard,
-    Briefcase,
     Users,
-    Settings,
-    Bell,
     FileText,
-    ChevronLeft,
-    LogOut,
-    PlusCircle,
-    IdCard,
-    Key,
-    ScrollText,
+    Settings,
+    Briefcase,
     GraduationCap,
-    BookOpen
+    Trophy,
+    FileCheck,
+    Key,
+    Activity,
+    BookOpen,
+    Menu,
+    ChevronLeft,
+    PlusCircle,
+    LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 const menuItems = [
-    { title: "Dashboard", href: "/admin", icon: LayoutDashboard },
-    { title: "Manage Jobs", href: "/admin/jobs", icon: Briefcase },
-    { title: "Admissions", href: "/admin/admissions", icon: GraduationCap },
-    { title: "Applications", href: "/admin/applications", icon: FileText },
+    { title: "Dashboard", icon: LayoutDashboard, href: "/admin" },
+    { title: "Jobs", icon: Briefcase, href: "/admin/jobs" },
+    { title: "Admissions", icon: GraduationCap, href: "/admin/admissions" },
+    { title: "Results", icon: Trophy, href: "/admin/results" },
+    { title: "Syllabus", icon: BookOpen, href: "/admin/syllabus" },
+    { title: "Admit Cards", icon: FileCheck, href: "/admin/admit-cards" },
+    { title: "Answer Keys", icon: Key, href: "/admin/answer-keys" },
+    { title: "Applications", icon: FileText, href: "/admin/applications" },
+    { title: "User Insights", icon: Users, href: "/admin/users" },
+    { title: "Analytics", icon: Activity, href: "/admin/analytics" },
+    { title: "Settings", icon: Settings, href: "/admin/settings" },
 ];
 
 export function AdminSidebar() {
