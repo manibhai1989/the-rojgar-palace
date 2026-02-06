@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Facebook, Twitter, Instagram, Linkedin, Mail, ArrowRight, Heart } from "lucide-react";
+import { Facebook, Twitter, Instagram, Linkedin, Mail, ArrowRight, Heart, Youtube } from "lucide-react";
 
 export function Footer() {
     return (
@@ -89,14 +89,17 @@ export function Footer() {
                         </h3>
                         <div className="flex space-x-4 mb-6">
                             {[
-                                { Icon: Facebook, color: "hover:bg-blue-600 hover:border-blue-500" },
-                                { Icon: Twitter, color: "hover:bg-sky-500 hover:border-sky-400" },
-                                { Icon: Instagram, color: "hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-500 hover:border-pink-400" },
-                                { Icon: Linkedin, color: "hover:bg-blue-700 hover:border-blue-600" }
-                            ].map(({ Icon, color }, idx) => (
+                                { Icon: Facebook, color: "hover:bg-blue-600 hover:border-blue-500", href: "#" },
+                                { Icon: Twitter, color: "hover:bg-sky-500 hover:border-sky-400", href: "#" },
+                                { Icon: Instagram, color: "hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-500 hover:border-pink-400", href: "#" },
+                                { Icon: Linkedin, color: "hover:bg-blue-700 hover:border-blue-600", href: "https://www.linkedin.com/in/manish-singh-13923610" },
+                                { Icon: Youtube, color: "hover:bg-red-600 hover:border-red-500", href: "https://www.youtube.com/@manishicst/featured" }
+                            ].map(({ Icon, color, href }, idx) => (
                                 <motion.a
                                     key={idx}
-                                    href={Icon === Linkedin ? "https://www.linkedin.com/in/manish-singh-13923610" : "#"}
+                                    href={href}
+                                    target={href.startsWith("http") ? "_blank" : undefined}
+                                    rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
                                     whileHover={{ scale: 1.1, y: -3 }}
                                     whileTap={{ scale: 0.95 }}
                                     className={`h-10 w-10 rounded-lg bg-slate-100 dark:bg-white/5 backdrop-blur-sm border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-white transition-all ${color} hover:shadow-lg`}
