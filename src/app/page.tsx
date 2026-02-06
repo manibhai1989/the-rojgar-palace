@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import HomeClient from "@/components/home/HomeClient";
 
-export const revalidate = 60; // Revalidate every minute
+export const revalidate = 0; // Disable cache for real-time updates
 
 async function getLatestJobs() {
   try {
