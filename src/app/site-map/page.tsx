@@ -68,7 +68,13 @@ export default function SitemapPage() {
             <div className="mt-12 bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800 rounded-xl p-8 text-center">
                 <h3 className="text-xl font-bold text-blue-800 dark:text-blue-300 mb-2">Looking for XML Sitemap?</h3>
                 <p className="text-blue-600 dark:text-blue-400 mb-4">Our XML Sitemap for search engines and crawlers is available here.</p>
-                <Link href="/sitemap.xml" className="inline-flex items-center justify-center px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold transition-colors">
+                <Link
+                    href="/sitemap.xml"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    prefetch={false}
+                    className="inline-flex items-center justify-center px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold transition-colors"
+                >
                     View XML Sitemap
                 </Link>
             </div>
