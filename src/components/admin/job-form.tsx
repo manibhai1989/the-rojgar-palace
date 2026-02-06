@@ -354,24 +354,24 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
         <div className={`space-y-6 ${viewMode === "split" ? "h-[calc(100vh-100px)] overflow-hidden flex flex-col" : ""}`}>
 
             {/* HEADER: Mode Switcher & Actions */}
-            <div className="flex justify-between items-center bg-slate-900/40 p-4 rounded-xl shadow-sm border border-white/5 shrink-0">
+            <div className="flex justify-between items-center bg-card/60 p-4 rounded-xl shadow-sm border border-border shrink-0 backdrop-blur-sm">
                 <div className="flex items-center gap-4">
-                    <h2 className="text-xl font-bold text-emerald-400">
+                    <h2 className="text-xl font-bold text-emerald-500 dark:text-emerald-400">
                         {isEditMode ? "Edit Job" : "Create New Job"}
                     </h2>
 
                     {/* View Mode Toggle */}
-                    <div className="flex bg-black/20 rounded-lg p-1 border border-white/5">
+                    <div className="flex bg-muted rounded-lg p-1 border border-border">
                         <button
                             onClick={() => setViewMode("standard")}
-                            className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === "standard" ? "bg-emerald-500/20 text-emerald-400 shadow-sm border border-emerald-500/30" : "text-slate-400 hover:text-slate-200"}`}
+                            className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === "standard" ? "bg-background text-foreground shadow-sm border border-border" : "text-muted-foreground hover:text-foreground"}`}
                         >
                             Standard View
                         </button>
                         <button
                             onClick={() => setViewMode("split")}
                             disabled={!file}
-                            className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === "split" ? "bg-emerald-500/20 text-emerald-400 shadow-sm border border-emerald-500/30" : "text-slate-400 hover:text-slate-200"} ${!file ? "opacity-50 cursor-not-allowed" : ""}`}
+                            className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${viewMode === "split" ? "bg-background text-foreground shadow-sm border border-border" : "text-muted-foreground hover:text-foreground"} ${!file ? "opacity-50 cursor-not-allowed" : ""}`}
                         >
                             Workbench (Split)
                         </button>
@@ -435,13 +435,13 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
                     <div className="space-y-6">
 
                         {/* AI ANALYSIS SECTION */}
-                        <div className={`p-6 bg-slate-900/40 border border-white/5 rounded-xl transition-all ${isAnalyzing ? "opacity-70 pointer-events-none" : ""}`}>
+                        <div className={`p-6 bg-card/40 border border-border rounded-xl transition-all ${isAnalyzing ? "opacity-70 pointer-events-none" : ""}`}>
                             <div className="flex flex-col md:flex-row gap-4 items-center">
                                 <div className="flex-1 w-full">
-                                    <Label htmlFor="notification-file" className="text-blue-400 font-semibold mb-2 block">
+                                    <Label htmlFor="notification-file" className="text-blue-500 dark:text-blue-400 font-semibold mb-2 block">
                                         Upload Official Notification (PDF)
                                     </Label>
-                                    <p className="text-xs text-slate-400 mb-2">
+                                    <p className="text-xs text-muted-foreground mb-2">
                                         Analysis works best with original PDFs. Scanned copies may have lower accuracy.
                                     </p>
                                 </div>
@@ -474,46 +474,46 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
                         <div className={`grid gap-8 ${viewMode === 'split' ? 'grid-cols-1' : 'lg:grid-cols-3'}`}>
                             {/* LEFT COLUMN: Basic Info */}
                             <div className={`${viewMode === 'split' ? '' : 'lg:col-span-1'} space-y-6`}>
-                                <Card className="bg-slate-900/40 border-white/5">
+                                <Card className="bg-card/40 border-border">
                                     <CardHeader><CardTitle>Basic Information</CardTitle></CardHeader>
                                     <CardContent className="space-y-4">
                                         <div className="space-y-1">
                                             <Label>Post Name / Title</Label>
-                                            <Input value={formData.postName} onChange={(e) => handleChange("postName", e.target.value)} placeholder="e.g. RRB Technician Grade I" className="bg-black/20 border-white/10 text-slate-200" />
+                                            <Input value={formData.postName} onChange={(e) => handleChange("postName", e.target.value)} placeholder="e.g. RRB Technician Grade I" className="bg-background/50 border-border text-foreground" />
                                         </div>
                                         <div className="space-y-1">
                                             <Label>Advt No.</Label>
-                                            <Input value={formData.advtNo} onChange={(e) => handleChange("advtNo", e.target.value)} placeholder="e.g. CEN 01/2026" className="bg-black/20 border-white/10 text-slate-200" />
+                                            <Input value={formData.advtNo} onChange={(e) => handleChange("advtNo", e.target.value)} placeholder="e.g. CEN 01/2026" className="bg-background/50 border-border text-foreground" />
                                         </div>
                                         <div className="space-y-1">
                                             <Label>Short Information</Label>
-                                            <Textarea value={formData.shortInfo} onChange={(e) => handleChange("shortInfo", e.target.value)} placeholder="Brief summary..." rows={4} className="bg-black/20 border-white/10 text-slate-200" />
+                                            <Textarea value={formData.shortInfo} onChange={(e) => handleChange("shortInfo", e.target.value)} placeholder="Brief summary..." rows={4} className="bg-background/50 border-border text-foreground" />
                                         </div>
                                         <div className="space-y-1">
                                             <Label>Total Vacancy</Label>
-                                            <Input value={formData.totalVacancy} onChange={(e) => handleChange("totalVacancy", e.target.value)} placeholder="e.g. 9144" className="bg-black/20 border-white/10 text-slate-200" />
+                                            <Input value={formData.totalVacancy} onChange={(e) => handleChange("totalVacancy", e.target.value)} placeholder="e.g. 9144" className="bg-background/50 border-border text-foreground" />
                                         </div>
                                     </CardContent>
                                 </Card>
 
-                                <Card className="bg-slate-900/40 border-white/5">
+                                <Card className="bg-card/40 border-border">
                                     <CardHeader><CardTitle>Important Dates</CardTitle></CardHeader>
                                     <CardContent className="space-y-4">
                                         <div className="space-y-1">
                                             <Label>Application Begin</Label>
-                                            <Input type="date" value={formData.applicationBegin} onChange={(e) => handleChange("applicationBegin", e.target.value)} className="bg-black/20 border-white/10 text-slate-200" />
+                                            <Input type="date" value={formData.applicationBegin} onChange={(e) => handleChange("applicationBegin", e.target.value)} className="bg-background/50 border-border text-foreground" />
                                         </div>
                                         <div className="space-y-1">
                                             <Label>Last Date Apply</Label>
-                                            <Input type="date" value={formData.lastDateApply} onChange={(e) => handleChange("lastDateApply", e.target.value)} className="bg-black/20 border-white/10 text-slate-200" />
+                                            <Input type="date" value={formData.lastDateApply} onChange={(e) => handleChange("lastDateApply", e.target.value)} className="bg-background/50 border-border text-foreground" />
                                         </div>
                                         <div className="space-y-1">
                                             <Label>Last Date Fee</Label>
-                                            <Input type="date" value={formData.lastDateFee} onChange={(e) => handleChange("lastDateFee", e.target.value)} className="bg-black/20 border-white/10 text-slate-200" />
+                                            <Input type="date" value={formData.lastDateFee} onChange={(e) => handleChange("lastDateFee", e.target.value)} className="bg-background/50 border-border text-foreground" />
                                         </div>
                                         <div className="space-y-1">
                                             <Label>Exam Date</Label>
-                                            <Input value={formData.examDate} onChange={(e) => handleChange("examDate", e.target.value)} placeholder="Notify Soon" className="bg-black/20 border-white/10 text-slate-200" />
+                                            <Input value={formData.examDate} onChange={(e) => handleChange("examDate", e.target.value)} placeholder="Notify Soon" className="bg-background/50 border-border text-foreground" />
                                         </div>
 
                                         <Separator />
@@ -521,14 +521,14 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
                                         {/* Custom Dates */}
                                         <div className="space-y-2">
                                             <div className="flex justify-between items-center">
-                                                <Label className="text-xs text-slate-500 uppercase font-bold">Custom Dates</Label>
-                                                <Button size="sm" variant="ghost" onClick={addCustomDate} className="h-6 text-xs text-blue-600"><Plus className="w-3 h-3" /> Add</Button>
+                                                <Label className="text-xs text-muted-foreground uppercase font-bold">Custom Dates</Label>
+                                                <Button size="sm" variant="ghost" onClick={addCustomDate} className="h-6 text-xs text-blue-600 dark:text-blue-400"><Plus className="w-3 h-3" /> Add</Button>
                                             </div>
                                             {formData.customDates.map((date, i) => (
                                                 <div key={i} className="flex gap-2">
-                                                    <Input placeholder="Label e.g. Re-Open" value={date.label} onChange={(e) => updateCustomDate(i, "label", e.target.value)} className="bg-black/20 border-white/10 text-xs h-8" />
-                                                    <Input placeholder="Value" value={date.value} onChange={(e) => updateCustomDate(i, "value", e.target.value)} className="bg-black/20 border-white/10 text-xs h-8" />
-                                                    <Button size="icon" variant="ghost" onClick={() => removeCustomDate(i)} className="h-8 w-8 text-red-400 hover:text-red-300"><Trash2 className="w-3 h-3" /></Button>
+                                                    <Input placeholder="Label e.g. Re-Open" value={date.label} onChange={(e) => updateCustomDate(i, "label", e.target.value)} className="bg-background/50 border-border text-xs h-8" />
+                                                    <Input placeholder="Value" value={date.value} onChange={(e) => updateCustomDate(i, "value", e.target.value)} className="bg-background/50 border-border text-xs h-8" />
+                                                    <Button size="icon" variant="ghost" onClick={() => removeCustomDate(i)} className="h-8 w-8 text-destructive hover:text-destructive/80"><Trash2 className="w-3 h-3" /></Button>
                                                 </div>
                                             ))}
                                         </div>
@@ -548,55 +548,55 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
                                 />
 
                                 {/* Age Limit (Static for now, but could be dynamic if needed) */}
-                                <div className="p-5 bg-slate-900/40 rounded-xl border border-white/5">
-                                    <h3 className="font-semibold text-blue-400 mb-4">Age Limit</h3>
+                                <div className="p-5 bg-card/40 rounded-xl border border-border">
+                                    <h3 className="font-semibold text-blue-500 dark:text-blue-400 mb-4">Age Limit</h3>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-1">
                                             <Label>Min Age</Label>
-                                            <Input value={formData.minAge} onChange={(e) => handleChange("minAge", e.target.value)} className="bg-black/20 border-white/10" />
+                                            <Input value={formData.minAge} onChange={(e) => handleChange("minAge", e.target.value)} className="bg-background/50 border-border" />
                                         </div>
                                         <div className="space-y-1">
                                             <Label>Max Age</Label>
-                                            <Input value={formData.maxAge} onChange={(e) => handleChange("maxAge", e.target.value)} className="bg-black/20 border-white/10" />
+                                            <Input value={formData.maxAge} onChange={(e) => handleChange("maxAge", e.target.value)} className="bg-background/50 border-border" />
                                         </div>
-                                        <div className="col-span-2 pt-2 text-xs text-slate-400 space-y-2">
+                                        <div className="col-span-2 pt-2 text-xs text-muted-foreground space-y-2">
                                             <div className="space-y-1">
                                                 <Label>Age as on</Label>
-                                                <Input value={formData.ageLimitDetails?.calculateDate} onChange={(e) => handleNestedChange("ageLimitDetails", "calculateDate", e.target.value)} className="bg-black/20 border-white/10" placeholder="01/01/2026" />
+                                                <Input value={formData.ageLimitDetails?.calculateDate} onChange={(e) => handleNestedChange("ageLimitDetails", "calculateDate", e.target.value)} className="bg-background/50 border-border" placeholder="01/01/2026" />
                                             </div>
                                             <div className="space-y-1">
                                                 <Label>Relaxation Rules</Label>
-                                                <Input value={formData.ageLimitDetails?.relaxation} onChange={(e) => handleNestedChange("ageLimitDetails", "relaxation", e.target.value)} className="bg-black/20 border-white/10" placeholder="As per rules" />
+                                                <Input value={formData.ageLimitDetails?.relaxation} onChange={(e) => handleNestedChange("ageLimitDetails", "relaxation", e.target.value)} className="bg-background/50 border-border" placeholder="As per rules" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Educational Qualification */}
-                                <div className="p-6 bg-slate-900/40 rounded-xl border border-white/5">
-                                    <h3 className="font-semibold text-indigo-400 text-lg mb-2">Educational Qualification & Eligibility</h3>
+                                <div className="p-6 bg-card/40 rounded-xl border border-border">
+                                    <h3 className="font-semibold text-indigo-500 dark:text-indigo-400 text-lg mb-2">Educational Qualification & Eligibility</h3>
                                     <Textarea
                                         value={formData.educationalQualification}
                                         onChange={(e) => handleChange("educationalQualification", e.target.value)}
-                                        className="bg-black/20 border-white/10 h-32"
+                                        className="bg-background/50 border-border h-32"
                                         placeholder="Enter detailed eligibility..."
                                     />
                                 </div>
 
                                 {/* Selection Process */}
-                                <div className="p-6 bg-slate-900/40 rounded-xl border border-white/5">
+                                <div className="p-6 bg-card/40 rounded-xl border border-border">
                                     <div className="flex justify-between items-center mb-4">
-                                        <h3 className="font-semibold text-yellow-400 text-lg">Selection Process Stages</h3>
-                                        <Button size="sm" variant="outline" onClick={addStage} className="border-yellow-500/30 text-yellow-400 hover:bg-yellow-500/10">
+                                        <h3 className="font-semibold text-yellow-500 dark:text-yellow-400 text-lg">Selection Process Stages</h3>
+                                        <Button size="sm" variant="outline" onClick={addStage} className="border-yellow-500/30 text-yellow-500 dark:text-yellow-400 hover:bg-yellow-500/10">
                                             <Plus className="w-4 h-4 mr-2" /> Add Stage
                                         </Button>
                                     </div>
                                     <div className="space-y-2">
                                         {formData.selectionStages.map((stage, i) => (
                                             <div key={i} className="flex gap-2">
-                                                <span className="p-2 bg-white/5 rounded text-xs font-bold text-slate-400 w-8 text-center">{i + 1}</span>
-                                                <Input value={stage} onChange={(e) => updateStage(i, e.target.value)} className="bg-black/20 border-white/10 flex-1" />
-                                                <Button size="icon" variant="ghost" onClick={() => removeStage(i)} className="text-slate-500 hover:text-red-400"><Trash2 className="w-4 h-4" /></Button>
+                                                <span className="p-2 bg-muted rounded text-xs font-bold text-muted-foreground w-8 text-center">{i + 1}</span>
+                                                <Input value={stage} onChange={(e) => updateStage(i, e.target.value)} className="bg-background/50 border-border flex-1" />
+                                                <Button size="icon" variant="ghost" onClick={() => removeStage(i)} className="text-muted-foreground hover:text-destructive"><Trash2 className="w-4 h-4" /></Button>
                                             </div>
                                         ))}
                                     </div>
@@ -611,30 +611,30 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
                                 />
 
                                 {/* EXTRA DETAILS */}
-                                <div className="p-6 bg-slate-900/40 rounded-xl border border-white/5">
+                                <div className="p-6 bg-card/40 rounded-xl border border-border">
                                     <div className="flex justify-between items-center mb-4">
-                                        <h3 className="font-semibold text-purple-400 text-lg">Other Details (e.g. Physical Standards)</h3>
-                                        <Button size="sm" variant="outline" onClick={addExtraDetail} className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10">
+                                        <h3 className="font-semibold text-purple-500 dark:text-purple-400 text-lg">Other Details (e.g. Physical Standards)</h3>
+                                        <Button size="sm" variant="outline" onClick={addExtraDetail} className="border-purple-500/30 text-purple-500 dark:text-purple-400 hover:bg-purple-500/10">
                                             <Plus className="w-4 h-4 mr-2" /> Add Section
                                         </Button>
                                     </div>
                                     <div className="space-y-4">
                                         {formData.extraDetails.map((detail, i) => (
-                                            <div key={i} className="flex flex-col gap-2 p-3 bg-black/20 rounded-lg border border-white/5 relative">
+                                            <div key={i} className="flex flex-col gap-2 p-3 bg-muted/40 rounded-lg border border-border relative">
                                                 <div className="flex gap-2">
-                                                    <Input value={detail.title} onChange={(e) => updateExtraDetail(i, "title", e.target.value)} className="bg-transparent border-white/10 font-bold" placeholder="Section Title (e.g. Physical Standards)" />
-                                                    <Button size="icon" variant="ghost" onClick={() => removeExtraDetail(i)} className="text-slate-500 hover:text-red-400 absolute right-2 top-2"><Trash2 className="w-4 h-4" /></Button>
+                                                    <Input value={detail.title} onChange={(e) => updateExtraDetail(i, "title", e.target.value)} className="bg-transparent border-border font-bold" placeholder="Section Title (e.g. Physical Standards)" />
+                                                    <Button size="icon" variant="ghost" onClick={() => removeExtraDetail(i)} className="text-muted-foreground hover:text-destructive absolute right-2 top-2"><Trash2 className="w-4 h-4" /></Button>
                                                 </div>
-                                                <Textarea value={detail.content} onChange={(e) => updateExtraDetail(i, "content", e.target.value)} className="bg-transparent border-white/10 min-h-[80px]" placeholder="Enter detailed info..." />
+                                                <Textarea value={detail.content} onChange={(e) => updateExtraDetail(i, "content", e.target.value)} className="bg-transparent border-border min-h-[80px]" placeholder="Enter detailed info..." />
                                             </div>
                                         ))}
                                     </div>
                                 </div>
 
                                 {/* IMPORTANT LINKS */}
-                                <div className="p-6 bg-slate-900/40 rounded-xl border border-white/5">
+                                <div className="p-6 bg-card/40 rounded-xl border border-border">
                                     <div className="flex justify-between items-center mb-4">
-                                        <h3 className="font-semibold text-orange-400 text-lg">Important Links</h3>
+                                        <h3 className="font-semibold text-orange-500 dark:text-orange-400 text-lg">Important Links</h3>
                                         <div className="flex gap-2">
                                             {/* Manual Upload Button for Notification */}
                                             <div className="relative">
@@ -646,7 +646,7 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
                                                         if (e.target.files?.[0]) handleUploadPDF(e.target.files[0], "Download Notification");
                                                     }}
                                                 />
-                                                <Button size="sm" variant="outline" className="border-blue-500/30 text-blue-400 hover:bg-blue-500/10">
+                                                <Button size="sm" variant="outline" className="border-blue-500/30 text-blue-500 dark:text-blue-400 hover:bg-blue-500/10">
                                                     <UploadCloud className="w-4 h-4 mr-2" /> Notification
                                                 </Button>
                                             </div>
@@ -661,12 +661,12 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
                                                         if (e.target.files?.[0]) handleUploadPDF(e.target.files[0], "Download Syllabus");
                                                     }}
                                                 />
-                                                <Button size="sm" variant="outline" className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10">
+                                                <Button size="sm" variant="outline" className="border-purple-500/30 text-purple-500 dark:text-purple-400 hover:bg-purple-500/10">
                                                     <UploadCloud className="w-4 h-4 mr-2" /> Syllabus
                                                 </Button>
                                             </div>
 
-                                            <Button size="sm" variant="outline" onClick={addLinkRow} className="border-orange-500/30 text-orange-400 hover:bg-orange-500/10">
+                                            <Button size="sm" variant="outline" onClick={addLinkRow} className="border-orange-500/30 text-orange-500 dark:text-orange-400 hover:bg-orange-500/10">
                                                 <Plus className="w-4 h-4 mr-2" /> Add Link
                                             </Button>
                                         </div>
@@ -674,9 +674,9 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
                                     <div className="space-y-3">
                                         {formData.importantLinks.map((link, i) => (
                                             <div key={i} className="flex gap-3 items-center">
-                                                <Input value={link.title} onChange={(e) => updateLink(i, "title", e.target.value)} className="bg-black/20 border-white/10 flex-1" placeholder="Link Title" />
-                                                <Input value={link.url} onChange={(e) => updateLink(i, "url", e.target.value)} className="bg-black/20 border-white/10 flex-1" placeholder="https://" />
-                                                <Button size="icon" variant="ghost" onClick={() => removeLinkRow(i)} className="text-slate-500 hover:text-red-400"><Trash2 className="w-4 h-4" /></Button>
+                                                <Input value={link.title} onChange={(e) => updateLink(i, "title", e.target.value)} className="bg-background/50 border-border flex-1" placeholder="Link Title" />
+                                                <Input value={link.url} onChange={(e) => updateLink(i, "url", e.target.value)} className="bg-background/50 border-border flex-1" placeholder="https://" />
+                                                <Button size="icon" variant="ghost" onClick={() => removeLinkRow(i)} className="text-muted-foreground hover:text-destructive"><Trash2 className="w-4 h-4" /></Button>
                                             </div>
                                         ))}
                                     </div>

@@ -178,18 +178,18 @@ export default function AdminDashboardPage() {
 
     return (
         <ClientOnly>
-            <div className="min-h-screen bg-slate-950 text-slate-100 flex overflow-hidden">
+            <div className="min-h-screen bg-background text-foreground flex overflow-hidden">
                 {/* SIDEBAR */}
                 <motion.aside
                     initial={false}
                     animate={{ width: isSidebarOpen ? 280 : 80 }}
-                    className="hidden md:flex flex-col border-r border-white/10 bg-slate-900/50 backdrop-blur-xl h-screen sticky top-0 z-30"
+                    className="hidden md:flex flex-col border-r border-border bg-card/50 backdrop-blur-xl h-screen sticky top-0 z-30"
                 >
                     <div className="p-6 flex items-center gap-3">
                         <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shrink-0">
                             <LayoutDashboard className="w-5 h-5 text-white" />
                         </div>
-                        {isSidebarOpen && <span className="font-bold text-xl tracking-tight">Admin<span className="text-white">Panel</span></span>}
+                        {isSidebarOpen && <span className="font-bold text-xl tracking-tight">Admin<span className="text-primary">Panel</span></span>}
                     </div>
 
                     <nav className="flex-1 px-4 space-y-2 mt-4">
@@ -207,8 +207,8 @@ export default function AdminDashboardPage() {
                                 className={cn(
                                     "w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all",
                                     item.active
-                                        ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
-                                        : "text-slate-400 hover:bg-white/5 hover:text-slate-200"
+                                        ? "bg-primary text-primary-foreground shadow-lg shadow-blue-500/20"
+                                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
                                 )}
                             >
                                 <item.icon className="w-5 h-5" />
@@ -217,14 +217,14 @@ export default function AdminDashboardPage() {
                         ))}
                     </nav>
 
-                    <div className="p-4 border-t border-white/10">
-                        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-all">
+                    <div className="p-4 border-t border-border">
+                        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-destructive hover:bg-destructive/10 transition-all">
                             <LogOut className="w-5 h-5" />
-                            {isSidebarOpen && <span className="font-medium text-sm text-white">Logout</span>}
+                            {isSidebarOpen && <span className="font-medium text-sm text-foreground">Logout</span>}
                         </button>
                         <button
                             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                            className="w-full mt-2 flex items-center justify-center p-2 text-slate-500 hover:text-slate-200"
+                            className="w-full mt-2 flex items-center justify-center p-2 text-muted-foreground hover:text-foreground"
                         >
                             <Menu className="w-5 h-5" />
                         </button>
@@ -232,30 +232,30 @@ export default function AdminDashboardPage() {
                 </motion.aside>
 
                 {/* MAIN CONTENT */}
-                <main className="flex-1 overflow-y-auto h-screen relative">
+                <main className="flex-1 overflow-y-auto h-screen relative bg-background">
                     {/* Background Glow */}
-                    <div className="absolute top-0 left-0 w-full h-[500px] bg-blue-900/20 blur-[120px] pointer-events-none" />
+                    <div className="absolute top-0 left-0 w-full h-[500px] bg-blue-500/10 dark:bg-blue-900/20 blur-[120px] pointer-events-none" />
 
                     <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8 relative z-10">
 
                         {/* Header */}
                         <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                             <div>
-                                <h1 className="text-2xl md:text-3xl font-bold">Dashboard</h1>
-                                <p className="text-slate-400 text-sm">Welcome back, Admin</p>
+                                <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">Dashboard</h1>
+                                <p className="text-muted-foreground text-sm">Welcome back, Admin</p>
                             </div>
                             <div className="flex items-center gap-3 w-full md:w-auto">
                                 <div className="relative flex-1 md:w-64">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                                     <Input
                                         placeholder="Search jobs..."
-                                        className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:bg-white/10"
+                                        className="pl-10 bg-background/50 border-border text-foreground placeholder:text-muted-foreground focus:bg-background"
                                         onKeyDown={handleSearch}
                                     />
                                 </div>
 
                                 <Link href="/admin/jobs/new">
-                                    <Button className="bg-blue-600 hover:bg-blue-700 text-white gap-2 shadow-lg shadow-blue-500/20">
+                                    <Button className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 shadow-lg shadow-blue-500/20">
                                         <Plus className="w-4 h-4" /> <span className="hidden sm:inline">New Job</span>
                                     </Button>
                                 </Link>
@@ -271,24 +271,24 @@ export default function AdminDashboardPage() {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: i * 0.1 }}
                                 >
-                                    <Card className={cn("bg-white/5 border backdrop-blur-sm relative overflow-hidden group", stat.borderColor)}>
+                                    <Card className={cn("bg-card/50 border-border backdrop-blur-sm relative overflow-hidden group hover:border-primary/50 transition-colors", stat.borderColor)}>
                                         <div className={cn("absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity", stat.color)} />
                                         <CardContent className="p-6 relative z-10">
                                             <div className="flex justify-between items-start mb-4">
-                                                <div className={cn("p-2 rounded-lg bg-white/5", stat.textColor)}>
+                                                <div className={cn("p-2 rounded-lg bg-background", stat.textColor)}>
                                                     <stat.icon className="w-5 h-5" />
                                                 </div>
                                                 <span className={cn(
-                                                    "flex items-center text-xs font-bold px-2 py-1 rounded-full bg-white/5",
-                                                    stat.isPositive ? "text-emerald-400" : "text-red-400"
+                                                    "flex items-center text-xs font-bold px-2 py-1 rounded-full bg-background",
+                                                    stat.isPositive ? "text-emerald-500" : "text-destructive"
                                                 )}>
                                                     {stat.change}
                                                     {stat.isPositive ? <ArrowUpRight className="w-3 h-3 ml-1" /> : <ArrowDownRight className="w-3 h-3 ml-1" />}
                                                 </span>
                                             </div>
                                             <div>
-                                                <p className="text-slate-400 text-xs uppercase tracking-wider font-semibold">{stat.title}</p>
-                                                <h3 className="text-2xl font-bold mt-1 text-white">{stat.value}</h3>
+                                                <p className="text-muted-foreground text-xs uppercase tracking-wider font-semibold">{stat.title}</p>
+                                                <h3 className="text-2xl font-bold mt-1 text-foreground">{stat.value}</h3>
                                             </div>
                                         </CardContent>
                                     </Card>
@@ -305,10 +305,10 @@ export default function AdminDashboardPage() {
                                 transition={{ delay: 0.4 }}
                                 className="lg:col-span-2"
                             >
-                                <Card className="bg-slate-900/50 border-white/10 backdrop-blur-md h-full">
+                                <Card className="bg-card/50 border-border backdrop-blur-md h-full">
                                     <CardHeader>
                                         <CardTitle className="text-lg font-bold flex items-center gap-2">
-                                            <TrendingUp className="w-5 h-5 text-blue-500" />
+                                            <TrendingUp className="w-5 h-5 text-primary" />
                                             Traffic Overview
                                         </CardTitle>
                                     </CardHeader>
@@ -325,12 +325,12 @@ export default function AdminDashboardPage() {
                                                         <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
                                                     </linearGradient>
                                                 </defs>
-                                                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                                                <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                                                <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value / 1000}k`} />
+                                                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                                                <XAxis dataKey="name" stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                                                <YAxis stroke="var(--muted-foreground)" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value / 1000}k`} />
                                                 <Tooltip
-                                                    contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', borderRadius: '8px' }}
-                                                    itemStyle={{ color: '#e2e8f0' }}
+                                                    contentStyle={{ backgroundColor: 'var(--card)', borderColor: 'var(--border)', borderRadius: '8px', color: 'var(--foreground)' }}
+                                                    itemStyle={{ color: 'var(--foreground)' }}
                                                 />
                                                 <Area type="monotone" dataKey="visitors" stroke="#3b82f6" strokeWidth={2} fillOpacity={1} fill="url(#colorVis)" />
                                                 <Area type="monotone" dataKey="applications" stroke="#8b5cf6" strokeWidth={2} fillOpacity={1} fill="url(#colorApp)" />
@@ -346,29 +346,29 @@ export default function AdminDashboardPage() {
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: 0.5 }}
                             >
-                                <Card className="bg-slate-900/50 border-white/10 backdrop-blur-md h-full">
+                                <Card className="bg-card/50 border-border backdrop-blur-md h-full">
                                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                                         <CardTitle className="text-lg font-bold">Recent Activity</CardTitle>
-                                        <Button size="icon" variant="ghost" className="h-8 w-8 text-slate-400">
+                                        <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground">
                                             <MoreVertical className="w-4 h-4" />
                                         </Button>
                                     </CardHeader>
                                     <CardContent className="space-y-6">
                                         {loading ? (
-                                            <div className="text-center py-8 text-slate-500">Loading activities...</div>
+                                            <div className="text-center py-8 text-muted-foreground">Loading activities...</div>
                                         ) : stats.recentActivities.length === 0 ? (
-                                            <div className="text-center py-8 text-slate-500">No recent activity</div>
+                                            <div className="text-center py-8 text-muted-foreground">No recent activity</div>
                                         ) : (
                                             stats.recentActivities.map((item) => (
                                                 <div key={item.id} className="group">
                                                     <div className="flex justify-between text-sm mb-1">
-                                                        <span className="font-medium text-slate-200">{item.action}</span>
-                                                        <span className="text-xs text-slate-500">{new Date(item.time).toLocaleTimeString()}</span>
+                                                        <span className="font-medium text-foreground">{item.action}</span>
+                                                        <span className="text-xs text-muted-foreground">{new Date(item.time).toLocaleTimeString()}</span>
                                                     </div>
-                                                    <div className="flex justify-between text-xs text-slate-400 mb-2">
+                                                    <div className="flex justify-between text-xs text-muted-foreground mb-2">
                                                         <span>{item.target}</span>
                                                     </div>
-                                                    <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                                                    <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
                                                         <div
                                                             className="h-full rounded-full bg-emerald-500"
                                                             style={{ width: "100%" }}
@@ -378,18 +378,18 @@ export default function AdminDashboardPage() {
                                             ))
                                         )}
 
-                                        <div className="pt-4 mt-6 border-t border-white/5">
+                                        <div className="pt-4 mt-6 border-t border-border">
                                             <div className={cn(
                                                 "p-4 rounded-xl border",
                                                 stats.systemHealth || loading
-                                                    ? "bg-gradient-to-r from-blue-900/20 to-purple-900/20 border-blue-500/20"
-                                                    : "bg-gradient-to-r from-red-900/20 to-orange-900/20 border-red-500/20"
+                                                    ? "bg-blue-500/10 border-blue-500/20 dark:bg-blue-900/20"
+                                                    : "bg-red-500/10 border-red-500/20 dark:bg-red-900/20"
                                             )}>
-                                                <h4 className="text-sm font-bold text-white mb-1">System Health</h4>
-                                                <p className="text-xs text-slate-400 mb-3">
+                                                <h4 className="text-sm font-bold text-foreground mb-1">System Health</h4>
+                                                <p className="text-xs text-muted-foreground mb-3">
                                                     {loading ? "Checking system status..." : stats.systemHealth ? "All systems operational. Database connected." : "System Warning: Database issue detected."}
                                                 </p>
-                                                <Button size="sm" variant="outline" className="w-full border-blue-500/30 text-blue-400 hover:bg-blue-500/10 hover:text-blue-300">
+                                                <Button size="sm" variant="outline" className="w-full border-blue-500/30 text-blue-500 hover:bg-blue-500/10">
                                                     View System Logs
                                                 </Button>
                                             </div>
