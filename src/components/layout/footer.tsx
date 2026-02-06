@@ -89,23 +89,56 @@ export function Footer() {
                         </h3>
                         <div className="flex space-x-4 mb-6">
                             {[
-                                { Icon: Facebook, color: "hover:bg-blue-600 hover:border-blue-500", href: "#" },
-                                { Icon: Twitter, color: "hover:bg-sky-500 hover:border-sky-400", href: "#" },
-                                { Icon: Instagram, color: "hover:bg-gradient-to-br hover:from-purple-600 hover:to-pink-500 hover:border-pink-400", href: "#" },
-                                { Icon: Linkedin, color: "hover:bg-blue-700 hover:border-blue-600", href: "https://www.linkedin.com/in/manish-singh-13923610" },
-                                { Icon: Youtube, color: "hover:bg-red-600 hover:border-red-500", href: "https://www.youtube.com/@manishicst" }
-                            ].map(({ Icon, color, href }, idx) => (
-                                <motion.a
+                                {
+                                    Icon: Facebook,
+                                    href: "#",
+                                    gradient: "from-blue-500/10 to-indigo-500/10",
+                                    border: "border-blue-200 dark:border-blue-500/20 hover:border-blue-500/50",
+                                    iconColor: "text-blue-600 dark:text-blue-400",
+                                    shadow: "hover:shadow-blue-500/20"
+                                },
+                                {
+                                    Icon: Twitter,
+                                    href: "#",
+                                    gradient: "from-sky-500/10 to-blue-500/10",
+                                    border: "border-sky-200 dark:border-sky-500/20 hover:border-sky-500/50",
+                                    iconColor: "text-sky-500 dark:text-sky-400",
+                                    shadow: "hover:shadow-sky-500/20"
+                                },
+                                {
+                                    Icon: Instagram,
+                                    href: "#",
+                                    gradient: "from-purple-500/10 to-pink-500/10",
+                                    border: "border-pink-200 dark:border-pink-500/20 hover:border-pink-500/50",
+                                    iconColor: "text-pink-600 dark:text-pink-400",
+                                    shadow: "hover:shadow-pink-500/20"
+                                },
+                                {
+                                    Icon: Linkedin,
+                                    href: "https://www.linkedin.com/in/manish-singh-13923610",
+                                    gradient: "from-blue-600/10 to-cyan-600/10",
+                                    border: "border-blue-200 dark:border-blue-500/20 hover:border-blue-500/50",
+                                    iconColor: "text-blue-700 dark:text-blue-400",
+                                    shadow: "hover:shadow-blue-500/20"
+                                },
+                                {
+                                    Icon: Youtube,
+                                    href: "https://www.youtube.com/@manishicst",
+                                    gradient: "from-red-500/10 to-orange-500/10",
+                                    border: "border-red-200 dark:border-red-500/20 hover:border-red-500/50",
+                                    iconColor: "text-red-600 dark:text-red-400",
+                                    shadow: "hover:shadow-red-500/20"
+                                }
+                            ].map(({ Icon, href, gradient, border, iconColor, shadow }, idx) => (
+                                <Link
                                     key={idx}
                                     href={href}
                                     target={href.startsWith("http") ? "_blank" : undefined}
                                     rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-                                    whileHover={{ scale: 1.1, y: -3 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    className={`h-10 w-10 rounded-lg bg-slate-100 dark:bg-white/5 backdrop-blur-sm border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-white transition-all ${color} hover:shadow-lg`}
+                                    className={`h-10 w-10 rounded-lg bg-gradient-to-br ${gradient} border ${border} flex items-center justify-center hover:shadow-lg ${shadow} transition-all`}
                                 >
-                                    <Icon className="h-5 w-5" />
-                                </motion.a>
+                                    <Icon className={`h-5 w-5 ${iconColor}`} />
+                                </Link>
                             ))}
                         </div>
                         <a href="mailto:manish.icst@gmail.com" className="flex items-center text-slate-600 dark:text-slate-400 group cursor-pointer">
