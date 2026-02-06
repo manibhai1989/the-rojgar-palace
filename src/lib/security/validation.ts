@@ -40,8 +40,11 @@ export function sanitizeUrl(url: string | undefined | null): string {
         return '';
     }
 
-    // Auto-prepend https:// if it looks like a domain but has no protocol
-    if (!sanitized.match(/^https?:\/\//) && !sanitized.startsWith('/') && sanitized.includes('.')) {
+    // RELAXED: Allow relative URLs, anchors, and non-standard inputs (like "Notify Soon")
+    // Use heuristic: if it looks like a domain without protocol, prepend https://
+    // But don't break simple text or anchors
+    if (!sanitized.match(/^[a-z]+:\/\//i) && !sanitized.startsWith('/') && !sanitized.startsWith('#') && sanitized.includes('.')) {
+        // Simple domain check (contains dot, no protocol, no slash/anchor start)
         sanitized = `https://${sanitized}`;
     }
 

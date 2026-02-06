@@ -131,34 +131,34 @@ function sanitizeJobData(data: JobFormData): JobFormData {
         minAge: data.minAge,
         maxAge: data.maxAge,
 
-        // Sanitize Nested Arrays
+        // Sanitize Nested Arrays and FILTER empty ones to avoid saving junk
         feesObj: data.feesObj?.map(fee => ({
             category: sanitizeString(fee.category || '', 100),
             amount: sanitizeString(fee.amount || '', 20)
-        })) || [],
+        })).filter(f => f.category || f.amount) || [], // Filter empty fees
 
         vacancyObj: data.vacancyObj?.map(vac => ({
             postName: sanitizeString(vac.postName || '', 200),
             category: sanitizeString(vac.category || '', 100),
-            count: vac.count // String or Number allowed
-        })) || [],
+            count: vac.count
+        })).filter(v => v.postName || v.category) || [], // Filter empty vacancies
 
         importantLinks: data.importantLinks?.map(link => ({
             title: sanitizeString(link.title || '', 150),
-            url: sanitizeUrl(link.url || '') // Use URL sanitizer
-        })) || [],
+            url: sanitizeUrl(link.url || '')
+        })).filter(l => l.title || l.url) || [], // Filter empty links
 
         extraDetails: data.extraDetails?.map(detail => ({
             title: sanitizeString(detail.title || '', 150),
             content: sanitizeString(detail.content || '', 5000)
-        })) || [],
+        })).filter(d => d.title || d.content) || [], // Filter empty details
 
         customDates: data.customDates?.map(date => ({
             label: sanitizeString(date.label || '', 100),
             value: sanitizeString(date.value || '', 100)
-        })) || [],
+        })).filter(d => d.label || d.value) || [],
 
-        selectionStages: data.selectionStages?.map(stage => sanitizeString(stage || '', 500)) || [],
+        selectionStages: data.selectionStages?.map(stage => sanitizeString(stage || '', 500)).filter(s => s) || [],
 
         educationalQualification: sanitizeString(data.educationalQualification || '', 10000),
 
@@ -190,6 +190,8 @@ export async function createJob(data: any): Promise<SecureResponse<any>> {
 
         // Security: Sanitize input data
         const sanitizedData = sanitizeJobData(data);
+        console.log("[createJob] Incoming Data:", JSON.stringify(data, null, 2)); // DEBUG
+        console.log("[createJob] Sanitized Data:", JSON.stringify(sanitizedData, null, 2)); // DEBUG
 
         // Generate unique slug
         const baseSlug = slugify(sanitizedData.postName, { lower: true, strict: true });
@@ -320,6 +322,8 @@ export async function updateJob(id: string, data: any): Promise<SecureResponse<a
 
         // 2. Sanitize Input
         const sanitizedData = sanitizeJobData(data);
+        console.log("[updateJob] Incoming Data:", JSON.stringify(data, null, 2)); // DEBUG
+        console.log("[updateJob] Sanitized Data:", JSON.stringify(sanitizedData, null, 2)); // DEBUG
 
         // 3. Parse and Clean Data Helper
         const parseDate = (dateStr?: string): Date | null => {
