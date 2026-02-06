@@ -633,9 +633,26 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
                                 <div className="p-6 bg-slate-900/40 rounded-xl border border-white/5">
                                     <div className="flex justify-between items-center mb-4">
                                         <h3 className="font-semibold text-orange-400 text-lg">Important Links</h3>
-                                        <Button size="sm" variant="outline" onClick={addLinkRow} className="border-orange-500/30 text-orange-400 hover:bg-orange-500/10">
-                                            <Plus className="w-4 h-4 mr-2" /> Add Link
-                                        </Button>
+                                        <div className="flex gap-2">
+                                            {/* Manual Upload Button for Notification */}
+                                            <div className="relative">
+                                                <input
+                                                    type="file"
+                                                    accept=".pdf"
+                                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                                    onChange={(e) => {
+                                                        if (e.target.files?.[0]) handleUploadNotification(e.target.files[0]);
+                                                    }}
+                                                />
+                                                <Button size="sm" variant="outline" className="border-blue-500/30 text-blue-400 hover:bg-blue-500/10">
+                                                    <UploadCloud className="w-4 h-4 mr-2" /> Upload Notification
+                                                </Button>
+                                            </div>
+
+                                            <Button size="sm" variant="outline" onClick={addLinkRow} className="border-orange-500/30 text-orange-400 hover:bg-orange-500/10">
+                                                <Plus className="w-4 h-4 mr-2" /> Add Link
+                                            </Button>
+                                        </div>
                                     </div>
                                     <div className="space-y-3">
                                         {formData.importantLinks.map((link, i) => (
