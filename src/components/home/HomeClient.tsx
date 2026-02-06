@@ -128,7 +128,7 @@ export default function HomeClient({
                         <span className="mb-2 md:mb-4">
                             Welcome to <span className="text-amber-600 dark:text-amber-400">The Job Palace</span>
                         </span>
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-300 h-[1.5em] block flex items-center justify-center min-h-[60px]" suppressHydrationWarning>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 dark:from-blue-400 dark:to-cyan-300 h-[1.5em] block flex items-center justify-center min-h-[60px] min-w-[18ch]" suppressHydrationWarning>
                             <Typewriter
                                 options={{
                                     strings: ['Government Success', 'Dream Job', 'Secure Future'],
