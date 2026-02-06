@@ -2,7 +2,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { createSuccessResponse, createErrorResponse, ErrorCode } from "@/lib/security/errors";
+import { createSuccessResponse, createErrorResponse, ErrorCode, SecureErrorResponse } from "@/lib/security/errors";
 import { revalidatePath } from "next/cache";
 import { validateUrl } from "@/lib/security/validation";
 
@@ -15,7 +15,7 @@ export async function addSource(data: { name: string; url: string; selector: str
         }
 
         console.log("[addSource] Attempting Prisma create...");
-        const source = await prisma.source.create({
+        const source = await (prisma as any).source.create({
             data: {
                 name: data.name,
                 url: data.url,
@@ -38,14 +38,14 @@ export async function addSource(data: { name: string; url: string; selector: str
             success: false,
             error: "DEBUG ERROR: " + (error.message || JSON.stringify(error)),
             code: ErrorCode.INTERNAL_ERROR
-        };
+        } as SecureErrorResponse;
         // return createErrorResponse(ErrorCode.INTERNAL_ERROR, error.message || "Unknown DB Error");
     }
 }
 
 export async function getSources() {
     try {
-        const sources = await prisma.source.findMany({
+        const sources = await (prisma as any).source.findMany({
             orderBy: { createdAt: "desc" }
         });
         return createSuccessResponse(sources);
@@ -56,7 +56,7 @@ export async function getSources() {
 
 export async function deleteSource(id: string) {
     try {
-        await prisma.source.delete({ where: { id } });
+        await (prisma as any).source.delete({ where: { id } });
         revalidatePath("/admin/automation");
         return createSuccessResponse(id);
     } catch (error: any) {
