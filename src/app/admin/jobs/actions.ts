@@ -64,6 +64,7 @@ export async function deleteJob(id: string): Promise<SecureResponse<void>> {
         // Revalidate cache
         revalidatePath("/admin/jobs");
         revalidatePath("/");
+        revalidatePath("/jobs"); // Fix: Also revalidate the main jobs listing page
 
         return createSuccessResponse(undefined);
     } catch (error: any) {
