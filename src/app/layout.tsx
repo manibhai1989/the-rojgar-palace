@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Outfit, Noto_Sans_Devanagari } from "next/font/google"; // Changed Inter to Outfit
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import "./globals.css";
 import { Header } from "@/components/layout/header";
@@ -97,6 +98,7 @@ export default function RootLayout({
       >
         <GoogleAnalytics />
         <Analytics />
+        <SpeedInsights />
         <Providers>
           {/* ... existing provider content ... */}
           <LanguageProvider>
