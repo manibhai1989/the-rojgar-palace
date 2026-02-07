@@ -87,7 +87,7 @@ export class JobExtractionPipeline {
                 stage: "complete",
                 // Debugging: return a snippet of the text seen by AI so the USER/DEV can see it.
                 // We cast to 'any' to avoid breaking the strict interface yet while debugging.
-                textPreview: extractTextSnippet
+                textPreview: extraction.text ? extraction.text.slice(0, 500) + "..." : "No text extracted"
             } as any;
 
         } catch (error: any) {
