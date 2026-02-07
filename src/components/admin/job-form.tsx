@@ -284,6 +284,33 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
     };
 
     const handleChange = (field: keyof JobFormData, value: any) => {
+        // DETECT JSON: If user pastes a JSON object, try to parse and strict merge
+        if (typeof value === "string" && value.trim().startsWith("{") && value.trim().endsWith("}")) {
+            try {
+                const parsed = JSON.parse(value);
+                if (typeof parsed === "object" && parsed !== null) {
+                    // Check if it looks roughly like our data schema (optional, but good for safety)
+                    // For now, allow merging any valid object properties that exist in defaultState
+                    const merged: any = { ...formData };
+                    let hasChanges = false;
+
+                    Object.keys(parsed).forEach(key => {
+                        if (key in defaultState) {
+                            merged[key] = parsed[key];
+                            hasChanges = true;
+                        }
+                    });
+
+                    if (hasChanges) {
+                        setFormData(merged);
+                        toast.success("JSON Data Applied!");
+                        return; // Stop normal update
+                    }
+                }
+            } catch (e) {
+                // Ignore parse errors, treat as normal text
+            }
+        }
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
@@ -316,6 +343,22 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
     const removeVacancyRow = (idx: number) => setFormData(prev => ({ ...prev, vacancyObj: prev.vacancyObj.filter((_, i) => i !== idx) }));
 
     const updateLink = (index: number, field: string, val: string) => {
+        // DETECT JSON ARRAY: For bulk updating links
+        if (val.trim().startsWith("[") && val.trim().endsWith("]")) {
+            try {
+                const parsed = JSON.parse(val);
+                if (Array.isArray(parsed)) {
+                    // Verify items structure roughly
+                    const validItems = parsed.filter(item => typeof item === 'object' && item.title && item.url);
+                    if (validItems.length > 0) {
+                        setFormData(prev => ({ ...prev, importantLinks: validItems }));
+                        toast.success(`Replaced Links with ${validItems.length} items from JSON`);
+                        return;
+                    }
+                }
+            } catch (e) { /* ignore */ }
+        }
+
         const newLinks = [...formData.importantLinks];
         (newLinks[index] as any)[field] = val;
         setFormData(prev => ({ ...prev, importantLinks: newLinks }));
@@ -324,6 +367,21 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
     const removeLinkRow = (idx: number) => setFormData(prev => ({ ...prev, importantLinks: prev.importantLinks.filter((_, i) => i !== idx) }));
 
     const updateExtraDetail = (index: number, field: string, val: string) => {
+        // DETECT JSON ARRAY: For bulk updating extra details
+        if (val.trim().startsWith("[") && val.trim().endsWith("]")) {
+            try {
+                const parsed = JSON.parse(val);
+                if (Array.isArray(parsed)) {
+                    const validItems = parsed.filter(item => typeof item === 'object' && item.title && item.content);
+                    if (validItems.length > 0) {
+                        setFormData(prev => ({ ...prev, extraDetails: validItems }));
+                        toast.success(`Replaced details with ${validItems.length} items from JSON`);
+                        return;
+                    }
+                }
+            } catch (e) { /* ignore */ }
+        }
+
         const newDetails = [...formData.extraDetails];
         (newDetails[index] as any)[field] = val;
         setFormData(prev => ({ ...prev, extraDetails: newDetails }));
@@ -332,6 +390,21 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
     const removeExtraDetail = (idx: number) => setFormData(prev => ({ ...prev, extraDetails: prev.extraDetails.filter((_, i) => i !== idx) }));
 
     const updateCustomDate = (index: number, field: string, val: string) => {
+        // DETECT JSON ARRAY
+        if (val.trim().startsWith("[") && val.trim().endsWith("]")) {
+            try {
+                const parsed = JSON.parse(val);
+                if (Array.isArray(parsed)) {
+                    const validItems = parsed.filter(item => typeof item === 'object' && item.label && item.value);
+                    if (validItems.length > 0) {
+                        setFormData(prev => ({ ...prev, customDates: validItems }));
+                        toast.success(`Replaced dates with ${validItems.length} items from JSON`);
+                        return;
+                    }
+                }
+            } catch (e) { /* ignore */ }
+        }
+
         const newDates = [...formData.customDates];
         (newDates[index] as any)[field] = val;
         setFormData(prev => ({ ...prev, customDates: newDates }));
@@ -340,6 +413,22 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
     const removeCustomDate = (idx: number) => setFormData(prev => ({ ...prev, customDates: prev.customDates.filter((_, i) => i !== idx) }));
 
     const updateStage = (index: number, val: string) => {
+        // DETECT JSON ARRAY
+        if (val.trim().startsWith("[") && val.trim().endsWith("]")) {
+            try {
+                const parsed = JSON.parse(val);
+                if (Array.isArray(parsed)) {
+                    // assume array of strings
+                    const validItems = parsed.filter(item => typeof item === 'string');
+                    if (validItems.length > 0) {
+                        setFormData(prev => ({ ...prev, selectionStages: validItems }));
+                        toast.success(`Replaced stages with ${validItems.length} items from JSON`);
+                        return;
+                    }
+                }
+            } catch (e) { /* ignore */ }
+        }
+
         const newStages = [...formData.selectionStages];
         newStages[index] = val;
         setFormData(prev => ({ ...prev, selectionStages: newStages }));

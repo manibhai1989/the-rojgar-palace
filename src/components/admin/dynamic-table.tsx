@@ -28,6 +28,23 @@ export function DynamicTable({ data, onChange, title, description }: DynamicTabl
     }, [data]);
 
     const handleCellChange = (rowIndex: number, header: string, value: string) => {
+        // DETECT JSON ARRAY: Replace entire table data
+        if (value.trim().startsWith("[") && value.trim().endsWith("]")) {
+            try {
+                const parsed = JSON.parse(value);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    // Check if it looks like an object array
+                    if (typeof parsed[0] === 'object') {
+                        onChange(parsed);
+                        // toast.success("Table data replaced from JSON"); // toast not imported here, relying on UI update
+                        return;
+                    }
+                }
+            } catch (e) {
+                // ignore
+            }
+        }
+
         const newData = [...data];
         if (!newData[rowIndex]) newData[rowIndex] = {};
         newData[rowIndex][header] = value;
