@@ -100,6 +100,7 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
     }, [initialData]);
 
     const [lastError, setLastError] = useState<string | null>(null);
+    const [lastAnalysisMeta, setLastAnalysisMeta] = useState<any>(null); // New: Store warnings/confidence
 
     // Clean up blob URL
     useEffect(() => {
@@ -160,12 +161,22 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
             if (!response.ok) {
                 console.error(`API Error (${response.status}):`, result);
                 const errorMessage = result.userMessage || result.message || result.error || `Analysis failed with status ${response.status}`;
-                setLastError(errorMessage);
+
+                // Show specific stage error if available
+                if (result.stage === 'ocr') {
+                    setLastError("OCR Failed: Document was unreadable.");
+                } else {
+                    setLastError(errorMessage);
+                }
                 throw new Error(errorMessage);
             }
 
+            // 3. Process Result
+            setLastAnalysisMeta(result.meta); // Save metadata (isScanned, warnings)
+            const aiData = result.data;
+
             // 2. Merge AI Result
-            let aiLinks: any[] = Array.isArray(result.data.importantLinks) ? result.data.importantLinks : (formData.importantLinks || []);
+            let aiLinks: any[] = Array.isArray(aiData.importantLinks) ? aiData.importantLinks : (formData.importantLinks || []);
 
             // PRESERVE EXISTING NOTIFICATION LINK (from manual upload)
             const existingNotificationLink = formData.importantLinks.find(
@@ -184,26 +195,29 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
             // Safe State Updates
             setFormData(prev => ({
                 ...prev,
-                feesObj: Array.isArray(result.data.feesObj) ? result.data.feesObj : (prev.feesObj || []),
-                vacancyObj: Array.isArray(result.data.vacancyObj) ? result.data.vacancyObj : (prev.vacancyObj || []),
+                feesObj: Array.isArray(aiData.feesObj) ? aiData.feesObj : (prev.feesObj || []),
+                vacancyObj: Array.isArray(aiData.vacancyObj) ? aiData.vacancyObj : (prev.vacancyObj || []),
                 importantLinks: aiLinks,
-                extraDetails: Array.isArray(result.data.extraDetails) ? result.data.extraDetails : (prev.extraDetails || []),
-                customDates: Array.isArray(result.data.customDates) ? result.data.customDates : (prev.customDates || []),
-                selectionStages: Array.isArray(result.data.selectionStages) ? result.data.selectionStages : (prev.selectionStages || []),
-                ageLimitDetails: result.data.ageLimitDetails || prev.ageLimitDetails,
-                educationalQualification: result.data.educationalQualification || prev.educationalQualification,
-                postName: result.data.postName || prev.postName,
-                shortInfo: result.data.shortInfo || prev.shortInfo,
-                totalVacancy: result.data.totalVacancy || prev.totalVacancy,
-                minAge: result.data.minAge || prev.minAge,
-                maxAge: result.data.maxAge || prev.maxAge,
-                applicationBegin: result.data.applicationBegin || prev.applicationBegin,
-                lastDateApply: result.data.lastDateApply || prev.lastDateApply,
-                lastDateFee: result.data.lastDateFee || prev.lastDateFee,
-                examDate: result.data.examDate || prev.examDate,
+                extraDetails: Array.isArray(aiData.extraDetails) ? aiData.extraDetails : (prev.extraDetails || []),
+                customDates: Array.isArray(aiData.customDates) ? aiData.customDates : (prev.customDates || []),
+                selectionStages: Array.isArray(aiData.selectionStages) ? aiData.selectionStages : (prev.selectionStages || []),
+                ageLimitDetails: aiData.ageLimitDetails || prev.ageLimitDetails,
+                educationalQualification: aiData.educationalQualification || prev.educationalQualification,
+                postName: aiData.postName || prev.postName,
+                shortInfo: aiData.shortInfo || prev.shortInfo,
+                totalVacancy: aiData.totalVacancy || prev.totalVacancy,
+                minAge: aiData.minAge || prev.minAge,
+                maxAge: aiData.maxAge || prev.maxAge,
+                applicationBegin: aiData.applicationBegin || prev.applicationBegin,
+                lastDateApply: aiData.lastDateApply || prev.lastDateApply,
+                lastDateFee: aiData.lastDateFee || prev.lastDateFee,
+                examDate: aiData.examDate || prev.examDate,
             }));
 
-            toast.success("Uploaded & Analyzed Successfully!", { id: loadingToast });
+            const successMsg = result.meta?.isScanned
+                ? "Scanned PDF Extracted (OCR Used)!"
+                : "Standard PDF Extracted Successfully!";
+            toast.success(successMsg, { id: loadingToast });
         } catch (error: any) {
             console.error(error);
             const msg = error.message || "Failed to analyze notification";
@@ -652,8 +666,14 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
                 {/* LEFT PANE: PDF Viewer (Only in Split Mode) */}
                 {viewMode === "split" && (
                     <div className="col-span-6 h-full bg-slate-900 rounded-xl overflow-hidden border border-slate-700 shadow-xl flex flex-col">
-                        <div className="bg-slate-800 p-2 text-center text-xs text-slate-400 font-mono border-b border-slate-700 shrink-0">
-                            Document Viewer: {file ? file.name : "No file selected"}
+                        <div className="bg-slate-800 p-2 flex justify-between items-center text-xs text-slate-400 font-mono border-b border-slate-700 shrink-0">
+                            <span>{file ? file.name : "No file selected"}</span>
+                            {/* NEW: OCR Indicator */}
+                            {lastAnalysisMeta?.isScanned && (
+                                <span className="flex items-center text-yellow-500 gap-1 bg-yellow-500/10 px-2 py-0.5 rounded">
+                                    <Sparkles className="w-3 h-3" /> OCR Active
+                                </span>
+                            )}
                         </div>
                         {fileUrl ? (
                             <iframe
@@ -684,7 +704,7 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
                                         Upload Official Notification (PDF)
                                     </Label>
                                     <p className="text-xs text-muted-foreground mb-2">
-                                        Analysis works best with original PDFs. Scanned copies may have lower accuracy.
+                                        Analysis works best with original PDFs. Scanned copies will trigger OCR (slower).
                                     </p>
                                 </div>
                                 <Button
@@ -695,7 +715,7 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
                                 >
                                     {isAnalyzing ? (
                                         <>
-                                            <Loader2 className="w-5 h-5 mr-2 animate-spin" /> Analyzing...
+                                            <Loader2 className="w-5 h-5 mr-2 animate-spin" /> Processing Pipeline...
                                         </>
                                     ) : (
                                         <>
@@ -704,9 +724,22 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
                                     )}
                                 </Button>
                             </div>
+
+                            {/* Warnings / Success Feedback */}
                             {lastError && (
-                                <div className="mt-4 p-3 bg-red-50 text-red-600 text-sm rounded border border-red-200">
+                                <div className="mt-4 p-3 bg-red-50 text-red-600 text-sm rounded border border-red-200 animate-in fade-in slide-in-from-top-2">
                                     <strong>Analysis Error:</strong> {lastError}
+                                </div>
+                            )}
+
+                            {lastAnalysisMeta?.warnings && lastAnalysisMeta.warnings.length > 0 && (
+                                <div className="mt-4 p-3 bg-yellow-50 text-yellow-700 text-sm rounded border border-yellow-200 animate-in fade-in slide-in-from-top-2">
+                                    <strong>⚠️ Extraction Warnings:</strong>
+                                    <ul className="list-disc pl-5 mt-1">
+                                        {lastAnalysisMeta.warnings.map((w: string, i: number) => (
+                                            <li key={i}>{w}</li>
+                                        ))}
+                                    </ul>
                                 </div>
                             )}
                         </div>
