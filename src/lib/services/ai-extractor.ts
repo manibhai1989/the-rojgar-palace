@@ -144,19 +144,27 @@ export class AIExtractor {
                     result = await model.generateContent(prompt);
                 }
 
+                // Safely retrieve text
                 const responseText = result.response.text();
                 if (responseText) {
                     console.log(`Gemini: Success with '${modelName}'!`);
                     return responseText;
                 }
             } catch (error: any) {
+                // If it's a safety block or other API issue, text() might fail.
                 console.warn(`Gemini: Failed with '${modelName}': ${error.message}`);
+
+                // Inspect if it was a safety stop
+                if (error.message?.includes("candidate") || error.message?.includes("safety")) {
+                    console.warn("Gemini Safety Block suspected.");
+                }
+
                 lastError = error;
                 // Continue to next model
             }
         }
 
-        throw new Error(`All Gemini models failed. Last error: ${lastError?.message}`);
+        throw new Error(`All Gemini models failed. Last error: ${lastError?.message || lastError}`);
     }
 
     private async callGroq(prompt: string): Promise<string> {
@@ -173,7 +181,17 @@ export class AIExtractor {
                 response_format: { type: "json_object" }
             })
         });
+
         const json = await response.json();
+
+        if (json.error) {
+            throw new Error(`Groq API Error: ${json.error.message}`);
+        }
+
+        if (!json.choices || !json.choices[0] || !json.choices[0].message) {
+            throw new Error("Groq API returned unexpected format (missing choices)");
+        }
+
         return json.choices[0].message.content;
     }
 
