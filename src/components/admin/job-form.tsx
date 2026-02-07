@@ -283,6 +283,91 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
         }
     };
 
+    // --- SMART JSON NORMALIZER ---
+    const normalizeJobData = (input: any): Partial<JobFormData> => {
+        const mapped: Partial<JobFormData> = {};
+
+        // 1. Handle "recruitment_notification" wrapper if present
+        const root = input.recruitment_notification || input;
+
+        // 2. Map Dates
+        const dates = root.important_dates || root.ImportantDates || {};
+        const regWindow = dates.registration_window || {};
+
+        if (regWindow.start_date) mapped.applicationBegin = formatDateForInput(regWindow.start_date);
+        else if (dates.ApplicationBegin) mapped.applicationBegin = formatDateForInput(dates.ApplicationBegin);
+
+        if (regWindow.end_date) mapped.lastDateApply = formatDateForInput(regWindow.end_date);
+        else if (dates.LastDateApply) mapped.lastDateApply = formatDateForInput(dates.LastDateApply);
+
+        // Exam Date
+        if (dates.exam_date) mapped.examDate = dates.exam_date;
+
+        // 3. Map Vacancies
+        const vacDetails = root.vacancy_details || root;
+        if (vacDetails.total_vacancies) mapped.totalVacancy = String(vacDetails.total_vacancies);
+
+        if (Array.isArray(vacDetails.positions)) {
+            mapped.vacancyObj = vacDetails.positions.map((p: any) => ({
+                postName: p.post_name || "Post",
+                category: p.grade ? `Grade ${p.grade}` : "Total",
+                count: p.vacancies || 0
+            }));
+        }
+
+        // 4. Map Fees
+        const fees = root.application_fees || root;
+        // If it's an object with keys like "SC_ST_PwBD", map to array
+        if (typeof fees === 'object' && !Array.isArray(fees)) {
+            const feesArray: { category: string; amount: string }[] = [];
+            Object.entries(fees).forEach(([key, val]) => {
+                if (key !== 'note' && typeof val === 'string') {
+                    // Clean key
+                    const catName = key.replace(/_/g, ' ').replace('PwBD', 'PH').replace('GEN', 'General');
+                    feesArray.push({ category: catName, amount: val as string });
+                }
+            });
+            if (feesArray.length > 0) mapped.feesObj = feesArray;
+        }
+
+        // 5. Selection Stages
+        const selection = root.selection_procedure;
+        if (selection && typeof selection === 'object') {
+            const stages: string[] = [];
+            Object.entries(selection).forEach(([key, val]) => {
+                if (key !== 'negative_marking' && typeof val === 'string') {
+                    stages.push(`${key.replace(/_/g, ' ')}: ${val}`);
+                }
+            });
+            if (stages.length > 0) mapped.selectionStages = stages;
+        }
+
+        // 6. Educational Qual
+        const elig = root.eligibility_criteria;
+        if (elig) {
+            if (Array.isArray(elig.posts)) {
+                mapped.educationalQualification = elig.posts.map((p: any) =>
+                    `${p.post_name}:\n- Education: ${p.education}\n- Age: ${p.age_limit}\n- Exp: ${p.experience || 'N/A'}`
+                ).join('\n\n');
+            }
+        }
+
+        return mapped;
+    };
+
+    // Helper to try parsing "February 06, 2026" to "YYYY-MM-DD" for input[type=date]
+    const formatDateForInput = (dateStr: string): string => {
+        try {
+            // Remove day names like (Saturday)
+            const clean = dateStr.split('(')[0].trim();
+            const date = new Date(clean);
+            if (!isNaN(date.getTime())) {
+                return date.toISOString().split('T')[0];
+            }
+        } catch (e) { }
+        return ""; // Fallback
+    };
+
     const handleChange = (field: keyof JobFormData, value: any) => {
         // DETECT JSON: If user pastes a JSON object, try to parse and strict merge
         if (typeof value === "string" && value.trim().startsWith("{") && value.trim().endsWith("}")) {
