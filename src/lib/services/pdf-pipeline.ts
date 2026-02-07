@@ -84,8 +84,11 @@ export class JobExtractionPipeline {
                     ...(ocrUsed ? ["Processed as Image/Scanned Document (Multimodal)."] : [])
                 ],
                 isScanned: ocrUsed,
-                stage: "complete"
-            };
+                stage: "complete",
+                // Debugging: return a snippet of the text seen by AI so the USER/DEV can see it.
+                // We cast to 'any' to avoid breaking the strict interface yet while debugging.
+                textPreview: extractTextSnippet
+            } as any;
 
         } catch (error: any) {
             console.error("Pipeline Error:", error);

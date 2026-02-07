@@ -61,42 +61,47 @@ export class AIExtractor {
     }
 
     private buildPrompt(text: string): string {
-        return `
-        You are an expert Data Extraction AI. Extract structured data from the Job Notification text below.
-        
+        You are an expert Data Extraction AI.Extract structured data from the Job Notification text below.
+
+            CONTEXT: The input text might be extracted via OCR from a scanned document.It may contain typos, formatting issues, or garbage characters.
+
+                INSTRUCTIONS:
+        1. Fix obvious OCR errors(e.g., "D0te" -> "Date", "202A" -> "2024").
+        2. Infer missing years if implied by context(e.g.current year).
+        3. If a field is not explicitly present, return null.
+
         STRICT RULES:
         1. Return Output EXCLUSIVELY in JSON format.
-        2. Assign a "confidence_score" (0.0 to 1.0) for each major field based on how explicitly it was stated in the text.
-        3. If a value is missing, use null or empty string.
+        2. Assign a "confidence_score"(0.0 to 1.0) for each major field.
 
         REQUIRED JSON SCHEMA:
         {
             "data": {
                 "postName": "string",
-                "shortInfo": "string",
-                "applicationBegin": "YYYY-MM-DD",
-                "lastDateApply": "YYYY-MM-DD",
-                "lastDateFee": "YYYY-MM-DD",
-                "examDate": "string",
-                "minAge": "string",
-                "maxAge": "string",
-                "totalVacancy": "string",
-                "feesObj": [{ "category": "string", "amount": "string" }],
-                "vacancyObj": [{ "postName": "string", "category": "string", "count": "string" }],
-                "educationalQualification": "string (markdown allowed)",
-                "selectionStages": ["string"],
-                "importantLinks": [{ "title": "string", "url": "string" }]
+                    "shortInfo": "string",
+                        "applicationBegin": "YYYY-MM-DD",
+                            "lastDateApply": "YYYY-MM-DD",
+                                "lastDateFee": "YYYY-MM-DD",
+                                    "examDate": "string",
+                                        "minAge": "string",
+                                            "maxAge": "string",
+                                                "totalVacancy": "string",
+                                                    "feesObj": [{ "category": "string", "amount": "string" }],
+                                                        "vacancyObj": [{ "postName": "string", "category": "string", "count": "string" }],
+                                                            "educationalQualification": "string (markdown allowed)",
+                                                                "selectionStages": ["string"],
+                                                                    "importantLinks": [{ "title": "string", "url": "string" }]
             },
-            "warnings": ["string (list of potential issues or missing critical fields)"],
-            "fieldConfidence": {
+            "warnings": ["string"],
+                "fieldConfidence": {
                 "postName": 0.95,
-                "dates": 0.8,
-                "vacancy": 1.0
+                    "dates": 0.8,
+                        "vacancy": 1.0
             }
         }
 
-        INPUT TEXT:
-        ${text.slice(0, 30000)} 
+        INPUT TEXT(Truncated):
+        ${ text.slice(0, 30000) }
         `;
     }
 
@@ -152,7 +157,7 @@ export class AIExtractor {
                 }
             } catch (error: any) {
                 // If it's a safety block or other API issue, text() might fail.
-                console.warn(`Gemini: Failed with '${modelName}': ${error.message}`);
+                console.warn(`Gemini: Failed with '${modelName}': ${ error.message } `);
 
                 // Inspect if it was a safety stop
                 if (error.message?.includes("candidate") || error.message?.includes("safety")) {
@@ -164,7 +169,7 @@ export class AIExtractor {
             }
         }
 
-        throw new Error(`All Gemini models failed. Last error: ${lastError?.message || lastError}`);
+        throw new Error(`All Gemini models failed.Last error: ${ lastError?.message || lastError } `);
     }
 
     private async callGroq(prompt: string): Promise<string> {
@@ -172,7 +177,7 @@ export class AIExtractor {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${this.config.apiKey}`
+                "Authorization": `Bearer ${ this.config.apiKey } `
             },
             body: JSON.stringify({
                 model: this.config.model || "llama-3.3-70b-versatile",
@@ -185,7 +190,7 @@ export class AIExtractor {
         const json = await response.json();
 
         if (json.error) {
-            throw new Error(`Groq API Error: ${json.error.message}`);
+            throw new Error(`Groq API Error: ${ json.error.message } `);
         }
 
         if (!json.choices || !json.choices[0] || !json.choices[0].message) {
@@ -196,7 +201,7 @@ export class AIExtractor {
     }
 
     private async callOllama(prompt: string): Promise<string> {
-        const response = await fetch(`${this.config.baseUrl || "http://127.0.0.1:11434"}/api/generate`, {
+        const response = await fetch(`${ this.config.baseUrl || "http://127.0.0.1:11434" } /api/generate`, {
             method: "POST",
             body: JSON.stringify({
                 model: this.config.model || "llama3",
@@ -213,7 +218,7 @@ export class AIExtractor {
     // --- PARSERS ---
 
     private parseAndValidate(rawString: string): ExtractedData {
-        const clean = rawString.replace(/```json|```/g, "").trim();
+        const clean = rawString.replace(/```json | ```/g, "").trim();
         const first = clean.indexOf("{");
         const last = clean.lastIndexOf("}");
         const jsonStr = clean.substring(first, last + 1);
