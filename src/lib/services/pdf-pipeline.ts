@@ -33,29 +33,30 @@ export class JobExtractionPipeline {
             // If pdf2json returns empty string or very little text, 'isScanned' is true.
 
             let aiResult;
-            let ocrUsed = false;
+            let ocrUsed = extraction.isScanned; // If scanned, we either used Tesseract (in step 1) or will use Gemini
 
             if (extraction.isScanned) {
                 console.log("Pipeline: Scanned PDF detected.");
 
-                // FALLBACK STRATEGY:
-                // 1. If Gemini -> Use Multimodal (Send PDF buffer directly) - FAST & BETTER
-                // 2. If Others -> Use Tesseract (Slower, but necessary for Ollama/Groq) - LEGACY
+                // OPTIMIZATION:
+                // If Gemini is the provider, Ignore the Tesseract result (which might be empty or slow)
+                // and use Multimodal for better quality.
 
                 if ((this.aiExtractor as any).config.provider === "gemini") {
-                    console.log("Pipeline: Using Gemini Multimodal (No Tesseract needed).");
+                    console.log("Pipeline: Using Gemini Multimodal (Better than Tesseract).");
                     aiResult = await this.aiExtractor.extractFromBuffer(fileBuffer, "application/pdf");
-                    ocrUsed = true; // Effectively "OCR'd" by Gemini
+                    ocrUsed = true;
                 } else {
-                    // For Ollama/Groq, we MUST have text. 
-                    // Since we removed Tesseract logic from here to avoid timeouts, we throw error or return what we have.
-                    // IMPORTANT: To keep it light, we are SKIPPING local Tesseract for now.
-                    console.warn("Pipeline: Scanned PDF + Non-Gemini Provider -> Cannot process without heavy OCR.");
-                    return {
-                        success: false,
-                        error: "Scanned PDF detected. Please use Gemini Provider for automatic OCR, or upload a text-based PDF.",
-                        stage: "ocr"
-                    };
+                    // For Ollama/Groq, we rely on the Tesseract result we just got in Step 1 (or failed to get)
+                    if (!extraction.text || extraction.text.length < 50) {
+                        return {
+                            success: false,
+                            error: "Scanned PDF detected but OCR failed to interpret text. Try a clearer PDF.",
+                            stage: "ocr"
+                        };
+                    }
+                    console.log("Pipeline: Using Tesseract OCR Text for AI.");
+                    aiResult = await this.aiExtractor.extract(extraction.text);
                 }
 
             } else {

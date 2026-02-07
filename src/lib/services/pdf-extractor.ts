@@ -1,6 +1,5 @@
 import PDFParser from "pdf2json";
-// Removed Tesseract import to save bundle size and prevent timeouts.
-// We rely on Gemini Multimodal for OCR now.
+import { createWorker } from "tesseract.js";
 
 export type ExtractedContent = {
     text: string;
@@ -10,23 +9,44 @@ export type ExtractedContent = {
 
 /**
  * Extracts text from a Node.js Buffer using pdf2json.
+ * If text is insufficient, triggers OCR (Tesseract.js).
  */
 export async function extractTextFromPDF(buffer: Buffer): Promise<ExtractedContent> {
     try {
+        // 1. Try Native Text
         const text = await parseNativePDF(buffer);
 
         // Header heuristic: If text is extremely short, it's likely scanned.
         const isScanned = text.trim().length < 50;
 
-        return {
-            text: text,
-            isScanned: isScanned,
-            confidence: 1.0
-        };
+        if (!isScanned) {
+            return {
+                text: text,
+                isScanned: false,
+                confidence: 1.0
+            };
+        }
+
+        // 2. Fallback to OCR (Tesseract)
+        console.log("Scanned PDF detected. Starting Local OCR (Tesseract)...");
+        try {
+            const ocrResult = await performOCR(buffer);
+            return {
+                text: ocrResult.text,
+                isScanned: true,
+                confidence: ocrResult.confidence / 100
+            };
+        } catch (ocrError: any) {
+            console.error("OCR Failed:", ocrError);
+            return {
+                text: text, // Return what we have (even if empty)
+                isScanned: true,
+                confidence: 0
+            };
+        }
 
     } catch (e) {
         console.warn("PDF Parse Error:", e);
-        // If it fails completely, mark as scanned so Pipeline tries Multimodal.
         return {
             text: "",
             isScanned: true,
@@ -59,4 +79,17 @@ async function parseNativePDF(buffer: Buffer): Promise<string> {
 
         parser.parseBuffer(buffer);
     });
+}
+
+/**
+ * Helper: OCR using Tesseract.js
+ */
+async function performOCR(buffer: Buffer): Promise<{ text: string; confidence: number }> {
+    const worker = await createWorker('eng');
+    const ret = await worker.recognize(buffer);
+    await worker.terminate();
+    return {
+        text: ret.data.text,
+        confidence: ret.data.confidence
+    };
 }
