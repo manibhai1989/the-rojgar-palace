@@ -104,29 +104,59 @@ export class AIExtractor {
 
     private async callGemini(prompt: string, buffer?: Buffer, mimeType?: string): Promise<string> {
         const genAI = new GoogleGenerativeAI(this.config.apiKey || "");
-        // Use configured model or fallback to a specific stable version
-        const modelName = this.config.model || "gemini-1.5-flash-001";
-        const model = genAI.getGenerativeModel({ model: modelName });
 
-        let result;
-        if (buffer && mimeType) {
-            // Multimodal Request
-            console.log("Calling Gemini with Inline Data (PDF/Image)...");
-            result = await model.generateContent([
-                prompt.replace("<<IDENTIFY_FROM_ATTACHMENT>>", "Extract data from the attached document."),
-                {
-                    inlineData: {
-                        data: buffer.toString("base64"),
-                        mimeType: mimeType
-                    }
+        // List of models to try in order
+        const candidates = [
+            this.config.model,            // Try configured model first
+            "gemini-1.5-flash",           // Standard Flash
+            "gemini-1.5-flash-latest",    // Flash Latest
+            "gemini-1.5-pro",             // Fallback to Pro
+            "gemini-pro-vision",          // Legacy Multimodal
+            "gemini-pro"                  // Legacy Text
+        ].filter(Boolean) as string[];
+
+        // Remove duplicates
+        const models = [...new Set(candidates)];
+
+        console.log("Gemini: Attempting models:", models);
+
+        let lastError: any = null;
+
+        for (const modelName of models) {
+            try {
+                console.log(`Gemini: Trying model '${modelName}'...`);
+                const model = genAI.getGenerativeModel({ model: modelName });
+
+                let result;
+                if (buffer && mimeType) {
+                    // Multimodal Request
+                    result = await model.generateContent([
+                        prompt.replace("<<IDENTIFY_FROM_ATTACHMENT>>", "Extract data from the attached document."),
+                        {
+                            inlineData: {
+                                data: buffer.toString("base64"),
+                                mimeType: mimeType
+                            }
+                        }
+                    ]);
+                } else {
+                    // Text Request
+                    result = await model.generateContent(prompt);
                 }
-            ]);
-        } else {
-            // Text Request
-            result = await model.generateContent(prompt);
+
+                const responseText = result.response.text();
+                if (responseText) {
+                    console.log(`Gemini: Success with '${modelName}'!`);
+                    return responseText;
+                }
+            } catch (error: any) {
+                console.warn(`Gemini: Failed with '${modelName}': ${error.message}`);
+                lastError = error;
+                // Continue to next model
+            }
         }
 
-        return result.response.text();
+        throw new Error(`All Gemini models failed. Last error: ${lastError?.message}`);
     }
 
     private async callGroq(prompt: string): Promise<string> {
