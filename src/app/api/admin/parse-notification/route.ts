@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { JobExtractionPipeline } from "@/lib/services/pdf-pipeline";
 
-// Force Node.js runtime for Tesseract.js file handling
+// Force Node.js runtime for Tesseract.js file handling (and now Buffer handling)
 export const runtime = 'nodejs';
+export const maxDuration = 60; // Increase timeout to 60s (Vercel Pro/Hobby limits vary)
 
 export async function POST(req: NextRequest) {
     console.log("API: Job Extraction Pipeline Triggered");

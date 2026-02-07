@@ -24,12 +24,28 @@ export class AIExtractor {
 
     async extract(text: string): Promise<ExtractedData> {
         const prompt = this.buildPrompt(text);
+        return this.runExtraction(prompt);
+    }
 
+    /**
+     * Multimodal Extraction (Buffer -> AI)
+     * Bypasses local OCR by sending the file directly to Gemini.
+     */
+    async extractFromBuffer(buffer: Buffer, mimeType: string): Promise<ExtractedData> {
+        if (this.config.provider !== "gemini") {
+            throw new Error("Multimodal extraction (Direct PDF) is only supported by Gemini.");
+        }
+
+        const prompt = this.buildPrompt("<<IDENTIFY_FROM_ATTACHMENT>>"); // Special marker or just empty
+        return this.runExtraction(prompt, buffer, mimeType);
+    }
+
+    private async runExtraction(prompt: string, buffer?: Buffer, mimeType?: string): Promise<ExtractedData> {
         try {
             let jsonString = "";
 
             if (this.config.provider === "gemini") {
-                jsonString = await this.callGemini(prompt);
+                jsonString = await this.callGemini(prompt, buffer, mimeType);
             } else if (this.config.provider === "groq") {
                 jsonString = await this.callGroq(prompt);
             } else if (this.config.provider === "ollama") {
@@ -86,11 +102,28 @@ export class AIExtractor {
 
     // --- PROVIDER IMPLEMENTATIONS ---
 
-    private async callGemini(prompt: string): Promise<string> {
+    private async callGemini(prompt: string, buffer?: Buffer, mimeType?: string): Promise<string> {
         const genAI = new GoogleGenerativeAI(this.config.apiKey || "");
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-        const result = await model.generateContent(prompt);
+        let result;
+        if (buffer && mimeType) {
+            // Multimodal Request
+            console.log("Calling Gemini with Inline Data (PDF/Image)...");
+            result = await model.generateContent([
+                prompt.replace("<<IDENTIFY_FROM_ATTACHMENT>>", "Extract data from the attached document."),
+                {
+                    inlineData: {
+                        data: buffer.toString("base64"),
+                        mimeType: mimeType
+                    }
+                }
+            ]);
+        } else {
+            // Text Request
+            result = await model.generateContent(prompt);
+        }
+
         return result.response.text();
     }
 
