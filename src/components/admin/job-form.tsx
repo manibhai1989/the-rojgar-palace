@@ -374,13 +374,25 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
             try {
                 const parsed = JSON.parse(value);
                 if (typeof parsed === "object" && parsed !== null) {
-                    // Check if it looks roughly like our data schema (optional, but good for safety)
-                    // For now, allow merging any valid object properties that exist in defaultState
+
+                    // NORMALIZE IT FIRST
+                    const normalized = normalizeJobData(parsed);
+
+                    // Merge normalized data
                     const merged: any = { ...formData };
                     let hasChanges = false;
 
+                    // Merge normalized fields
+                    Object.keys(normalized).forEach(key => {
+                        if (normalized[key as keyof JobFormData] !== undefined) {
+                            merged[key] = normalized[key as keyof JobFormData];
+                            hasChanges = true;
+                        }
+                    });
+
+                    // ALSO attempt direct merge for keys that might match exactly (if user pasted exact schema)
                     Object.keys(parsed).forEach(key => {
-                        if (key in defaultState) {
+                        if (key in defaultState && normalized[key as keyof JobFormData] === undefined) {
                             merged[key] = parsed[key];
                             hasChanges = true;
                         }
@@ -388,7 +400,7 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
 
                     if (hasChanges) {
                         setFormData(merged);
-                        toast.success("JSON Data Applied!");
+                        toast.success("Structure Mapped & Data Applied!");
                         return; // Stop normal update
                     }
                 }
