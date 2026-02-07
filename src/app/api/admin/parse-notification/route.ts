@@ -19,11 +19,22 @@ export async function POST(req: NextRequest) {
         const arrayBuffer = await file.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
 
-        // Initialize Pipeline (Default to Gemini)
-        const pipeline = new JobExtractionPipeline(
-            "gemini",
-            process.env.GOOGLE_API_KEY
-        );
+        // Determine Provider
+        const provider = (process.env.NEXT_PUBLIC_AI_PROVIDER as any) || "gemini";
+        const apiKey = provider === "gemini" ? process.env.GOOGLE_API_KEY :
+            provider === "groq" ? process.env.GROQ_API_KEY :
+                undefined;
+
+        // Validation for Gemini
+        if (provider === "gemini" && !apiKey) {
+            return NextResponse.json({
+                error: "Configuration Error",
+                message: "GOOGLE_API_KEY is missing in .env.local. Cannot use Gemini."
+            }, { status: 500 });
+        }
+
+        // Initialize Pipeline
+        const pipeline = new JobExtractionPipeline(provider, apiKey);
 
         console.log("Running Pipeline...");
         const result = await pipeline.process(buffer);
