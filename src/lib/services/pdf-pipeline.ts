@@ -15,10 +15,16 @@ export class JobExtractionPipeline {
     private aiExtractor: AIExtractor;
 
     constructor(provider: AIProvider = "gemini", apiKey?: string) {
+        // Select appropriate default model based on provider
+        let defaultModel;
+        if (provider === "gemini") defaultModel = "gemini-1.5-flash-001";
+        else if (provider === "groq") defaultModel = "llama-3.3-70b-versatile";
+        else if (provider === "ollama") defaultModel = "llama3";
+
         this.aiExtractor = new AIExtractor({
             provider,
             apiKey,
-            model: "gemini-1.5-flash-001" // Use specific version to avoid 404 on some API endpoints
+            model: defaultModel
         });
     }
 
