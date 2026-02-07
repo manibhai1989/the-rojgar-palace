@@ -287,43 +287,109 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
     const normalizeJobData = (input: any): Partial<JobFormData> => {
         const mapped: Partial<JobFormData> = {};
 
-        // 1. Handle "recruitment_notification" wrapper if present
-        const root = input.recruitment_notification || input;
+        // Helper to find key fuzzily
+        const findKey = (obj: any, keyword: string) => {
+            if (!obj || typeof obj !== 'object') return null;
+            const key = Object.keys(obj).find(k => k.toLowerCase().includes(keyword));
+            return key ? obj[key] : null;
+        };
 
-        // 2. Map Dates
-        const dates = root.important_dates || root.ImportantDates || {};
-        const regWindow = dates.registration_window || {};
+        // 1. Identify Root (Handle wrappers like "recruitment_2026")
+        let root = input;
+        const keys = Object.keys(input);
 
-        if (regWindow.start_date) mapped.applicationBegin = formatDateForInput(regWindow.start_date);
-        else if (dates.ApplicationBegin) mapped.applicationBegin = formatDateForInput(dates.ApplicationBegin);
-
-        if (regWindow.end_date) mapped.lastDateApply = formatDateForInput(regWindow.end_date);
-        else if (dates.LastDateApply) mapped.lastDateApply = formatDateForInput(dates.LastDateApply);
-
-        // Exam Date
-        if (dates.exam_date) mapped.examDate = dates.exam_date;
-
-        // 3. Map Vacancies
-        const vacDetails = root.vacancy_details || root;
-        if (vacDetails.total_vacancies) mapped.totalVacancy = String(vacDetails.total_vacancies);
-
-        if (Array.isArray(vacDetails.positions)) {
-            mapped.vacancyObj = vacDetails.positions.map((p: any) => ({
-                postName: p.post_name || "Post",
-                category: p.grade ? `Grade ${p.grade}` : "Total",
-                count: p.vacancies || 0
-            }));
+        // If input has only 1 key and it's an object, dive in (unless it's a known field)
+        if (keys.length === 1 && typeof input[keys[0]] === 'object' && !['postName', 'vacancyObj', 'feesObj'].includes(keys[0])) {
+            root = input[keys[0]];
         }
 
+        // Also check for common wrapper names if multiple keys exist
+        const wrapperKey = keys.find(k =>
+            k.toLowerCase().includes('recruitment') ||
+            k.toLowerCase().includes('notification') ||
+            k.toLowerCase().includes('job_details')
+        );
+        if (wrapperKey && typeof input[wrapperKey] === 'object') {
+            root = { ...input, ...input[wrapperKey] }; // Merge to keep top-level keys too
+        }
+
+        // 2. Map Dates
+        // Look for "dates", "schedule", "window"
+        const datesObj = findKey(root, 'date') || findKey(root, 'schedule') || findKey(root, 'important') || root;
+
+        // Try precise keys first, then fuzzy
+        const startRaw = datesObj.registration_window?.start_date || findKey(datesObj, 'start') || datesObj.ApplicationBegin;
+        if (startRaw) mapped.applicationBegin = formatDateForInput(String(startRaw));
+
+        const endRaw = datesObj.registration_window?.end_date || findKey(datesObj, 'end') || findKey(datesObj, 'last') || datesObj.LastDateApply;
+        if (endRaw) mapped.lastDateApply = formatDateForInput(String(endRaw));
+
+        const examRaw = datesObj.exam_date || findKey(datesObj, 'exam');
+        if (examRaw) mapped.examDate = String(examRaw);
+
+        // 3. Map Vacancies & Qualifications (Often in the same list of posts)
+        // Find any array that looks like a list of positions
+        let positionsArray: any[] = [];
+
+        // Check standard specific keys first
+        if (root.vacancy_details?.positions) positionsArray = root.vacancy_details.positions;
+        else if (Array.isArray(root.grade_b_positions)) positionsArray = root.grade_b_positions; // User specific
+        else {
+            // Heuristic: Find ANY array where items have "post" or "name" or "vacancy"
+            Object.values(root).forEach((val: any) => {
+                if (Array.isArray(val) && val.length > 0) {
+                    const sample = val[0];
+                    if (sample && typeof sample === 'object' && (sample.post || sample.post_name || sample.PostName || sample.postName)) {
+                        positionsArray = [...positionsArray, ...val];
+                    }
+                }
+            });
+        }
+
+        if (positionsArray.length > 0) {
+            // Map to Vacancy Object
+            mapped.vacancyObj = positionsArray.map((p: any) => ({
+                postName: p.post || p.post_name || p.PostName || p.postName || "Post",
+                category: p.grade ? `Grade ${p.grade}` : (p.category || "Total"),
+                count: p.vacancies || p.vacancy || p.count || 0
+            }));
+
+            // Map to Educational Qual (if rich data present)
+            const eduList = positionsArray.map((p: any) => {
+                const name = p.post || p.post_name || p.PostName || p.postName;
+                const edu = p.education || p.qualification;
+                const age = p.age_limit || p.age || p.ageLimit;
+                const exp = p.experience || p.essential_experience;
+                const pct = p.min_percentage;
+
+                if (edu || age || exp) {
+                    let desc = `**${name}**`;
+                    if (edu) desc += `\n- Education: ${edu} ${pct ? `(${pct})` : ''}`;
+                    if (age) desc += `\n- Age Limit: ${age}`;
+                    if (exp) desc += `\n- Experience: ${exp}`;
+                    return desc;
+                }
+                return null;
+            }).filter(Boolean);
+
+            if (eduList.length > 0) {
+                mapped.educationalQualification = eduList.join('\n\n');
+            }
+        }
+
+        // Sub-case: Total Vacancy
+        const totalVac = root.vacancy_details?.total_vacancies || root.totalVacancy || root.TotalVacancy || findKey(root, 'total_vacanc');
+        if (totalVac) mapped.totalVacancy = String(totalVac);
+
+
         // 4. Map Fees
-        const fees = root.application_fees || root;
-        // If it's an object with keys like "SC_ST_PwBD", map to array
-        if (typeof fees === 'object' && !Array.isArray(fees)) {
+        const feesObj = findKey(root, 'fee') || root.application_fees;
+        if (feesObj && typeof feesObj === 'object' && !Array.isArray(feesObj)) {
             const feesArray: { category: string; amount: string }[] = [];
-            Object.entries(fees).forEach(([key, val]) => {
-                if (key !== 'note' && typeof val === 'string') {
-                    // Clean key
-                    const catName = key.replace(/_/g, ' ').replace('PwBD', 'PH').replace('GEN', 'General');
+            Object.entries(feesObj).forEach(([key, val]) => {
+                const lowerKey = key.toLowerCase();
+                if (lowerKey !== 'note' && typeof val === 'string' && !lowerKey.includes('date')) {
+                    const catName = key.replace(/_/g, ' ').replace(/PwBD/i, 'PH').replace(/GEN/i, 'General');
                     feesArray.push({ category: catName, amount: val as string });
                 }
             });
@@ -331,25 +397,15 @@ export default function JobForm({ initialData, onSubmit, submitLabel = "Publish 
         }
 
         // 5. Selection Stages
-        const selection = root.selection_procedure;
-        if (selection && typeof selection === 'object') {
+        const selectionObj = findKey(root, 'selection') || findKey(root, 'procedure');
+        if (selectionObj && typeof selectionObj === 'object') {
             const stages: string[] = [];
-            Object.entries(selection).forEach(([key, val]) => {
-                if (key !== 'negative_marking' && typeof val === 'string') {
+            Object.entries(selectionObj).forEach(([key, val]) => {
+                if (typeof val === 'string' && !key.includes('negative')) {
                     stages.push(`${key.replace(/_/g, ' ')}: ${val}`);
                 }
             });
             if (stages.length > 0) mapped.selectionStages = stages;
-        }
-
-        // 6. Educational Qual
-        const elig = root.eligibility_criteria;
-        if (elig) {
-            if (Array.isArray(elig.posts)) {
-                mapped.educationalQualification = elig.posts.map((p: any) =>
-                    `${p.post_name}:\n- Education: ${p.education}\n- Age: ${p.age_limit}\n- Exp: ${p.experience || 'N/A'}`
-                ).join('\n\n');
-            }
         }
 
         return mapped;
