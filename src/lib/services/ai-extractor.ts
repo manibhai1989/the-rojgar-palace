@@ -104,7 +104,9 @@ export class AIExtractor {
 
     private async callGemini(prompt: string, buffer?: Buffer, mimeType?: string): Promise<string> {
         const genAI = new GoogleGenerativeAI(this.config.apiKey || "");
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        // Use configured model or fallback to a specific stable version
+        const modelName = this.config.model || "gemini-1.5-flash-001";
+        const model = genAI.getGenerativeModel({ model: modelName });
 
         let result;
         if (buffer && mimeType) {

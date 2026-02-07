@@ -18,7 +18,7 @@ export class JobExtractionPipeline {
         this.aiExtractor = new AIExtractor({
             provider,
             apiKey,
-            model: "gemini-1.5-flash"
+            model: "gemini-1.5-flash-001" // Use specific version to avoid 404 on some API endpoints
         });
     }
 
