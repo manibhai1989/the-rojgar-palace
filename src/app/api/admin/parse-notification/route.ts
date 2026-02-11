@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { JobExtractionPipeline } from "@/lib/services/pdf-pipeline";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 // Force Node.js runtime for Tesseract.js file handling (and now Buffer handling)
 export const runtime = 'nodejs';
@@ -7,6 +9,15 @@ export const maxDuration = 60; // Increase timeout to 60s (Vercel Pro/Hobby limi
 
 export async function POST(req: NextRequest) {
     console.log("API: Job Extraction Pipeline Triggered");
+
+    // SECURITY: Verify authentication before processing
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+        return NextResponse.json({
+            error: "Unauthorized",
+            message: "Authentication required to access this endpoint"
+        }, { status: 401 });
+    }
 
     try {
         const formData = await req.formData();

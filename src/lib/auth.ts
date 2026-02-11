@@ -17,18 +17,29 @@ export const authOptions: NextAuthOptions = {
                 password: { label: "Password", type: "password" }
             },
             async authorize(credentials) {
-                // Hardcoded admin checking
+                // SECURITY: Validate environment variables are properly configured
+                if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) {
+                    console.error("SECURITY ERROR: ADMIN_EMAIL or ADMIN_PASSWORD not configured");
+                    return null;
+                }
+
+                // Validate credentials
+                if (!credentials?.email || !credentials?.password) {
+                    return null;
+                }
+
+                // Admin authentication - NO fallback password for security
                 if (
-                    credentials?.email === (process.env.ADMIN_EMAIL || "admin@thejobpalace.in") &&
-                    (credentials?.password === process.env.ADMIN_PASSWORD || credentials?.password === "admin123")
+                    credentials.email === process.env.ADMIN_EMAIL &&
+                    credentials.password === process.env.ADMIN_PASSWORD
                 ) {
                     try {
                         // Sync with database to ensure user exists for profile features
                         const user = await prisma.user.upsert({
-                            where: { email: process.env.ADMIN_EMAIL || "admin@thejobpalace.in" },
+                            where: { email: process.env.ADMIN_EMAIL },
                             update: {},
                             create: {
-                                email: process.env.ADMIN_EMAIL || "admin@thejobpalace.in",
+                                email: process.env.ADMIN_EMAIL,
                                 name: "Admin User",
                                 image: "",
                             },
@@ -46,7 +57,7 @@ export const authOptions: NextAuthOptions = {
                         return {
                             id: "1",
                             name: "Admin User",
-                            email: process.env.ADMIN_EMAIL || "admin@thejobpalace.in",
+                            email: process.env.ADMIN_EMAIL,
                         };
                     }
                 }
