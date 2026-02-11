@@ -1,21 +1,25 @@
-# Apply RLS Migration to Supabase
+# Row Level Security Migration
+
+This migration enables Row Level Security (RLS) on all database tables.
 
 ## Option 1: Using Supabase Dashboard (Recommended)
 
-1. Go to your Supabase project dashboard: https://mcryxbvedntuhazozrif.supabase.co
+1. Go to your Supabase project dashboard
 2. Navigate to **SQL Editor** in the left sidebar
 3. Click **New Query**
 4. Copy and paste the entire contents of `prisma/migrations/20260211_enable_rls/migration.sql`
 5. Click **Run** to execute the migration
 6. Verify success (should see "Success. No rows returned")
 
-## Option 2: Using psql Command Line
+## Manual Application (Optional)
 
-Run this command from your terminal:
+If you prefer to apply manually using `psql`:
 
 ```bash
-psql "postgresql://postgres.mcryxbvedntuhazozrif:DbQ18pUELaZ4SWjr@aws-1-ap-southeast-2.pooler.supabase.com:5432/postgres" -f "prisma/migrations/20260211_enable_rls/migration.sql"
+psql "postgresql://YOUR_USER:YOUR_PASSWORD@YOUR_HOST:5432/postgres" -f "prisma/migrations/20260211_enable_rls/migration.sql"
 ```
+
+Replace with your actual database connection string from `.env.local`
 
 ## Option 3: Using Supabase CLI
 
