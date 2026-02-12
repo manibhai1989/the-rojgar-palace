@@ -65,7 +65,10 @@ export async function getDashboardStats(): Promise<DashboardStats> {
             applications: 0,
             revenue: 0,
             recentActivities: [],
-            systemHealth: false
+            systemHealth: false,
+            // @ts-ignore - added for debugging
+            errorMessage: (error as Error).message
         }
     }
+
 }

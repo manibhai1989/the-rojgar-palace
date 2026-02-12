@@ -276,11 +276,21 @@ export default function AdminDashboardPage() {
                                     )}>
                                         <h4 className="text-sm font-bold text-foreground mb-1">System Health</h4>
                                         <p className="text-xs text-muted-foreground mb-3">
-                                            {loading ? "Checking system status..." : stats.systemHealth ? "All systems operational. Database connected." : "System Warning: Database issue detected."}
+                                            {loading
+                                                ? "Checking system status..."
+                                                : stats.systemHealth
+                                                    ? "All systems operational. Database connected."
+                                                    : (stats as any).errorMessage
+                                                        ? `System Warning: ${(stats as any).errorMessage}`
+                                                        : "System Warning: Database issue detected."
+                                            }
                                         </p>
-                                        <Button size="sm" variant="outline" className="w-full border-blue-500/30 text-blue-500 hover:bg-blue-500/10">
-                                            View System Logs
-                                        </Button>
+
+                                        <Link href="/admin/audit-logs" className="w-full">
+                                            <Button size="sm" variant="outline" className="w-full border-blue-500/30 text-blue-500 hover:bg-blue-500/10">
+                                                View System Logs
+                                            </Button>
+                                        </Link>
                                     </div>
                                 </div>
                             </CardContent>
