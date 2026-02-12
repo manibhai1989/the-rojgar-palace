@@ -10,6 +10,7 @@ if (process.env.NODE_ENV !== "production") {
     console.log(`[Prisma] Attempting initialization with host: ${host}`);
 }
 
+
 export const prisma =
     new PrismaClient({
         log: ["error", "warn"],
@@ -19,6 +20,7 @@ export const prisma =
             },
         },
     });
+
 
 // In development, we usually attach to global, but we are bypassing it 
 // temporarily to ensure a fresh connection is established after your restart.
