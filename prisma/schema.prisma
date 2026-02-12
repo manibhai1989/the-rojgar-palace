@@ -1,69 +1,197 @@
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client-js"
   engineType = "library"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  twoFactorSecret String?
-  twoFactorEnabled Boolean @default(false)
-  
-  accounts      Account[]
-  sessions      Session[]
-  applications  Application[]
-  bookmarks     Bookmark[]
-  profile       Profile?
-  auditLogs     AuditLog[]
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model Account {
+  id                String  @id
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  User              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
 }
 
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model Admission {
+  id           String   @id
+  title        String
+  organization String
+  link         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model AdmitCard {
+  id           String   @id
+  title        String
+  organization String
+  link         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model AnswerKey {
+  id           String   @id
+  title        String
+  organization String
+  link         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model Application {
+  id        String   @id
+  userId    String
+  jobId     String
+  status    String   @default("STARTED")
+  steps     Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  Job       Job      @relation(fields: [jobId], references: [id])
+  User      User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, jobId])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model AuditLog {
-  id        String   @id @default(cuid())
+  id        String   @id
   userId    String
   action    String
   details   String?
   ipAddress String?
   userAgent String?
   createdAt DateTime @default(now())
-  
-  user      User     @relation(fields: [userId], references: [id])
+  User      User     @relation(fields: [userId], references: [id])
 }
 
-model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model Bookmark {
+  id        String   @id
+  userId    String
+  jobId     String
+  createdAt DateTime @default(now())
+  Job       Job      @relation(fields: [jobId], references: [id])
+  User      User     @relation(fields: [userId], references: [id])
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
+  @@unique([userId, jobId])
 }
 
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model Job {
+  id                 String        @id
+  title              String
+  slug               String        @unique
+  organization       String
+  department         String?
+  logo               String?
+  category           String
+  vacanciesCount     Int
+  vacanciesDetail    Json?
+  salaryRange        String?
+  location           String?
+  shortInfo          String?
+  notificationDate   DateTime?
+  startDate          DateTime?
+  endDate            DateTime
+  feeDeadline        DateTime?
+  examDate           DateTime?
+  admitCardDate      DateTime?
+  resultDate         DateTime?
+  eligibility        Json?
+  applicationProcess Json?
+  examPattern        Json?
+  syllabus           Json?
+  selectionProcess   Json?
+  fees               Json?
+  isUrgent           Boolean       @default(false)
+  isNew              Boolean       @default(true)
+  officialUrl        String?
+  notificationPdf    String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime
+  Application        Application[]
+  Bookmark           Bookmark[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model Profile {
+  id            String  @id
+  userId        String  @unique
+  age           Int?
+  qualification String?
+  experience    Int?
+  category      String?
+  User          User    @relation(fields: [userId], references: [id])
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model Result {
+  id           String   @id
+  title        String
+  organization String
+  link         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model Session {
-  id           String   @id @default(cuid())
+  id           String   @id
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model Syllabus {
+  id           String   @id
+  title        String
+  organization String
+  link         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model User {
+  id               String        @id
+  name             String?
+  email            String?       @unique
+  emailVerified    DateTime?
+  image            String?
+  twoFactorSecret  String?
+  twoFactorEnabled Boolean       @default(false)
+  Account          Account[]
+  Application      Application[]
+  AuditLog         AuditLog[]
+  Bookmark         Bookmark[]
+  Profile          Profile?
+  Session          Session[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model VerificationToken {
   identifier String
   token      String   @unique
@@ -71,134 +199,3 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
-
-model Profile {
-  id            String   @id @default(cuid())
-  userId        String   @unique
-  user          User     @relation(fields: [userId], references: [id])
-  age           Int?
-  qualification String?
-  experience    Int?
-  category      String?
-}
-
-model Job {
-  id                String       @id @default(cuid())
-  title             String
-  slug              String       @unique
-  organization      String
-  department        String?
-  logo              String?
-  category          String       // Central, State, Bank, etc.
-  vacanciesCount    Int
-  vacanciesDetail   Json?        // Gender-wise/Category-wise breakdown
-  salaryRange       String?
-  location          String?
-  shortInfo         String?      @db.Text
-  
-  // Dates
-  notificationDate  DateTime?
-  startDate         DateTime?
-  endDate           DateTime
-  feeDeadline       DateTime?
-  examDate          DateTime?
-  admitCardDate     DateTime?
-  resultDate        DateTime?
-  
-  // Content
-  eligibility       Json?        // Age, Education, Experience criteria
-  applicationProcess Json?       // Step-by-step assistant
-  examPattern       Json?        // Sections, Duration, Negative marking
-  syllabus          Json?        // List of topics
-  selectionProcess  Json?        // Stages overview
-  
-  // Fees
-  fees              Json?        // Category-wise fees
-  
-  // Meta
-  isUrgent          Boolean      @default(false)
-  isNew             Boolean      @default(true)
-  officialUrl       String?
-  notificationPdf   String?
-  
-  createdAt         DateTime     @default(now())
-  updatedAt         DateTime     @updatedAt
-  
-  applications      Application[]
-  bookmarks         Bookmark[]
-}
-
-model Application {
-  id        String   @id @default(cuid())
-  userId    String
-  jobId     String
-  status    String   @default("STARTED") // STARTED, APPLIED, DOCUMENTS_SUBMITTED, ADMIT_CARD_DOWNLOADED, RESULT_CHECKED
-  steps     Json?    // Tracking progress through steps
-  user      User     @relation(fields: [userId], references: [id])
-  job       Job      @relation(fields: [jobId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([userId, jobId])
-}
-
-model Bookmark {
-  id        String   @id @default(cuid())
-  userId    String
-  jobId     String
-  user      User     @relation(fields: [userId], references: [id])
-  job       Job      @relation(fields: [jobId], references: [id])
-  createdAt DateTime @default(now())
-
-  @@unique([userId, jobId])
-}
-
-model AdmitCard {
-  id           String   @id @default(cuid())
-  title        String
-  organization String
-  link         String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-}
-
-model Result {
-  id           String   @id @default(cuid())
-  title        String
-  organization String
-  link         String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-}
-
-model AnswerKey {
-  id           String   @id @default(cuid())
-  title        String
-  organization String
-  link         String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-}
-
-model Syllabus {
-  id           String   @id @default(cuid())
-  title        String
-  organization String
-  link         String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-}
-
-model Admission {
-  id           String   @id @default(cuid())
-  title        String
-  organization String
-  link         String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-}
-
-
-
-
-
