@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: {
+      allowedOrigins: ["localhost:3000", "therojgarpalace.com", "*.therojgarpalace.com"]
+    },
+    optimizePackageImports: ['lucide-react', 'date-fns', 'zod']
+  },
   compress: true,
   images: {
     formats: ["image/avif", "image/webp"],
