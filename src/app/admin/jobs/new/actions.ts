@@ -11,6 +11,7 @@ import {
     createValidationResult,
     type ValidationResult,
 } from "@/lib/security/validation";
+import { z } from "zod";
 import {
     createErrorResponse,
     createSuccessResponse,
@@ -53,62 +54,56 @@ interface JobFormData {
 // ============================================================================
 
 /**
- * Validate job creation data
+ * Validate job creation data using explicit Zod schemas
  */
+const jobSchema = z.object({
+    postName: z.string().min(3, "Post name must be at least 3 characters").max(200, "Post name must not exceed 200 characters"),
+    totalVacancy: z.union([z.string(), z.number()]).transform(v => parseInt(String(v), 10)).pipe(z.number().min(0).max(1000000)),
+    shortInfo: z.string().min(10, "Short info must be at least 10 characters").max(500, "Short info must not exceed 500 characters"),
+    applicationBegin: z.string().optional().nullable(),
+    lastDateApply: z.string().min(1, 'Last date to apply is required'),
+    lastDateFee: z.string().optional().nullable(),
+    examDate: z.string().optional().nullable(),
+    minAge: z.union([z.string(), z.number()]).optional().nullable(),
+    maxAge: z.union([z.string(), z.number()]).optional().nullable(),
+    eligibilityObj: z.any().optional(),
+    feesObj: z.array(z.record(z.string(), z.any())).optional(),
+    vacancyObj: z.array(z.record(z.string(), z.any())).optional(),
+    importantLinks: z.array(z.object({
+        title: z.string().max(150).optional(),
+        url: z.string().max(500).optional()
+    })).optional(),
+    customDates: z.array(z.object({
+        label: z.string().max(100).optional(),
+        value: z.string().max(100).optional()
+    })).optional(),
+    ageLimitDetails: z.object({
+        calculateDate: z.string().max(50).optional(),
+        relaxation: z.string().max(200).optional()
+    }).optional().nullable(),
+    selectionStages: z.array(z.string().max(500)).optional(),
+    educationalQualification: z.string().max(10000).optional(),
+    extraDetails: z.array(z.object({
+        title: z.string().max(150).optional(),
+        content: z.string().max(5000).optional()
+    })).optional()
+});
+
 function validateJobData(data: any): ValidationResult {
+    const parsed = jobSchema.safeParse(data);
+
+    if (parsed.success) {
+        return createValidationResult({});
+    }
+
     const errors: Record<string, string> = {};
-
-    // Required: Post Name
-    if (!data.postName || typeof data.postName !== 'string') {
-        errors.postName = 'Post name is required';
-    } else if (data.postName.trim().length < 3) {
-        errors.postName = 'Post name must be at least 3 characters';
-    } else if (data.postName.length > 200) {
-        errors.postName = 'Post name must not exceed 200 characters';
-    }
-
-    // Required: Total Vacancy
-    const vacancyCount = validateInteger(data.totalVacancy, 0, 1000000);
-    if (vacancyCount === null) {
-        errors.totalVacancy = 'Total vacancy must be a valid number between 0 and 1,000,000';
-    }
-
-    // Required: Short Info
-    if (!data.shortInfo || typeof data.shortInfo !== 'string') {
-        errors.shortInfo = 'Short info is required';
-    } else if (data.shortInfo.trim().length < 10) {
-        errors.shortInfo = 'Short info must be at least 10 characters';
-    } else if (data.shortInfo.length > 500) {
-        errors.shortInfo = 'Short info must not exceed 500 characters';
-    }
-
-    // Required: Last Date to Apply
-    // CHECK: Loosened validation here, as we parse it safely later.
-    // If it's missing, we still flag it, but we log exactly what's wrong.
-    if (!data.lastDateApply) {
-        errors.lastDateApply = 'Last date to apply is required';
-        console.error("Validation Failed: Missing lastDateApply. Received:", data.lastDateApply); // Debug Log
-    }
-
-    // Optional: Age validation
-    if (data.minAge !== undefined && data.minAge !== null && data.minAge !== '') {
-        const minAge = validateInteger(data.minAge, 0, 100);
-        if (minAge === null) {
-            // errors.minAge = 'Minimum age must be between 0 and 100'; // IGNORE AGE VALIDATION ERRORS FOR NOW (Dynamic Storage)
+    parsed.error.issues.forEach((err: any) => {
+        if (err.path[0]) {
+            errors[err.path[0] as string] = err.message;
         }
-    }
+    });
 
-    if (data.maxAge !== undefined && data.maxAge !== null && data.maxAge !== '') {
-        const maxAge = validateInteger(data.maxAge, 1, 100);
-        if (maxAge === null) {
-            // errors.maxAge = 'Maximum age must be between 1 and 100'; // IGNORE AGE VALIDATION ERRORS FOR NOW
-        }
-    }
-
-    if (Object.keys(errors).length > 0) {
-        console.error("Validation Errors:", errors);
-    }
-
+    console.error("Zod Validation Errors:", errors);
     return createValidationResult(errors);
 }
 

@@ -70,7 +70,7 @@ export default function JpgToPdfPage() {
 
             const reader = new FileReader();
             reader.onload = (e) => {
-                const img = new Image();
+                const img = new window.Image();
                 img.onload = () => {
                     setImages((prev) => [
                         ...prev,

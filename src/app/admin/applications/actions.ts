@@ -2,6 +2,10 @@
 
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/security/auth";
+import { z } from "zod";
+
+const idSchema = z.string().min(5);
+const statusSchema = z.string().min(1).max(50);
 
 export async function getApplications() {
     try {
@@ -43,10 +47,12 @@ export async function updateApplicationStatus(
 ) {
     try {
         await requireAdmin();
+        const validId = idSchema.parse(applicationId);
+        const validStatus = statusSchema.parse(status);
 
         await prisma.application.update({
-            where: { id: applicationId },
-            data: { status },
+            where: { id: validId },
+            data: { status: validStatus },
         });
 
         return { success: true };
@@ -59,9 +65,10 @@ export async function updateApplicationStatus(
 export async function deleteApplication(applicationId: string) {
     try {
         await requireAdmin();
+        const validId = idSchema.parse(applicationId);
 
         await prisma.application.delete({
-            where: { id: applicationId },
+            where: { id: validId },
         });
 
         return { success: true };

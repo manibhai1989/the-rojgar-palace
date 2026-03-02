@@ -1,13 +1,14 @@
 import prisma from "@/lib/prisma";
 import HomeClient from "@/components/home/HomeClient";
 
-export const revalidate = 0; // Disable cache for real-time updates
+export const revalidate = 60; // Regenerate page in background every 60 seconds (ISR) instead of blasting DB on every render
 
 async function getLatestJobs() {
   try {
     return await prisma.job.findMany({
       take: 10,
       orderBy: { createdAt: "desc" },
+      select: { id: true, title: true, slug: true, organization: true, endDate: true }
     });
   } catch (error) {
     console.error("Error fetching jobs:", error);
@@ -20,6 +21,7 @@ async function getLatestResults() {
     return await prisma.result.findMany({
       take: 10,
       orderBy: { createdAt: "desc" },
+      select: { id: true, title: true, organization: true, link: true, createdAt: true }
     });
   } catch (error) {
     console.error("Error fetching results:", error);
@@ -32,6 +34,7 @@ async function getLatestAdmitCards() {
     return await prisma.admitCard.findMany({
       take: 10,
       orderBy: { createdAt: "desc" },
+      select: { id: true, title: true, organization: true, link: true, createdAt: true }
     });
   } catch (error) {
     console.error("Error fetching admit cards:", error);
@@ -44,6 +47,7 @@ async function getLatestAnswerKeys() {
     return await prisma.answerKey.findMany({
       take: 10,
       orderBy: { createdAt: "desc" },
+      select: { id: true, title: true, organization: true, link: true, createdAt: true }
     });
   } catch (error) {
     console.error("Error fetching answer keys:", error);
@@ -56,6 +60,7 @@ async function getLatestSyllabus() {
     return await prisma.syllabus.findMany({
       take: 10,
       orderBy: { createdAt: "desc" },
+      select: { id: true, title: true, organization: true, link: true, createdAt: true }
     });
   } catch (error) {
     console.error("Error fetching syllabus:", error);
@@ -68,6 +73,7 @@ async function getLatestAdmissions() {
     return await prisma.admission.findMany({
       take: 10,
       orderBy: { createdAt: "desc" },
+      select: { id: true, title: true, organization: true, link: true, createdAt: true }
     });
   } catch (error) {
     console.error("Error fetching admissions:", error);

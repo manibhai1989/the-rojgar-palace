@@ -2,6 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { JobExtractionPipeline } from "@/lib/services/pdf-pipeline";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { z } from "zod";
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ACCEPTED_FILE_TYPES = ["application/pdf"];
+
+// Validate uploaded file using Zod
+const fileSchema = z.object({
+    size: z.number().max(MAX_FILE_SIZE, "File size must be less than 5MB"),
+    type: z.string().refine((type) => ACCEPTED_FILE_TYPES.includes(type), {
+        message: "Only PDF files are allowed",
+    }),
+});
 
 // Force Node.js runtime for Tesseract.js file handling (and now Buffer handling)
 export const runtime = 'nodejs';
@@ -25,6 +37,15 @@ export async function POST(req: NextRequest) {
 
         if (!file) {
             return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
+        }
+
+        // Security: Validate file type and size BEFORE reading to Buffer
+        const parsedFile = fileSchema.safeParse({ size: file.size, type: file.type });
+        if (!parsedFile.success) {
+            return NextResponse.json({
+                error: "Invalid File Document",
+                message: parsedFile.error.issues[0].message
+            }, { status: 400 });
         }
 
         const arrayBuffer = await file.arrayBuffer();

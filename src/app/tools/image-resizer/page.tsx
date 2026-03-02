@@ -26,6 +26,7 @@ import {
     CheckCircle2
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
@@ -126,7 +127,7 @@ export default function ImageResizerPage() {
 
         const reader = new FileReader();
         reader.onload = (e) => {
-            const img = new Image();
+            const img = new window.Image();
             img.onload = () => {
                 setImage(img);
                 setFileInfo({
@@ -151,7 +152,7 @@ export default function ImageResizerPage() {
     };
 
     const loadSampleImage = () => {
-        const img = new Image();
+        const img = new window.Image();
         img.crossOrigin = "anonymous";
         img.onload = () => {
             setImage(img);
@@ -293,10 +294,13 @@ export default function ImageResizerPage() {
             <header className="relative flex flex-col items-center justify-center overflow-hidden bg-white dark:bg-slate-900 pt-16 pb-12 px-4 shadow-xl z-20 border-b border-slate-200 dark:border-slate-800 transition-colors duration-300">
                 {/* Background Image with Overlay */}
                 <div className="absolute inset-0 z-0 select-none">
-                    <img
+                    <Image
                         src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80"
-                        alt=""
-                        className="w-full h-full object-cover opacity-10 dark:opacity-20"
+                        alt="Background Pattern"
+                        fill
+                        priority
+                        unoptimized
+                        className="object-cover opacity-10 dark:opacity-20"
                     />
                     <div className="absolute inset-0 bg-gradient-to-b from-white/95 via-white/80 to-slate-50 dark:from-slate-900/95 dark:via-slate-900/80 dark:to-slate-950"></div>
                 </div>

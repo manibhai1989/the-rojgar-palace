@@ -3,6 +3,9 @@
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/security/auth";
+import { z } from "zod";
+
+const idSchema = z.string().min(5);
 
 export async function getAdminSyllabus() {
     try {
@@ -20,8 +23,9 @@ export async function getAdminSyllabus() {
 export async function deleteSyllabus(id: string) {
     try {
         await requireAdmin();
+        const validId = idSchema.parse(id);
         await prisma.syllabus.delete({
-            where: { id },
+            where: { id: validId },
         });
         revalidatePath("/admin/syllabus");
         revalidatePath("/");

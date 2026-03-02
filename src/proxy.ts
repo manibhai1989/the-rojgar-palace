@@ -11,9 +11,19 @@ export default withAuth(
             return NextResponse.rewrite(new URL("/maintenance", req.url));
         }
 
-        // Rate Limiting for API routes
-        if (req.nextUrl.pathname.startsWith("/api/")) {
-            const { success, limit, remaining } = rateLimit(ip, 100); // 100 req/min
+        // Rate Limiting
+        const is2FA = req.nextUrl.pathname.startsWith("/api/auth/2fa/");
+        const isApi = req.nextUrl.pathname.startsWith("/api/");
+
+        if (is2FA) {
+            // Aggressive limit for 2FA brute force protection: 5 req/min
+            const { success } = rateLimit(`${ip}_2fa`, 5);
+            if (!success) {
+                return new NextResponse("Too Many Requests - 2FA rate limit exceeded", { status: 429 });
+            }
+        } else if (isApi) {
+            // Standard API rate limit: 100 req/min
+            const { success } = rateLimit(`${ip}_api`, 100);
 
             if (!success) {
                 return new NextResponse("Too Many Requests", { status: 429 });
@@ -41,5 +51,5 @@ export default withAuth(
 );
 
 export const config = {
-    matcher: ["/admin/:path*", "/api/admin/:path*"]
+    matcher: ["/admin/:path*", "/api/:path*", "/search", "/auth/:path*"]
 };
