@@ -13,19 +13,15 @@ if (process.env.NODE_ENV !== "production") {
 
 
 
-export const prisma =
-    new PrismaClient({
-        log: ["error", "warn"],
-        datasources: {
-            db: {
-                url: process.env.DATABASE_URL,
-            },
+export const prisma = globalForPrisma.prisma || new PrismaClient({
+    log: ["error", "warn"],
+    datasources: {
+        db: {
+            url: process.env.DATABASE_URL,
         },
-    });
+    },
+});
 
-
-// In development, we usually attach to global, but we are bypassing it 
-// temporarily to ensure a fresh connection is established after your restart.
 if (process.env.NODE_ENV !== "production") {
     globalForPrisma.prisma = prisma;
 }
