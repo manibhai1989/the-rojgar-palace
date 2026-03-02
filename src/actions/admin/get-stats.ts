@@ -1,6 +1,7 @@
 'use server'
 
 import { prisma } from "@/lib/prisma"
+import { requireAdmin } from "@/lib/security/auth"
 
 export interface ActivityItem {
     id: string
@@ -20,6 +21,8 @@ export interface DashboardStats {
 
 export async function getDashboardStats(): Promise<DashboardStats> {
     try {
+        await requireAdmin();
+
         const [userCount, activeJobsCount, applicationsCount, recentLogs] = await Promise.all([
             prisma.user.count(),
             prisma.job.count({

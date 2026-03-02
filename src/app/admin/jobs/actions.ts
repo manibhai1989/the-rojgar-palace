@@ -10,7 +10,7 @@ import {
     ErrorCode,
     type SecureResponse
 } from "@/lib/security/errors";
-import { logSecurityEvent } from "@/lib/security/auth";
+import { logSecurityEvent, requireAdmin } from "@/lib/security/auth";
 
 /**
  * Get all jobs (admin only)
@@ -19,8 +19,8 @@ import { logSecurityEvent } from "@/lib/security/auth";
 export async function getJobs(): Promise<SecureResponse<any[]>> {
     noStore(); // Opt out of static caching for this data fetch
     try {
-        // TODO: Add authentication check
-        // await requireAdmin();
+        // Require admin authentication
+        await requireAdmin();
 
         const jobs = await prisma.job.findMany({
             orderBy: {
@@ -45,10 +45,9 @@ export async function deleteJob(id: string): Promise<SecureResponse<void>> {
             return createErrorResponse(ErrorCode.INVALID_INPUT, 'Invalid job ID format');
         }
 
-        // TODO: Add authentication check
-        // const user = await requireAdmin();
-
         // Attempt to delete
+        const user = await requireAdmin();
+
         await prisma.job.delete({
             where: { id },
         });
@@ -58,7 +57,7 @@ export async function deleteJob(id: string): Promise<SecureResponse<void>> {
             action: 'delete',
             resource: 'job',
             resourceId: id,
-            // userId: user.id,
+            userId: user.id,
         });
 
         // Revalidate cache

@@ -2,9 +2,11 @@
 
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { requireAdmin } from "@/lib/security/auth";
 
 export async function getAdminSyllabus() {
     try {
+        await requireAdmin();
         const data = await prisma.syllabus.findMany({
             orderBy: { createdAt: "desc" },
         });
@@ -17,6 +19,7 @@ export async function getAdminSyllabus() {
 
 export async function deleteSyllabus(id: string) {
     try {
+        await requireAdmin();
         await prisma.syllabus.delete({
             where: { id },
         });

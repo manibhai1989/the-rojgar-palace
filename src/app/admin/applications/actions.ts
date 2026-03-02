@@ -1,9 +1,11 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/security/auth";
 
 export async function getApplications() {
     try {
+        await requireAdmin();
         const applications = await prisma.application.findMany({
             include: {
                 user: {
@@ -40,6 +42,8 @@ export async function updateApplicationStatus(
     status: string
 ) {
     try {
+        await requireAdmin();
+
         await prisma.application.update({
             where: { id: applicationId },
             data: { status },
@@ -54,6 +58,8 @@ export async function updateApplicationStatus(
 
 export async function deleteApplication(applicationId: string) {
     try {
+        await requireAdmin();
+
         await prisma.application.delete({
             where: { id: applicationId },
         });

@@ -19,7 +19,7 @@ import {
     ErrorCode,
     type SecureResponse,
 } from "@/lib/security/errors";
-import { logSecurityEvent } from "@/lib/security/auth";
+import { logSecurityEvent, requireAdmin } from "@/lib/security/auth";
 
 // ============================================================================
 // TYPES
@@ -186,8 +186,8 @@ function sanitizeJobData(data: JobFormData): JobFormData {
  */
 export async function createJob(data: any): Promise<SecureResponse<any>> {
     try {
-        // TODO: Add authentication check
-        // const user = await requireAdmin();
+        // Security check
+        const user = await requireAdmin();
 
         // Security: Validate input data
         const validation = validateJobData(data);
@@ -297,7 +297,7 @@ export async function createJob(data: any): Promise<SecureResponse<any>> {
             action: 'create',
             resource: 'job',
             resourceId: job.id,
-            // userId: user.id,
+            userId: user.id,
         });
 
         // Sync to other tables
@@ -318,8 +318,8 @@ export async function createJob(data: any): Promise<SecureResponse<any>> {
  */
 export async function updateJob(id: string, data: any): Promise<SecureResponse<any>> {
     try {
-        // TODO: Add authentication check
-        // const user = await requireAdmin();
+        // Security check
+        const user = await requireAdmin();
 
         // 1. Validate Input
         const validation = validateJobData(data);
@@ -410,6 +410,7 @@ export async function updateJob(id: string, data: any): Promise<SecureResponse<a
             action: 'update',
             resource: 'job',
             resourceId: id,
+            userId: user.id,
         });
 
         // 6. Sync to other tables (Admit Card, Result, etc.)

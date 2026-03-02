@@ -2,9 +2,11 @@
 
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { requireAdmin } from "@/lib/security/auth";
 
 export async function getAdmissions() {
     try {
+        await requireAdmin();
         const items = await prisma.admission.findMany({
             orderBy: { createdAt: "desc" },
             take: 20
@@ -17,6 +19,7 @@ export async function getAdmissions() {
 
 export async function createAdmission(data: { title: string; organization: string; link: string }) {
     try {
+        await requireAdmin();
         await prisma.admission.create({ data });
         revalidatePath("/");
         revalidatePath("/admin/admissions");
@@ -28,6 +31,7 @@ export async function createAdmission(data: { title: string; organization: strin
 
 export async function deleteAdmission(id: string) {
     try {
+        await requireAdmin();
         await prisma.admission.delete({ where: { id } });
         revalidatePath("/");
         revalidatePath("/admin/admissions");

@@ -5,6 +5,8 @@
 
 import { cookies } from 'next/headers';
 import { createErrorResponse, ErrorCode } from './errors';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 
 // ============================================================================
 // TYPES
@@ -33,18 +35,21 @@ export enum UserRole {
  */
 export async function getCurrentUser(): Promise<User | null> {
     try {
-        const cookieStore = await cookies();
-        const sessionToken = cookieStore.get('session-token');
+        const session = await getServerSession(authOptions);
 
-        if (!sessionToken) {
+        if (!session?.user?.email) {
             return null;
         }
 
-        // TODO: Implement actual session validation with your auth provider
-        // This is a placeholder - integrate with NextAuth, Clerk, or your auth solution
+        // Determine role based on admin email env var
+        const isAdminUser = session.user.email === process.env.ADMIN_EMAIL;
 
-        // For now, return null (no authentication implemented yet)
-        return null;
+        return {
+            id: (session.user as any).id || '1',
+            email: session.user.email,
+            name: session.user.name || 'User',
+            role: isAdminUser ? UserRole.ADMIN : UserRole.USER,
+        };
     } catch (error) {
         console.error('[Auth] Failed to get current user:', error);
         return null;
